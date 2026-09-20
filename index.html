@@ -16,7 +16,7 @@
         :root {
             --cor-fundo: #f3f4f2;
             --cor-azul: #002FA7;
-            --cor-verde: #CCFF00;
+            --cor-verde: #002FA7;
             --cor-texto: #1a1a1a;
             --cor-branco: #ffffff;
             --cor-cinza: #8a8a8a;
@@ -1227,12 +1227,12 @@
     <nav>
         <div class="logo">Thayna Auni</div>
         <ul id="menu-nav">
-            <li><a href="#sobre">Sobre</a></li>
-            <li><a href="#destaques">Destaques</a></li>
-            <li><a href="#trabalhos">Trabalhos</a></li>
-            <li><a href="#servicos">Serviços</a></li>
-            <li><a href="#numeros">Números</a></li>
-            <li><a href="#contato">Contato</a></li>
+            <li><a href="#sobre">About</a></li>
+            <li><a href="#destaques">Featured</a></li>
+            <li><a href="#trabalhos">Portfolio</a></li>
+            <li><a href="#servicos">Services</a></li>
+            <li><a href="#numeros">Numbers</a></li>
+            <li><a href="#contato">Contact</a></li>
         </ul>
         <button class="menu-btn" id="menu-toggle">☰</button>
     </nav>
@@ -1241,24 +1241,24 @@
     <section class="capa" id="capa">
         <div class="capa-conteudo">
             <div class="capa-texto">
-                <h1>Transformo histórias em <span class="destaque">conteúdo visual</span> que gruda</h1>
-                <p class="capa-frase">A creative social media strategist & content creator. Entrego conteúdo que conecta marcas com audiências de forma criativa, dinâmica e inovadora.</p>
+                <h1>Transform stories into <span class="destaque">Thay</span> visual narratives</h1>
+                <p class="capa-frase">I'm a creative social media strategist & content creator dedicated to helping brands create impactful, engaging content that drives real results.</p>
                 <div class="capa-botoes">
-                    <button class="btn btn-primario" onclick="document.getElementById('contato').scrollIntoView({behavior: 'smooth'})">Falar comigo</button>
-                    <button class="btn btn-secundario" onclick="document.getElementById('trabalhos').scrollIntoView({behavior: 'smooth'})">Ver trabalhos</button>
+                    <button class="btn btn-primario" onclick="document.getElementById('contato').scrollIntoView({behavior: 'smooth'})">Let's talk</button>
+                    <button class="btn btn-secundario" onclick="document.getElementById('trabalhos').scrollIntoView({behavior: 'smooth'})">See my work</button>
                 </div>
                 <div class="capa-numeros">
                     <div class="numero-item">
                         <div class="numero-valor">250</div>
-                        <div class="numero-label">Vídeos entregues</div>
+                        <div class="numero-label">Videos Delivered</div>
                     </div>
                     <div class="numero-item">
                         <div class="numero-valor">16</div>
-                        <div class="numero-label">Marcas atendidas</div>
+                        <div class="numero-label">Brands Served</div>
                     </div>
                     <div class="numero-item">
                         <div class="numero-valor">50M</div>
-                        <div class="numero-label">Views somadas</div>
+                        <div class="numero-label">Total Views</div>
                     </div>
                 </div>
             </div>
@@ -1293,26 +1293,24 @@
 
     <!-- SOBRE -->
     <section class="sobre" id="sobre">
-        <h2 class="secao-titulo">Sobre mim</h2>
+        <h2 class="secao-titulo">About Me</h2>
         <div class="sobre-conteudo">
-            <div class="sobre-foto">Foto de perfil 3:4<br><span style="font-size: 12px;">(trocar pela imagem real)</span></div>
+            <div class="sobre-foto" style="position: relative; display: flex; align-items: center; justify-content: center; color: var(--cor-cinza); font-size: 13px; text-align: center;">
+                <!-- INSTRUÇÃO: Salve sua foto como "profile.jpg" na mesma pasta do index.html e altere o src abaixo -->
+                <img src="profile.jpg" alt="Thayna Auni" style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px; display: block;">
+            </div>
             <div class="sobre-texto">
-                <h2>Oi! Sou Thayna</h2>
-                <p>Sou criadora de conteúdo especializada em UGC e social media strategy. Trabalho transformando histórias de marcas em vídeos e imagens que capturam atenção, geram engajamento e, principalmente, vendem.</p>
-                <p>Com mais de 250 vídeos entregues e 50 milhões de views, tenho experiência criando conteúdo para nichos diversos. Cada projeto é único e pensado especialmente para sua audiência.</p>
-                <ul class="promessas">
-                    <li class="promessa-item">Roteiro aprovado antes de gravar</li>
-                    <li class="promessa-item">Uma rodada de ajuste inclusa</li>
-                    <li class="promessa-item">Entrega em até 72 horas úteis</li>
-                </ul>
-                <div class="assinatura">Thayna Auni ✌️</div>
+                <h2>Hi, I am Thay</h2>
+                <p>With 15 years of experience, I began my career in Fashion and Costume Design, working across various creative fields that are now essential to my work.</p>
+                <p>Nine years ago, I transitioned into Marketing, focusing on content and social media strategy for both brands and in-house projects. I've helped clients enrich their social media presence by providing full audits of their profiles, growing and engaging with their audience, and managing communities as large as ~50k, copywriting, managing online reputation, and planning and implementing advertising strategies on Instagram, Facebook and LinkedIn.</p>
+                <p>Today, I help brands position themselves strategically and creatively on social media through impactful content creation.</p>
             </div>
         </div>
     </section>
 
     <!-- DESTAQUES -->
     <section class="destaques" id="destaques">
-        <h2 class="secao-titulo">Conteúdos de destaque</h2>
+        <h2 class="secao-titulo">Featured Content</h2>
         <div class="destaques-grid" id="destaques-grid">
             <!-- Preenchido por JS -->
         </div>
@@ -1320,7 +1318,7 @@
 
     <!-- TRABALHOS -->
     <section class="trabalhos" id="trabalhos">
-        <h2 class="secao-titulo">Trabalhos por nicho</h2>
+        <h2 class="secao-titulo">Portfolio</h2>
         <div class="filtros" id="filtros-container">
             <!-- Preenchido por JS -->
         </div>
@@ -1331,7 +1329,7 @@
 
     <!-- SERVIÇOS -->
     <section class="servicos" id="servicos">
-        <h2 class="secao-titulo">Como eu te ajudo</h2>
+        <h2 class="secao-titulo">How I Can Help</h2>
         <div class="servicos-grid" id="servicos-grid">
             <!-- Preenchido por JS -->
         </div>
@@ -1339,7 +1337,7 @@
 
     <!-- NÚMEROS E DEPOIMENTOS -->
     <section class="numeros-depoimentos" id="numeros">
-        <h2 class="secao-titulo">Números e histórias</h2>
+        <h2 class="secao-titulo">Numbers & Stories</h2>
 
         <div class="metricas" id="metricas-container">
             <!-- Preenchido por JS -->
@@ -1352,27 +1350,27 @@
 
     <!-- CONTATO -->
     <section class="contato" id="contato">
-        <h2 class="contato-titulo">Bora criar juntos</h2>
+        <h2 class="contato-titulo">Let's Create Together</h2>
 
         <div class="confirmacao-envio" id="confirmacao-envio">
-            ✓ Mensagem enviada! Vou responder em breve.
+            ✓ Message sent! I'll get back to you soon.
         </div>
 
         <form id="formulario-contato">
             <div class="formulario-grupo">
-                <label for="nome">Seu nome</label>
+                <label for="nome">Your name</label>
                 <input type="text" id="nome" name="nome" required>
             </div>
             <div class="formulario-grupo">
-                <label for="email">Seu e-mail</label>
+                <label for="email">Your email</label>
                 <input type="email" id="email" name="email" required>
             </div>
             <div class="formulario-grupo">
-                <label for="mensagem">Sua mensagem</label>
+                <label for="mensagem">Your message</label>
                 <textarea id="mensagem" name="mensagem" required></textarea>
             </div>
             <div class="formulario-grupo">
-                <button type="submit">Enviar</button>
+                <button type="submit">Send</button>
             </div>
         </form>
 
@@ -1389,19 +1387,19 @@
         <div class="rodape-redes">
             <a href="https://instagram.com/a_donaxepa" target="_blank">Instagram</a>
             <a href="https://wa.me/351XXXXXXXXX" target="_blank">WhatsApp</a>
-            <a href="mailto:adonadaxepa@gmail.com">E-mail</a>
+            <a href="mailto:adonadaxepa@gmail.com">Email</a>
         </div>
-        <div class="rodape-copyright">© <span id="ano-atual"></span> Thayna Auni. Todos os direitos reservados.</div>
+        <div class="rodape-copyright">© <span id="ano-atual"></span> Thayna Auni. All rights reserved.</div>
     </footer>
 
     <!-- CARD DE CAPTURA -->
     <div class="overlay-captura" id="overlay-captura">
         <div class="card-captura">
             <button class="card-captura-fechar" id="fechar-captura">×</button>
-            <h3>Quer meu mídia kit completo?</h3>
-            <input type="text" id="captura-nome" placeholder="Seu nome">
-            <input type="email" id="captura-email" placeholder="Seu e-mail">
-            <button class="card-captura-btn" id="captura-btn">Quero receber</button>
+            <h3>Get my media kit</h3>
+            <input type="text" id="captura-nome" placeholder="Your name">
+            <input type="email" id="captura-email" placeholder="Your email">
+            <button class="card-captura-btn" id="captura-btn">Send it to me</button>
         </div>
     </div>
 
@@ -1429,29 +1427,29 @@
             {
                 id: 1,
                 titulo: 'UGC Shorts',
-                descricao: 'Conteúdo vertical rápido e envolvente',
+                descricao: 'Fast-paced vertical content that drives engagement',
                 numero: '+2.4M',
-                label: 'views no reels',
+                label: 'reels views',
                 link: 'https://youtube.com/shorts/ibjViSHyJp8',
-                capa: 'Vídeo destaque 9:16 (VIDEO 1)'
+                capa: 'Featured video 9:16 (VIDEO 1)'
             },
             {
                 id: 2,
-                titulo: 'Unboxing Premium',
-                descricao: 'Experiência de desembalagem impactante',
+                titulo: 'Premium Unboxing',
+                descricao: 'Impactful product unboxing experience',
                 numero: '+1.8M',
-                label: 'views em TikTok',
+                label: 'TikTok views',
                 link: '#',
-                capa: 'Vídeo destaque 9:16 (VIDEO 2)'
+                capa: 'Featured video 9:16 (VIDEO 2)'
             },
             {
                 id: 3,
-                titulo: 'Produto em Ação',
-                descricao: 'Demonstração prática e realista',
+                titulo: 'Product in Action',
+                descricao: 'Practical and authentic product demonstration',
                 numero: '+3.1M',
-                label: 'impressões',
+                label: 'impressions',
                 link: '#',
-                capa: 'Vídeo destaque 9:16 (VIDEO 3)'
+                capa: 'Featured video 9:16 (VIDEO 3)'
             }
         ];
 
@@ -1473,33 +1471,33 @@
         const servicos = [
             {
                 numero: '01',
-                titulo: 'Vídeo UGC',
-                descricao: 'Conteúdo de usuário genuíno que converte. Roteiro, gravação e edição.'
+                titulo: 'Content Creation & UGC',
+                descricao: 'Authentic user-generated content designed to convert and engage your audience.'
             },
             {
                 numero: '02',
-                titulo: 'Corte para Anúncio',
-                descricao: 'Otimizo seus vídeos para rodar como anúncio em redes.'
+                titulo: 'Creative Direction for Social Media Content',
+                descricao: 'Strategic visual storytelling that aligns with your brand identity and goals.'
             },
             {
                 numero: '03',
-                titulo: 'Fotos do Produto',
-                descricao: 'Imagens profissionais que vendem seu produto.'
+                titulo: 'Creative Strategy for Brands',
+                descricao: 'Comprehensive content strategies tailored to your target audience and business objectives.'
             },
             {
                 numero: '04',
-                titulo: 'Unboxing',
-                descricao: 'Experiência de desembalagem que gera engajamento.'
+                titulo: 'Social Media Management',
+                descricao: 'Full-service management including community engagement, content planning, and audience growth.'
             },
             {
                 numero: '05',
-                titulo: 'Publicação no Perfil',
-                descricao: 'Conteúdo pensado e criado para meu perfil, com menção sua.'
+                titulo: 'Social Media Content Strategy',
+                descricao: 'Data-driven strategies to maximize reach, engagement, and conversions across platforms.'
             },
             {
                 numero: '06',
-                titulo: 'Pacote Mensal',
-                descricao: 'Plano contínuo de produção mensal. Converse comigo!'
+                titulo: 'Monthly Package',
+                descricao: 'Continuous production plan with ongoing support and strategic content delivery.'
             }
         ];
 
@@ -1638,10 +1636,10 @@
         function renderMetricas() {
             const container = document.getElementById('metricas-container');
             const metricas = [
-                { numero: 250, label: 'Vídeos entregues' },
-                { numero: 16, label: 'Marcas atendidas' },
-                { numero: 50, label: 'Milhões de views' },
-                { numero: 98, label: 'Taxa de satisfação' }
+                { numero: 250, label: 'Videos Delivered' },
+                { numero: 16, label: 'Brands Served' },
+                { numero: 50, label: 'Million Views' },
+                { numero: 98, label: 'Satisfaction Rate' }
             ];
 
             container.innerHTML = metricas.map(metrica => `
