@@ -1,0 +1,1792 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Portfólio de Thayna Auni - UGC Creator. Conteúdo visual que conecta marcas com audiências de forma criativa e inovadora.">
+    <title>Thayna Auni - Portfólio UGC Creator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --cor-fundo: #f3f4f2;
+            --cor-azul: #002FA7;
+            --cor-verde: #CCFF00;
+            --cor-texto: #1a1a1a;
+            --cor-branco: #ffffff;
+            --cor-cinza: #8a8a8a;
+            --cor-cinza-claro: #e8e8e8;
+            --sombra-suave: 0 8px 24px rgba(0, 0, 0, 0.08);
+            --sombra-media: 0 12px 32px rgba(0, 0, 0, 0.12);
+            --transicao: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --cor-fundo: #1a1a1a;
+                --cor-texto: #f3f4f2;
+                --cor-branco: #262626;
+                --cor-cinza: #b0b0b0;
+                --cor-cinza-claro: #333333;
+            }
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* MENU NAVEGAÇÃO */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--cor-branco);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: var(--sombra-suave);
+        }
+
+        .logo {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--cor-texto);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 35px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--cor-texto);
+            font-weight: 500;
+            font-size: 14px;
+            position: relative;
+            transition: var(--transicao);
+        }
+
+        nav a:hover {
+            color: var(--cor-azul);
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--cor-azul);
+            transition: width 0.3s ease;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        .menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--cor-texto);
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                padding: 16px 20px;
+            }
+
+            .logo {
+                font-size: 16px;
+            }
+
+            nav ul {
+                display: none;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                right: 0;
+                flex-direction: column;
+                background: var(--cor-branco);
+                padding: 20px;
+                gap: 15px;
+                box-shadow: var(--sombra-media);
+            }
+
+            nav ul.ativo {
+                display: flex;
+            }
+
+            nav a {
+                font-size: 16px;
+            }
+
+            .menu-btn {
+                display: block;
+            }
+        }
+
+        /* SEÇÃO CAPA */
+        .capa {
+            padding-top: 80px;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--cor-fundo) 0%, var(--cor-fundo) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .capa-conteudo {
+            max-width: 1200px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            padding: 0 40px;
+            margin-bottom: 60px;
+        }
+
+        .capa-texto h1 {
+            font-size: 56px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            line-height: 1.1;
+        }
+
+        .capa-texto h1 .destaque {
+            color: var(--cor-verde);
+            background: linear-gradient(120deg, var(--cor-verde), var(--cor-verde));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .capa-frase {
+            font-size: 18px;
+            color: var(--cor-cinza);
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .capa-botoes {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 50px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transicao);
+            text-decoration: none;
+            display: inline-block;
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .btn-primario {
+            background: var(--cor-azul);
+            color: var(--cor-branco);
+        }
+
+        .btn-primario:hover {
+            background: #001f7d;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(0, 47, 167, 0.3);
+        }
+
+        .btn-secundario {
+            background: var(--cor-branco);
+            color: var(--cor-azul);
+            border: 2px solid var(--cor-azul);
+        }
+
+        .btn-secundario:hover {
+            background: var(--cor-azul);
+            color: var(--cor-branco);
+            transform: translateY(-2px);
+        }
+
+        .capa-numeros {
+            display: flex;
+            gap: 40px;
+            margin-top: 50px;
+        }
+
+        .numero-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .numero-valor {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--cor-azul);
+            counter-increment: none;
+        }
+
+        .numero-label {
+            font-size: 13px;
+            color: var(--cor-cinza);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 5px;
+        }
+
+        .capa-visual {
+            position: relative;
+            height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .foto-criador {
+            width: 350px;
+            height: 350px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, var(--cor-cinza-claro), var(--cor-cinza-claro));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--cor-cinza);
+            font-size: 14px;
+            text-align: center;
+            padding: 20px;
+            box-shadow: var(--sombra-media);
+            border: 3px solid var(--cor-verde);
+            position: relative;
+            z-index: 5;
+            animation: flutuacao 3s ease-in-out infinite;
+        }
+
+        @keyframes flutuacao {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .elemento-flutuante {
+            position: absolute;
+            background: var(--cor-branco);
+            border-radius: 8px;
+            box-shadow: var(--sombra-suave);
+            animation: flutuacao 4s ease-in-out infinite;
+        }
+
+        .barra-ferramentas {
+            width: 50px;
+            height: 120px;
+            top: 50px;
+            left: -80px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 10px;
+            animation-delay: 0s;
+        }
+
+        .barra-ferramentas div {
+            width: 30px;
+            height: 30px;
+            background: var(--cor-cinza-claro);
+            border-radius: 4px;
+        }
+
+        .balao-efeitos {
+            padding: 10px 16px;
+            top: -40px;
+            right: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            animation-delay: 0.5s;
+        }
+
+        .chip-oi {
+            padding: 8px 16px;
+            bottom: 80px;
+            right: -60px;
+            background: var(--cor-texto);
+            color: var(--cor-branco);
+            font-size: 13px;
+            font-weight: 600;
+            animation-delay: 1s;
+        }
+
+        .linha-tempo {
+            position: absolute;
+            bottom: 0;
+            left: -60px;
+            width: 500px;
+            height: 60px;
+            background: var(--cor-branco);
+            border-radius: 8px;
+            padding: 8px;
+            box-shadow: var(--sombra-suave);
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .clip {
+            width: 80px;
+            height: 44px;
+            background: var(--cor-verde);
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+
+        .cabeçote {
+            position: absolute;
+            left: 70px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 60px;
+            background: var(--cor-azul);
+            border-radius: 2px;
+            animation: movimento-cabeçote 6s linear infinite;
+        }
+
+        @keyframes movimento-cabeçote {
+            0% { left: 70px; }
+            50% { left: 300px; }
+            100% { left: 70px; }
+        }
+
+        /* FAIXA MARCAS */
+        .faixa-marcas {
+            background: var(--cor-branco);
+            padding: 30px 40px;
+            overflow: hidden;
+            box-shadow: var(--sombra-suave);
+        }
+
+        .marcas-scroll {
+            display: flex;
+            gap: 30px;
+            overflow-x: auto;
+            padding: 10px 0;
+        }
+
+        .marca-item {
+            flex-shrink: 0;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--cor-cinza);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            padding: 5px 15px;
+        }
+
+        .marcas-scroll::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .marcas-scroll::-webkit-scrollbar-track {
+            background: var(--cor-cinza-claro);
+            border-radius: 4px;
+        }
+
+        .marcas-scroll::-webkit-scrollbar-thumb {
+            background: var(--cor-verde);
+            border-radius: 4px;
+        }
+
+        /* SEÇÃO SOBRE */
+        .sobre {
+            padding: 100px 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .secao-titulo {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 50px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .secao-titulo::before {
+            content: '';
+            width: 4px;
+            height: 48px;
+            background: var(--cor-azul);
+            border-radius: 2px;
+        }
+
+        .sobre-conteudo {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .sobre-foto {
+            width: 100%;
+            aspect-ratio: 3/4;
+            background: linear-gradient(135deg, var(--cor-cinza-claro), var(--cor-cinza-claro));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--cor-cinza);
+            font-size: 14px;
+            box-shadow: var(--sombra-media);
+        }
+
+        .sobre-texto h2 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .sobre-texto p {
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            color: var(--cor-cinza);
+        }
+
+        .promessas {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+
+        .promessa-item {
+            padding: 15px 0;
+            padding-left: 30px;
+            position: relative;
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--cor-texto);
+        }
+
+        .promessa-item::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--cor-verde);
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .assinatura {
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid var(--cor-cinza-claro);
+        }
+
+        /* DESTAQUES */
+        .destaques {
+            padding: 100px 40px;
+            background: var(--cor-branco);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .destaques-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .destaque-card {
+            cursor: pointer;
+            border-radius: 12px;
+            overflow: hidden;
+            background: var(--cor-branco);
+            box-shadow: var(--sombra-suave);
+            transition: var(--transicao);
+            text-decoration: none;
+            color: var(--cor-texto);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .destaque-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--sombra-media);
+        }
+
+        .destaque-video {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 9/16;
+            background: linear-gradient(135deg, var(--cor-cinza-claro), var(--cor-cinza-claro));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--cor-cinza);
+            font-size: 13px;
+            overflow: hidden;
+        }
+
+        .play-btn {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: var(--cor-branco);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            transition: var(--transicao);
+        }
+
+        .destaque-card:hover .play-btn {
+            transform: scale(1.1);
+            background: var(--cor-verde);
+        }
+
+        .play-btn::after {
+            content: '▶';
+            color: var(--cor-azul);
+            font-size: 20px;
+            margin-left: 4px;
+        }
+
+        .destaque-card:hover .play-btn::after {
+            color: var(--cor-texto);
+        }
+
+        .destaque-info {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .destaque-numero {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--cor-azul);
+            line-height: 1;
+        }
+
+        .destaque-label {
+            font-size: 12px;
+            color: var(--cor-cinza);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+        }
+
+        .destaque-titulo {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .destaque-descricao {
+            font-size: 14px;
+            color: var(--cor-cinza);
+            line-height: 1.5;
+        }
+
+        /* GALERIA TRABALHOS */
+        .trabalhos {
+            padding: 100px 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .filtros {
+            display: flex;
+            gap: 12px;
+            margin: 50px 0;
+            flex-wrap: wrap;
+        }
+
+        .filtro-btn {
+            padding: 10px 24px;
+            border: 2px solid var(--cor-cinza-claro);
+            background: var(--cor-branco);
+            color: var(--cor-texto);
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transicao);
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .filtro-btn.ativo {
+            background: var(--cor-azul);
+            color: var(--cor-branco);
+            border-color: var(--cor-azul);
+        }
+
+        .filtro-btn:hover {
+            border-color: var(--cor-azul);
+            color: var(--cor-azul);
+        }
+
+        .filtro-btn.ativo:hover {
+            color: var(--cor-branco);
+        }
+
+        .trabalhos-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .trabalho-card {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, var(--cor-cinza-claro), var(--cor-cinza-claro));
+            border-radius: 8px;
+            cursor: pointer;
+            overflow: hidden;
+            transition: var(--transicao);
+            display: none;
+            position: relative;
+        }
+
+        .trabalho-card.visivel {
+            display: block;
+        }
+
+        .trabalho-card:hover {
+            transform: scale(1.05);
+        }
+
+        .trabalho-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 47, 167, 0.7);
+            opacity: 0;
+            transition: var(--transicao);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: var(--cor-branco);
+            font-weight: 600;
+        }
+
+        .trabalho-card:hover .trabalho-overlay {
+            opacity: 1;
+        }
+
+        /* SERVIÇOS */
+        .servicos {
+            padding: 100px 40px;
+            background: var(--cor-branco);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .servicos-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .servico-card {
+            background: var(--cor-fundo);
+            padding: 40px 30px;
+            border-radius: 12px;
+            text-align: center;
+            transition: var(--transicao);
+        }
+
+        .servico-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--sombra-media);
+            background: var(--cor-verde);
+        }
+
+        .servico-numero {
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--cor-azul);
+            margin-bottom: 15px;
+        }
+
+        .servico-card:hover .servico-numero {
+            color: var(--cor-texto);
+        }
+
+        .servico-titulo {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .servico-descricao {
+            font-size: 15px;
+            color: var(--cor-cinza);
+            line-height: 1.6;
+        }
+
+        .servico-card:hover .servico-descricao {
+            color: var(--cor-texto);
+        }
+
+        /* NÚMEROS E DEPOIMENTOS */
+        .numeros-depoimentos {
+            padding: 100px 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .metricas {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin-bottom: 80px;
+            margin-top: 50px;
+        }
+
+        .metrica-card {
+            text-align: center;
+            padding: 30px;
+            background: var(--cor-branco);
+            border-radius: 12px;
+            box-shadow: var(--sombra-suave);
+        }
+
+        .metrica-numero {
+            font-size: 44px;
+            font-weight: 800;
+            color: var(--cor-azul);
+            line-height: 1;
+        }
+
+        .metrica-label {
+            font-size: 14px;
+            color: var(--cor-cinza);
+            margin-top: 10px;
+            font-weight: 500;
+        }
+
+        .depoimentos {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-top: 50px;
+        }
+
+        .depoimento-card {
+            background: var(--cor-branco);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: var(--sombra-suave);
+        }
+
+        .depoimento-texto {
+            font-size: 14px;
+            font-style: italic;
+            color: var(--cor-cinza);
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .depoimento-autor {
+            font-weight: 700;
+            font-size: 13px;
+            color: var(--cor-texto);
+        }
+
+        .depoimento-empresa {
+            font-size: 12px;
+            color: var(--cor-cinza);
+            margin-top: 3px;
+        }
+
+        /* CONTATO */
+        .contato {
+            padding: 100px 40px;
+            background: var(--cor-branco);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .contato-titulo {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 50px;
+            text-align: center;
+        }
+
+        .formulario-grupo {
+            margin-bottom: 20px;
+        }
+
+        .formulario-grupo label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .formulario-grupo input,
+        .formulario-grupo textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--cor-cinza-claro);
+            border-radius: 8px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 14px;
+            transition: var(--transicao);
+            background: var(--cor-fundo);
+            color: var(--cor-texto);
+        }
+
+        .formulario-grupo input:focus,
+        .formulario-grupo textarea:focus {
+            outline: none;
+            border-color: var(--cor-azul);
+            box-shadow: 0 0 0 3px rgba(0, 47, 167, 0.1);
+        }
+
+        .formulario-grupo textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .formulario-grupo button {
+            width: 100%;
+            padding: 14px;
+            background: var(--cor-azul);
+            color: var(--cor-branco);
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            font-family: 'Manrope', sans-serif;
+            transition: var(--transicao);
+            margin-bottom: 20px;
+        }
+
+        .formulario-grupo button:hover {
+            background: #001f7d;
+            transform: translateY(-2px);
+        }
+
+        .formulario-grupo button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .confirmacao-envio {
+            display: none;
+            padding: 30px;
+            background: var(--cor-verde);
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            color: var(--cor-texto);
+            margin-bottom: 20px;
+            animation: aparecer 0.3s ease;
+        }
+
+        .confirmacao-envio.mostrar {
+            display: block;
+        }
+
+        @keyframes aparecer {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .contato-redes {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .rede-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--cor-branco);
+            border: 2px solid var(--cor-cinza-claro);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: var(--cor-texto);
+            font-size: 20px;
+            transition: var(--transicao);
+            cursor: pointer;
+        }
+
+        .rede-btn:hover {
+            background: var(--cor-azul);
+            color: var(--cor-branco);
+            border-color: var(--cor-azul);
+            transform: translateY(-4px);
+        }
+
+        /* RODAPÉ */
+        footer {
+            background: var(--cor-texto);
+            color: var(--cor-branco);
+            padding: 40px;
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .rodape-info {
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .rodape-redes {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .rodape-redes a {
+            color: var(--cor-branco);
+            text-decoration: none;
+            transition: var(--transicao);
+        }
+
+        .rodape-redes a:hover {
+            color: var(--cor-verde);
+        }
+
+        .rodape-copyright {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* CARD DE CAPTURA */
+        .overlay-captura {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .overlay-captura.mostrar {
+            display: flex;
+            opacity: 1;
+        }
+
+        .card-captura {
+            background: var(--cor-branco);
+            padding: 40px;
+            border-radius: 12px;
+            max-width: 400px;
+            width: 90%;
+            position: relative;
+            box-shadow: var(--sombra-media);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(40px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .card-captura-fechar {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--cor-cinza);
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transicao);
+        }
+
+        .card-captura-fechar:hover {
+            color: var(--cor-texto);
+            transform: rotate(90deg);
+        }
+
+        .card-captura h3 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            margin-top: 10px;
+        }
+
+        .card-captura input {
+            width: 100%;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+            border: 2px solid var(--cor-cinza-claro);
+            border-radius: 8px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 14px;
+            transition: var(--transicao);
+            background: var(--cor-fundo);
+            color: var(--cor-texto);
+        }
+
+        .card-captura input:focus {
+            outline: none;
+            border-color: var(--cor-azul);
+            box-shadow: 0 0 0 3px rgba(0, 47, 167, 0.1);
+        }
+
+        .card-captura-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--cor-verde);
+            color: var(--cor-texto);
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            font-family: 'Manrope', sans-serif;
+            transition: var(--transicao);
+        }
+
+        .card-captura-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        /* RESPONSIVO */
+        @media (max-width: 1024px) {
+            .capa-conteudo {
+                grid-template-columns: 1fr;
+                gap: 40px;
+                margin-bottom: 40px;
+            }
+
+            .capa-visual {
+                height: 350px;
+            }
+
+            .foto-criador {
+                width: 250px;
+                height: 250px;
+            }
+
+            .destaques-grid,
+            .servicos-grid,
+            .trabalhos-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .metricas,
+            .depoimentos {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .barra-ferramentas,
+            .linha-tempo {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .capa-conteudo,
+            .sobre-conteudo {
+                grid-template-columns: 1fr;
+                gap: 30px;
+                padding: 0 20px;
+            }
+
+            .capa-texto h1 {
+                font-size: 36px;
+            }
+
+            .secao-titulo {
+                font-size: 32px;
+            }
+
+            .destaques-grid,
+            .servicos-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .trabalhos-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .metricas,
+            .depoimentos {
+                grid-template-columns: 1fr;
+            }
+
+            .capa-numeros {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .sobre,
+            .destaques,
+            .trabalhos,
+            .servicos,
+            .numeros-depoimentos,
+            .contato {
+                padding: 60px 20px;
+            }
+
+            .faixa-marcas {
+                padding: 20px;
+            }
+
+            nav {
+                padding: 12px 16px;
+            }
+
+            .capa {
+                padding-top: 70px;
+            }
+        }
+
+        /* ANIMAÇÕES DE ENTRADA */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-in.visivel {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVEGAÇÃO -->
+    <nav>
+        <div class="logo">Thayna Auni</div>
+        <ul id="menu-nav">
+            <li><a href="#sobre">Sobre</a></li>
+            <li><a href="#destaques">Destaques</a></li>
+            <li><a href="#trabalhos">Trabalhos</a></li>
+            <li><a href="#servicos">Serviços</a></li>
+            <li><a href="#numeros">Números</a></li>
+            <li><a href="#contato">Contato</a></li>
+        </ul>
+        <button class="menu-btn" id="menu-toggle">☰</button>
+    </nav>
+
+    <!-- CAPA -->
+    <section class="capa" id="capa">
+        <div class="capa-conteudo">
+            <div class="capa-texto">
+                <h1>Transformo histórias em <span class="destaque">conteúdo visual</span> que gruda</h1>
+                <p class="capa-frase">A creative social media strategist & content creator. Entrego conteúdo que conecta marcas com audiências de forma criativa, dinâmica e inovadora.</p>
+                <div class="capa-botoes">
+                    <button class="btn btn-primario" onclick="document.getElementById('contato').scrollIntoView({behavior: 'smooth'})">Falar comigo</button>
+                    <button class="btn btn-secundario" onclick="document.getElementById('trabalhos').scrollIntoView({behavior: 'smooth'})">Ver trabalhos</button>
+                </div>
+                <div class="capa-numeros">
+                    <div class="numero-item">
+                        <div class="numero-valor">250</div>
+                        <div class="numero-label">Vídeos entregues</div>
+                    </div>
+                    <div class="numero-item">
+                        <div class="numero-valor">16</div>
+                        <div class="numero-label">Marcas atendidas</div>
+                    </div>
+                    <div class="numero-item">
+                        <div class="numero-valor">50M</div>
+                        <div class="numero-label">Views somadas</div>
+                    </div>
+                </div>
+            </div>
+            <div class="capa-visual">
+                <div class="foto-criador">
+                    Foto do criador 4:5<br><span style="font-size: 12px;">(trocar pela imagem real)</span>
+                </div>
+                <div class="barra-ferramentas">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+                <div class="elemento-flutuante balao-efeitos">✨ Efeitos</div>
+                <div class="elemento-flutuante chip-oi">Oi ✌️</div>
+                <div class="linha-tempo">
+                    <div class="clip"></div>
+                    <div class="clip"></div>
+                    <div class="clip"></div>
+                    <div class="cabeçote"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAIXA MARCAS -->
+    <section class="faixa-marcas">
+        <div class="marcas-scroll" id="marcas-container">
+            <!-- Preenchido por JS -->
+        </div>
+    </section>
+
+    <!-- SOBRE -->
+    <section class="sobre" id="sobre">
+        <h2 class="secao-titulo">Sobre mim</h2>
+        <div class="sobre-conteudo">
+            <div class="sobre-foto">Foto de perfil 3:4<br><span style="font-size: 12px;">(trocar pela imagem real)</span></div>
+            <div class="sobre-texto">
+                <h2>Oi! Sou Thayna</h2>
+                <p>Sou criadora de conteúdo especializada em UGC e social media strategy. Trabalho transformando histórias de marcas em vídeos e imagens que capturam atenção, geram engajamento e, principalmente, vendem.</p>
+                <p>Com mais de 250 vídeos entregues e 50 milhões de views, tenho experiência criando conteúdo para nichos diversos. Cada projeto é único e pensado especialmente para sua audiência.</p>
+                <ul class="promessas">
+                    <li class="promessa-item">Roteiro aprovado antes de gravar</li>
+                    <li class="promessa-item">Uma rodada de ajuste inclusa</li>
+                    <li class="promessa-item">Entrega em até 72 horas úteis</li>
+                </ul>
+                <div class="assinatura">Thayna Auni ✌️</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DESTAQUES -->
+    <section class="destaques" id="destaques">
+        <h2 class="secao-titulo">Conteúdos de destaque</h2>
+        <div class="destaques-grid" id="destaques-grid">
+            <!-- Preenchido por JS -->
+        </div>
+    </section>
+
+    <!-- TRABALHOS -->
+    <section class="trabalhos" id="trabalhos">
+        <h2 class="secao-titulo">Trabalhos por nicho</h2>
+        <div class="filtros" id="filtros-container">
+            <!-- Preenchido por JS -->
+        </div>
+        <div class="trabalhos-grid" id="trabalhos-grid">
+            <!-- Preenchido por JS -->
+        </div>
+    </section>
+
+    <!-- SERVIÇOS -->
+    <section class="servicos" id="servicos">
+        <h2 class="secao-titulo">Como eu te ajudo</h2>
+        <div class="servicos-grid" id="servicos-grid">
+            <!-- Preenchido por JS -->
+        </div>
+    </section>
+
+    <!-- NÚMEROS E DEPOIMENTOS -->
+    <section class="numeros-depoimentos" id="numeros">
+        <h2 class="secao-titulo">Números e histórias</h2>
+
+        <div class="metricas" id="metricas-container">
+            <!-- Preenchido por JS -->
+        </div>
+
+        <div class="depoimentos" id="depoimentos-container">
+            <!-- Preenchido por JS -->
+        </div>
+    </section>
+
+    <!-- CONTATO -->
+    <section class="contato" id="contato">
+        <h2 class="contato-titulo">Bora criar juntos</h2>
+
+        <div class="confirmacao-envio" id="confirmacao-envio">
+            ✓ Mensagem enviada! Vou responder em breve.
+        </div>
+
+        <form id="formulario-contato">
+            <div class="formulario-grupo">
+                <label for="nome">Seu nome</label>
+                <input type="text" id="nome" name="nome" required>
+            </div>
+            <div class="formulario-grupo">
+                <label for="email">Seu e-mail</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="formulario-grupo">
+                <label for="mensagem">Sua mensagem</label>
+                <textarea id="mensagem" name="mensagem" required></textarea>
+            </div>
+            <div class="formulario-grupo">
+                <button type="submit">Enviar</button>
+            </div>
+        </form>
+
+        <div class="contato-redes">
+            <a href="https://wa.me/351XXXXXXXXX" target="_blank" class="rede-btn" title="WhatsApp">💬</a>
+            <a href="mailto:adonadaxepa@gmail.com" class="rede-btn" title="E-mail">✉️</a>
+            <a href="https://instagram.com/a_donaxepa" target="_blank" class="rede-btn" title="Instagram">📱</a>
+        </div>
+    </section>
+
+    <!-- RODAPÉ -->
+    <footer>
+        <div class="rodape-info">Thayna Auni</div>
+        <div class="rodape-redes">
+            <a href="https://instagram.com/a_donaxepa" target="_blank">Instagram</a>
+            <a href="https://wa.me/351XXXXXXXXX" target="_blank">WhatsApp</a>
+            <a href="mailto:adonadaxepa@gmail.com">E-mail</a>
+        </div>
+        <div class="rodape-copyright">© <span id="ano-atual"></span> Thayna Auni. Todos os direitos reservados.</div>
+    </footer>
+
+    <!-- CARD DE CAPTURA -->
+    <div class="overlay-captura" id="overlay-captura">
+        <div class="card-captura">
+            <button class="card-captura-fechar" id="fechar-captura">×</button>
+            <h3>Quer meu mídia kit completo?</h3>
+            <input type="text" id="captura-nome" placeholder="Seu nome">
+            <input type="email" id="captura-email" placeholder="Seu e-mail">
+            <button class="card-captura-btn" id="captura-btn">Quero receber</button>
+        </div>
+    </div>
+
+    <script>
+        // ========================
+        // DADOS (EDITE AQUI)
+        // ========================
+
+        const marcas = [
+            'BBDO Agency - Portugal',
+            'IKEA Portugal',
+            'Pingo Doce',
+            'Casas Brancas Boutique Hotel & Spa',
+            'Oficio Lisboa',
+            'Farmácia Colombo',
+            'Home Sweet Sushi',
+            'Eutela',
+            '74 Restaurant',
+            'zuga eyewear',
+            'Utopia Studio',
+            'A-100 Hambúrgueres'
+        ];
+
+        const destaques = [
+            {
+                id: 1,
+                titulo: 'UGC Shorts',
+                descricao: 'Conteúdo vertical rápido e envolvente',
+                numero: '+2.4M',
+                label: 'views no reels',
+                link: 'https://youtube.com/shorts/ibjViSHyJp8',
+                capa: 'Vídeo destaque 9:16 (VIDEO 1)'
+            },
+            {
+                id: 2,
+                titulo: 'Unboxing Premium',
+                descricao: 'Experiência de desembalagem impactante',
+                numero: '+1.8M',
+                label: 'views em TikTok',
+                link: '#',
+                capa: 'Vídeo destaque 9:16 (VIDEO 2)'
+            },
+            {
+                id: 3,
+                titulo: 'Produto em Ação',
+                descricao: 'Demonstração prática e realista',
+                numero: '+3.1M',
+                label: 'impressões',
+                link: '#',
+                capa: 'Vídeo destaque 9:16 (VIDEO 3)'
+            }
+        ];
+
+        const trabalhos = [
+            { id: 1, nicho: 'beleza', titulo: 'Trabalho 1' },
+            { id: 2, nicho: 'beleza', titulo: 'Trabalho 2' },
+            { id: 3, nicho: 'beleza', titulo: 'Trabalho 3' },
+            { id: 4, nicho: 'beleza', titulo: 'Trabalho 4' },
+            { id: 5, nicho: 'food', titulo: 'Trabalho 5' },
+            { id: 6, nicho: 'food', titulo: 'Trabalho 6' },
+            { id: 7, nicho: 'food', titulo: 'Trabalho 7' },
+            { id: 8, nicho: 'food', titulo: 'Trabalho 8' },
+            { id: 9, nicho: 'lifestyle', titulo: 'Trabalho 9' },
+            { id: 10, nicho: 'lifestyle', titulo: 'Trabalho 10' },
+            { id: 11, nicho: 'lifestyle', titulo: 'Trabalho 11' },
+            { id: 12, nicho: 'lifestyle', titulo: 'Trabalho 12' },
+        ];
+
+        const servicos = [
+            {
+                numero: '01',
+                titulo: 'Vídeo UGC',
+                descricao: 'Conteúdo de usuário genuíno que converte. Roteiro, gravação e edição.'
+            },
+            {
+                numero: '02',
+                titulo: 'Corte para Anúncio',
+                descricao: 'Otimizo seus vídeos para rodar como anúncio em redes.'
+            },
+            {
+                numero: '03',
+                titulo: 'Fotos do Produto',
+                descricao: 'Imagens profissionais que vendem seu produto.'
+            },
+            {
+                numero: '04',
+                titulo: 'Unboxing',
+                descricao: 'Experiência de desembalagem que gera engajamento.'
+            },
+            {
+                numero: '05',
+                titulo: 'Publicação no Perfil',
+                descricao: 'Conteúdo pensado e criado para meu perfil, com menção sua.'
+            },
+            {
+                numero: '06',
+                titulo: 'Pacote Mensal',
+                descricao: 'Plano contínuo de produção mensal. Converse comigo!'
+            }
+        ];
+
+        const depoimentos = [
+            {
+                texto: 'Thayna entregou exatamente o que promete. Rápido, criativo e resultado excelente.',
+                autor: 'Cliente 01',
+                empresa: 'Marca / Empresa'
+            },
+            {
+                texto: 'O conteúdo dela é dinâmico e bate com a vibe da marca. Super recomendo!',
+                autor: 'Cliente 02',
+                empresa: 'Marca / Empresa'
+            },
+            {
+                texto: 'Profissional, atenciosa e entrega sempre no prazo. Voltaria a trabalhar com ela.',
+                autor: 'Cliente 03',
+                empresa: 'Marca / Empresa'
+            },
+            {
+                texto: 'Não imaginava que o resultado seria tão bom. Conteúdo que realmente vende.',
+                autor: 'Cliente 04',
+                empresa: 'Marca / Empresa'
+            }
+        ];
+
+        // ========================
+        // INICIALIZAÇÃO
+        // ========================
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Renderizar marcas
+            renderMarcas();
+
+            // Renderizar destaques
+            renderDestaques();
+
+            // Renderizar trabalhos
+            renderTrabalhos();
+
+            // Renderizar serviços
+            renderServicos();
+
+            // Renderizar métricas
+            renderMetricas();
+
+            // Renderizar depoimentos
+            renderDepoimentos();
+
+            // Configurar menu mobile
+            setupMenuMobile();
+
+            // Configurar formulário
+            setupFormulario();
+
+            // Configurar card de captura
+            setupCardCaptura();
+
+            // Configurar observador de animações
+            setupObservador();
+
+            // Definir ano
+            document.getElementById('ano-atual').textContent = new Date().getFullYear();
+        });
+
+        function renderMarcas() {
+            const container = document.getElementById('marcas-container');
+            container.innerHTML = marcas.map(marca => `<div class="marca-item">${marca}</div>`).join('');
+        }
+
+        function renderDestaques() {
+            const container = document.getElementById('destaques-grid');
+            container.innerHTML = destaques.map(destaque => `
+                <a href="${destaque.link}" target="_blank" class="destaque-card fade-in">
+                    <div class="destaque-video">
+                        ${destaque.capa}
+                        <div class="play-btn"></div>
+                    </div>
+                    <div class="destaque-info">
+                        <div class="destaque-numero">${destaque.numero}</div>
+                        <div class="destaque-label">${destaque.label}</div>
+                        <div class="destaque-titulo">${destaque.titulo}</div>
+                        <div class="destaque-descricao">${destaque.descricao}</div>
+                    </div>
+                </a>
+            `).join('');
+        }
+
+        function renderTrabalhos() {
+            const container = document.getElementById('trabalhos-grid');
+            const filtrosContainer = document.getElementById('filtros-container');
+
+            const nichos = [...new Set(trabalhos.map(t => t.nicho))];
+
+            // Renderizar filtros
+            filtrosContainer.innerHTML = `
+                <button class="filtro-btn ativo" data-filtro="todos">Todos</button>
+                ${nichos.map(nicho => `<button class="filtro-btn" data-filtro="${nicho}">${nicho.charAt(0).toUpperCase() + nicho.slice(1)}</button>`).join('')}
+            `;
+
+            // Renderizar trabalhos
+            atualizarTrabalhos('todos');
+
+            // Adicionar listeners
+            document.querySelectorAll('.filtro-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('ativo'));
+                    this.classList.add('ativo');
+                    atualizarTrabalhos(this.dataset.filtro);
+                });
+            });
+        }
+
+        function atualizarTrabalhos(filtro) {
+            const container = document.getElementById('trabalhos-grid');
+            const filtrados = filtro === 'todos' ? trabalhos : trabalhos.filter(t => t.nicho === filtro);
+
+            container.innerHTML = filtrados.map((trabalho, index) => `
+                <div class="trabalho-card visivel" style="animation-delay: ${index * 0.1}s;">
+                    <div class="trabalho-overlay">Clique para ver</div>
+                </div>
+            `).join('');
+        }
+
+        function renderServicos() {
+            const container = document.getElementById('servicos-grid');
+            container.innerHTML = servicos.map((servico, index) => `
+                <div class="servico-card fade-in" style="animation-delay: ${index * 0.1}s;">
+                    <div class="servico-numero">${servico.numero}</div>
+                    <h3 class="servico-titulo">${servico.titulo}</h3>
+                    <p class="servico-descricao">${servico.descricao}</p>
+                </div>
+            `).join('');
+        }
+
+        function renderMetricas() {
+            const container = document.getElementById('metricas-container');
+            const metricas = [
+                { numero: 250, label: 'Vídeos entregues' },
+                { numero: 16, label: 'Marcas atendidas' },
+                { numero: 50, label: 'Milhões de views' },
+                { numero: 98, label: 'Taxa de satisfação' }
+            ];
+
+            container.innerHTML = metricas.map(metrica => `
+                <div class="metrica-card fade-in">
+                    <div class="metrica-numero" data-numero="${metrica.numero}">0</div>
+                    <div class="metrica-label">${metrica.label}</div>
+                </div>
+            `).join('');
+        }
+
+        function renderDepoimentos() {
+            const container = document.getElementById('depoimentos-container');
+            container.innerHTML = depoimentos.map((depoimento, index) => `
+                <div class="depoimento-card fade-in" style="animation-delay: ${index * 0.1}s;">
+                    <div class="depoimento-texto">"${depoimento.texto}"</div>
+                    <div class="depoimento-autor">${depoimento.autor}</div>
+                    <div class="depoimento-empresa">${depoimento.empresa}</div>
+                </div>
+            `).join('');
+        }
+
+        function setupMenuMobile() {
+            const menuBtn = document.getElementById('menu-toggle');
+            const menu = document.getElementById('menu-nav');
+
+            menuBtn.addEventListener('click', () => {
+                menu.classList.toggle('ativo');
+            });
+
+            menu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    menu.classList.remove('ativo');
+                });
+            });
+        }
+
+        function setupFormulario() {
+            const form = document.getElementById('formulario-contato');
+            const confirmacao = document.getElementById('confirmacao-envio');
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                // Validação básica
+                const nome = document.getElementById('nome').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const mensagem = document.getElementById('mensagem').value.trim();
+
+                if (nome && email && mensagem) {
+                    // Mostrar confirmação
+                    confirmacao.classList.add('mostrar');
+
+                    // Limpar formulário
+                    form.reset();
+
+                    // Esconder confirmação após 3 segundos
+                    setTimeout(() => {
+                        confirmacao.classList.remove('mostrar');
+                    }, 3000);
+
+                    // Aqui você pode enviar os dados para um backend
+                    console.log('Formulário enviado:', { nome, email, mensagem });
+                }
+            });
+        }
+
+        function setupCardCaptura() {
+            const overlay = document.getElementById('overlay-captura');
+            const fecharBtn = document.getElementById('fechar-captura');
+            const capturaBtn = document.getElementById('captura-btn');
+
+            // Verificar se já foi mostrado nesta sessão
+            if (!sessionStorage.getItem('captura-mostrada')) {
+                setTimeout(() => {
+                    overlay.classList.add('mostrar');
+                    sessionStorage.setItem('captura-mostrada', 'true');
+                }, 7000);
+            }
+
+            // Fechar ao clicar no X
+            fecharBtn.addEventListener('click', () => {
+                overlay.classList.remove('mostrar');
+            });
+
+            // Fechar ao clicar no fundo
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    overlay.classList.remove('mostrar');
+                }
+            });
+
+            // Fechar ao apertar ESC
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && overlay.classList.contains('mostrar')) {
+                    overlay.classList.remove('mostrar');
+                }
+            });
+
+            // Enviar captura
+            capturaBtn.addEventListener('click', () => {
+                const nome = document.getElementById('captura-nome').value.trim();
+                const email = document.getElementById('captura-email').value.trim();
+
+                if (nome && email) {
+                    console.log('Captura enviada:', { nome, email });
+                    overlay.classList.remove('mostrar');
+                    document.getElementById('captura-nome').value = '';
+                    document.getElementById('captura-email').value = '';
+                }
+            });
+        }
+
+        function setupObservador() {
+            const observador = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visivel');
+
+                        // Animar números
+                        if (entry.target.classList.contains('metrica-numero')) {
+                            animarNumero(entry.target);
+                        }
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.fade-in').forEach(el => observador.observe(el));
+            document.querySelectorAll('.metrica-numero').forEach(el => observador.observe(el));
+        }
+
+        function animarNumero(elemento) {
+            const numero = parseInt(elemento.dataset.numero);
+            let atual = 0;
+            const incremento = numero / 30;
+
+            const intervalo = setInterval(() => {
+                atual += incremento;
+                if (atual >= numero) {
+                    elemento.textContent = numero;
+                    clearInterval(intervalo);
+                } else {
+                    elemento.textContent = Math.floor(atual);
+                }
+            }, 30);
+        }
+    </script>
+</body>
+</html>
