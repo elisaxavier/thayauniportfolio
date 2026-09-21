@@ -1221,13 +1221,40 @@
                 const ano = dataSelecionada.getFullYear();
                 const mes = dataSelecionada.getMonth() + 1;
 
+                // Limpar eventos anteriores
+                for (let dia = 1; dia <= 31; dia++) {
+                    const container = document.getElementById(`eventos-${dia}`);
+                    if (container) container.innerHTML = '';
+                }
+
                 eventos?.forEach(e => {
                     const dataEvento = new Date(e.data);
                     if (dataEvento.getFullYear() === ano && dataEvento.getMonth() + 1 === mes) {
                         const dia = dataEvento.getDate();
                         const container = document.getElementById(`eventos-${dia}`);
                         if (container) {
-                            container.innerHTML += `<span class="evento-ponto" title="${e.titulo}">•</span>`;
+                            const titulo = e.titulo || 'Sem título';
+                            const tipo = e.tipo || '';
+                            const conteudo = e.conteudo || '';
+                            const texto = `${titulo}${tipo ? ' - ' + tipo : ''}${conteudo ? ' - ' + conteudo : ''}`;
+
+                            const div = document.createElement('div');
+                            div.className = 'evento-item';
+                            div.style.cssText = `
+                                background: var(--cor-azul);
+                                color: var(--cor-branco);
+                                padding: 4px 6px;
+                                border-radius: 4px;
+                                font-size: 11px;
+                                margin: 2px 0;
+                                white-space: nowrap;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                                cursor: pointer;
+                            `;
+                            div.title = texto;
+                            div.textContent = texto;
+                            container.appendChild(div);
                         }
                     }
                 });
@@ -1268,6 +1295,7 @@
                 titulo: document.getElementById('inputEventoTitulo').value,
                 marca: document.getElementById('inputEventoMarca').value,
                 tipo: document.getElementById('inputEventoTipo').value,
+                conteudo: document.getElementById('inputEventoConteudo').value,
                 data: document.getElementById('inputEventoData').value,
                 status: document.getElementById('inputEventoStatus').value
             };
@@ -1282,7 +1310,9 @@
                 document.getElementById('modalEvento').classList.remove('ativo');
                 renderizarCalendario();
                 await carregarEventosCalendario();
+                alert('✅ Evento salvo!');
             } catch (err) {
+                console.error('Erro:', err);
                 alert('Erro ao salvar evento');
             }
         }
