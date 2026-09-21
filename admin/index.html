@@ -252,7 +252,7 @@
         #calendarioGrid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 15px;
+            gap: 18px;
             margin-bottom: 40px;
         }
 
@@ -260,8 +260,8 @@
             background: var(--cor-branco);
             border: 2px solid var(--cor-cinza-claro);
             border-radius: 12px;
-            padding: 12px;
-            height: 160px;
+            padding: 14px;
+            height: 180px;
             cursor: pointer;
             transition: all 0.3s;
             display: flex;
@@ -285,10 +285,10 @@
 
         .dia strong {
             display: block;
-            font-size: 18px;
+            font-size: 22px;
             font-weight: 700;
             color: var(--cor-texto);
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
 
         .eventos-mini {
@@ -623,9 +623,9 @@
                     <button class="btn btn-secundario btn-pequeno" onclick="voltarHoje()">Este mês</button>
                 </div>
 
-                <div id="calendarioGrid"></div>
+                <div id="calendarioGrid" style="width: 100%;"></div>
 
-                <div style="margin-top: 30px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                <div style="margin-top: 40px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
                     <div style="padding: 20px; background: var(--cor-branco); border-radius: 12px; border-left: 4px solid var(--cor-cinza);">
                         <h3 style="font-weight: 700; margin-bottom: 15px; color: var(--cor-cinza);">ONTEM</h3>
                         <div id="eventosOntem" style="display: flex; flex-direction: column; gap: 8px;"></div>
@@ -1331,11 +1331,11 @@
 
             const diasSemana = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB'];
 
-            let grid = '<div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 15px;">';
+            let grid = '';
 
             // Cabeçalho com dias da semana
             diasSemana.forEach(dia => {
-                grid += `<div style="text-align: center; font-weight: 600; color: var(--cor-azul); padding: 8px 0; font-size: 14px;">${dia}</div>`;
+                grid += `<div style="text-align: center; font-weight: 700; color: var(--cor-azul); padding: 12px 0; font-size: 15px; text-transform: uppercase; letter-spacing: 0.5px;">${dia}</div>`;
             });
 
             // Dias vazios
@@ -1348,9 +1348,9 @@
                 grid += `<div class="dia" onclick="selecionarDia(${dia})"><strong>${dia}</strong><div id="eventos-${dia}" class="eventos-mini"></div></div>`;
             }
 
-            grid += '</div>';
-
             document.getElementById('calendarioGrid').innerHTML = grid;
+            document.getElementById('calendarioGrid').style.gridTemplateColumns = 'repeat(7, 1fr)';
+            document.getElementById('calendarioGrid').style.gap = '18px';
         }
 
         async function carregarEventosCalendario() {
