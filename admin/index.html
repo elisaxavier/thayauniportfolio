@@ -748,11 +748,24 @@
                 <label>Tipo</label>
                 <select id="inputEventoTipo">
                     <option value="">Selecione</option>
-                    <option value="gravar">Gravar</option>
-                    <option value="editar">Editar</option>
-                    <option value="entregar">Entregar</option>
-                    <option value="reunião">Reunião</option>
-                    <option value="outro">Outro</option>
+                    <option value="Gravar">Gravar</option>
+                    <option value="Editar">Editar</option>
+                    <option value="Entregar">Entregar</option>
+                    <option value="Reunião">Reunião</option>
+                    <option value="Outro">Outro</option>
+                </select>
+            </div>
+            <div class="form-grupo">
+                <label>Conteúdo</label>
+                <select id="inputEventoConteudo">
+                    <option value="">Selecione</option>
+                    <option value="Reels">Reels</option>
+                    <option value="Stories">Stories</option>
+                    <option value="Newsletter">Newsletter</option>
+                    <option value="Vídeo">Vídeo</option>
+                    <option value="Fotografia">Fotografia</option>
+                    <option value="Content Plan">Content Plan</option>
+                    <option value="Grid">Grid</option>
                 </select>
             </div>
             <div class="form-grupo">
@@ -1176,13 +1189,30 @@
             const diasMes = ultimo.getDate();
             const diaInicio = primeiro.getDay();
 
-            let grid = '';
-            for (let i = 0; i < diaInicio; i++) grid += '<div class="dia vazio"></div>';
-            for (let dia = 1; dia <= diasMes; dia++) {
-                grid += `<div class="dia" onclick="selecionarDia(${dia})"><strong>${dia}</strong><div id="eventos-${dia}" class="eventos-mini"></div></div>`;
-            }
+            const diasSemana = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB'];
+
+            let grid = '<div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 15px;">';
+
+            // Cabeçalho com dias da semana
+            diasSemana.forEach(dia => {
+                grid += `<div style="text-align: center; font-weight: 600; color: var(--cor-azul); padding: 8px 0;">${dia}</div>`;
+            });
+
+            grid += '</div><div id="calendarioGridDias" class="calendarioGrid-dias"></div>';
 
             document.getElementById('calendarioGrid').innerHTML = grid;
+
+            // Renderizar dias
+            let gridDias = '';
+            for (let i = 0; i < diaInicio; i++) gridDias += '<div class="dia vazio"></div>';
+            for (let dia = 1; dia <= diasMes; dia++) {
+                gridDias += `<div class="dia" onclick="selecionarDia(${dia})"><strong>${dia}</strong><div id="eventos-${dia}" class="eventos-mini"></div></div>`;
+            }
+
+            document.getElementById('calendarioGridDias').innerHTML = gridDias;
+            document.getElementById('calendarioGridDias').style.display = 'grid';
+            document.getElementById('calendarioGridDias').style.gridTemplateColumns = 'repeat(7, 1fr)';
+            document.getElementById('calendarioGridDias').style.gap = '8px';
         }
 
         async function carregarEventosCalendario() {
