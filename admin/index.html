@@ -732,22 +732,22 @@
                 const hoje = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate()).toISOString();
                 const dias14aAtras = new Date(agora.getTime() - 14 * 24 * 60 * 60 * 1000).toISOString();
 
-                const { data: visitasHoje } = await supabaseClient
+                const { data: visitasHoje, count: countHoje } = await supabaseClient
                     .from('visitas')
-                    .select('*', { count: 'exact' })
-                    .gte('created_at', hoje);
+                    .select('id', { count: 'exact', head: true })
+                    .gte('data', hoje);
 
-                const { data: visitas14 } = await supabaseClient
+                const { data: visitas14, count: count14 } = await supabaseClient
                     .from('visitas')
-                    .select('*', { count: 'exact' })
-                    .gte('created_at', dias14aAtras);
+                    .select('id', { count: 'exact', head: true })
+                    .gte('data', dias14aAtras);
 
                 const { data: todasVisitas } = await supabaseClient
                     .from('visitas')
                     .select('origem, pagina');
 
-                document.getElementById('metVisitas14').textContent = visitas14?.length || 0;
-                document.getElementById('metVisitasHoje').textContent = visitasHoje?.length || 0;
+                document.getElementById('metVisitas14').textContent = count14 || 0;
+                document.getElementById('metVisitasHoje').textContent = countHoje || 0;
 
                 if (todasVisitas && todasVisitas.length > 0) {
                     const nichos = videos.reduce((acc, v) => {
