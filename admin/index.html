@@ -1086,7 +1086,7 @@
                 grid += `<div class="dia" onclick="selecionarDia(${dia})"><strong>${dia}</strong><div id="eventos-${dia}" class="eventos-mini"></div></div>`;
             }
 
-            document.getElementById('gridCalendario').innerHTML = grid;
+            document.getElementById('calendarioGrid').innerHTML = grid;
         }
 
         async function carregarEventosCalendario() {
@@ -1165,10 +1165,12 @@
                 const checklistMarcados = marcados?.map(m => m.chave) || [];
 
                 if (typeof Biblioteca !== 'undefined' && Biblioteca.CHECKLIST) {
-                    const html = Object.entries(Biblioteca.CHECKLIST).map(([secao, items]) => `
+                    const html = Object.entries(Biblioteca.CHECKLIST).map(([secao, items]) => {
+                        const itemsArray = Array.isArray(items) ? items : [items];
+                        return `
                         <div class="checklist-secao">
                             <h4>${secao}</h4>
-                            ${items.map((item, i) => {
+                            ${itemsArray.map((item, i) => {
                                 const chave = `${secao}-${i}`;
                                 const marcado = checklistMarcados.includes(chave);
                                 return `
@@ -1180,9 +1182,10 @@
                                 `;
                             }).join('')}
                         </div>
-                    `).join('');
+                    `;
+                    }).join('');
 
-                    document.getElementById('conteudoChecklistPrincipal').innerHTML = html;
+                    document.getElementById('conteudoChecklist').innerHTML = html;
                 }
             } catch (err) {
                 console.error('Erro ao carregar checklist:', err);
