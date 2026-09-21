@@ -252,40 +252,49 @@
         #calendarioGrid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 8px;
-            margin-bottom: 30px;
+            gap: 12px;
+            margin-bottom: 40px;
         }
 
         .dia {
             background: var(--cor-branco);
-            border: 1px solid var(--cor-cinza-claro);
-            border-radius: 8px;
-            padding: 12px;
-            min-height: 80px;
+            border: 2px solid var(--cor-cinza-claro);
+            border-radius: 12px;
+            padding: 16px;
+            min-height: 140px;
             cursor: pointer;
             transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
         }
 
         .dia:hover {
             background: var(--cor-fundo);
             border-color: var(--cor-azul);
+            box-shadow: 0 4px 12px rgba(0, 47, 167, 0.1);
         }
 
         .dia.vazio {
-            background: var(--cor-fundo);
+            background: transparent;
             cursor: default;
             border: none;
         }
 
         .dia strong {
             display: block;
-            font-size: 16px;
-            margin-bottom: 8px;
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--cor-texto);
         }
 
         .eventos-mini {
             font-size: 12px;
-            color: var(--cor-azul);
+            color: var(--cor-texto);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
         }
 
         .evento-ponto {
@@ -743,7 +752,7 @@
     <!-- MODAL: EVENTO DO CALENDÁRIO -->
     <div class="modal" id="modalEvento">
         <div class="modal-conteudo">
-            <h2 class="modal-titulo">Novo Evento</h2>
+            <h2 class="modal-titulo" id="tituloModalEvento">Novo Evento</h2>
             <div class="form-grupo">
                 <label>Título</label>
                 <input type="text" id="inputEventoTitulo" placeholder="Nome do evento">
@@ -789,6 +798,7 @@
                 </select>
             </div>
             <button class="btn" onclick="salvarEvento()" style="width: 100%; margin-top: 20px;">Salvar</button>
+            <button class="btn btn-pequeno" id="btnDeletarEvento" onclick="deletarEvento()" style="background: #e74c3c; display: none; width: 100%; margin-top: 10px;">Deletar</button>
             <button class="btn btn-secundario" onclick="fecharModal('modalEvento')" style="width: 100%; margin-top: 10px;">Cancelar</button>
         </div>
     </div>
@@ -805,6 +815,7 @@
         let abaAtual = 'portfolio';
         let videoEditando = null;
         let marcaEditando = null;
+        let eventoEditando = null;
 
         // Verificar sessão ao carregar
         async function verificarSessao() {
@@ -1220,17 +1231,12 @@
                     }
 
                     container.innerHTML = eventos.map(e => `
-                        <div style="
-                            padding: 10px;
-                            background: var(--cor-fundo);
-                            border-radius: 6px;
-                            border-left: 3px solid var(--cor-azul);
-                            font-size: 13px;
-                            cursor: pointer;
-                        " title="${e.titulo}">
-                            <div style="font-weight: 600;">${e.titulo}</div>
-                            ${e.tipo ? `<div style="color: var(--cor-cinza); font-size: 12px;">${e.tipo}</div>` : ''}
-                            ${e.conteudo ? `<div style="color: var(--cor-cinza); font-size: 12px;">${e.conteudo}</div>` : ''}
+                        <div style="display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--cor-cinza-claro);">
+                            <input type="checkbox" ${e.status === 'concluído' ? 'checked' : ''}
+                                onchange="atualizarStatusEvento(${e.id}, this.checked)"
+                                style="cursor: pointer; width: 18px; height: 18px;">
+                            <span style="flex: 1; font-size: 13px; ${e.status === 'concluído' ? 'text-decoration: line-through; color: var(--cor-cinza);' : ''}">${e.titulo}${e.tipo ? ' - ' + e.tipo : ''}</span>
+                            <button class="btn btn-pequeno" style="padding: 4px 8px; font-size: 11px;" onclick="deletarEventoDoDia(${e.id})">✕</button>
                         </div>
                     `).join('');
                 };
@@ -1240,6 +1246,31 @@
                 renderarEventos(eventosAmanha, 'eventosAmanha');
             } catch (err) {
                 console.error('Erro ao carregar eventos por dia:', err);
+            }
+        }
+
+        async function atualizarStatusEvento(id, marcado) {
+            try {
+                const novoStatus = marcado ? 'concluído' : 'a fazer';
+                await supabaseClient
+                    .from('calendario')
+                    .update({ status: novoStatus })
+                    .eq('id', id);
+                await carregarEventosPorDia();
+            } catch (err) {
+                console.error('Erro ao atualizar evento:', err);
+            }
+        }
+
+        async function deletarEventoDoDia(id) {
+            if (!confirm('Deletar este evento?')) return;
+            try {
+                await supabaseClient.from('calendario').delete().eq('id', id);
+                await carregarEventosPorDia();
+                await carregarEventosCalendario();
+                renderizarCalendario();
+            } catch (err) {
+                console.error('Erro ao deletar evento:', err);
             }
         }
 
@@ -1308,17 +1339,24 @@
                             div.style.cssText = `
                                 background: var(--cor-azul);
                                 color: var(--cor-branco);
-                                padding: 4px 6px;
+                                padding: 6px 8px;
                                 border-radius: 4px;
                                 font-size: 11px;
-                                margin: 2px 0;
+                                margin: 3px 0;
                                 white-space: nowrap;
                                 overflow: hidden;
                                 text-overflow: ellipsis;
                                 cursor: pointer;
+                                transition: all 0.2s;
                             `;
                             div.title = texto;
                             div.textContent = texto;
+                            div.onclick = (evt) => {
+                                evt.stopPropagation();
+                                editarEvento(e.id);
+                            };
+                            div.onmouseover = () => div.style.background = '#001f7d';
+                            div.onmouseout = () => div.style.background = 'var(--cor-azul)';
                             container.appendChild(div);
                         }
                     }
@@ -1347,12 +1385,42 @@
         }
 
         async function selecionarDia(dia) {
+            eventoEditando = null;
+            document.getElementById('tituloModalEvento').textContent = 'Novo Evento';
+            document.getElementById('btnDeletarEvento').style.display = 'none';
+            document.getElementById('inputEventoTitulo').value = '';
+            document.getElementById('inputEventoMarca').value = '';
+            document.getElementById('inputEventoTipo').value = '';
+            document.getElementById('inputEventoConteudo').value = '';
+            document.getElementById('inputEventoStatus').value = 'a fazer';
+
             const data = new Date(dataSelecionada.getFullYear(), dataSelecionada.getMonth(), dia);
             const inputData = document.getElementById('inputEventoData');
             const modal = document.getElementById('modalEvento');
 
             if (inputData) inputData.value = data.toISOString().split('T')[0];
             if (modal) modal.classList.add('ativo');
+        }
+
+        async function editarEvento(id) {
+            eventoEditando = id;
+            try {
+                const { data } = await supabaseClient.from('calendario').select('*').eq('id', id).single();
+                if (data) {
+                    document.getElementById('tituloModalEvento').textContent = 'Editar Evento';
+                    document.getElementById('btnDeletarEvento').style.display = 'block';
+                    document.getElementById('inputEventoTitulo').value = data.titulo || '';
+                    document.getElementById('inputEventoData').value = data.data || '';
+                    document.getElementById('inputEventoMarca').value = data.marca || '';
+                    document.getElementById('inputEventoTipo').value = data.tipo || '';
+                    document.getElementById('inputEventoConteudo').value = data.conteudo || '';
+                    document.getElementById('inputEventoStatus').value = data.status || 'a fazer';
+                }
+                document.getElementById('modalEvento').classList.add('ativo');
+            } catch (err) {
+                console.error('Erro ao carregar evento:', err);
+                alert('Erro ao carregar evento');
+            }
         }
 
         async function salvarEvento() {
@@ -1371,14 +1439,42 @@
             }
 
             try {
-                await supabaseClient.from('calendario').insert([dados]);
+                if (eventoEditando) {
+                    await supabaseClient
+                        .from('calendario')
+                        .update(dados)
+                        .eq('id', eventoEditando);
+                    alert('✅ Evento atualizado!');
+                } else {
+                    await supabaseClient
+                        .from('calendario')
+                        .insert([dados]);
+                    alert('✅ Evento criado!');
+                }
                 document.getElementById('modalEvento').classList.remove('ativo');
                 renderizarCalendario();
                 await carregarEventosCalendario();
-                alert('✅ Evento salvo!');
+                await carregarEventosPorDia();
             } catch (err) {
                 console.error('Erro:', err);
                 alert('Erro ao salvar evento');
+            }
+        }
+
+        async function deletarEvento() {
+            if (!eventoEditando) return;
+            if (!confirm('Tem certeza que quer deletar este evento?')) return;
+
+            try {
+                await supabaseClient.from('calendario').delete().eq('id', eventoEditando);
+                document.getElementById('modalEvento').classList.remove('ativo');
+                renderizarCalendario();
+                await carregarEventosCalendario();
+                await carregarEventosPorDia();
+                alert('✅ Evento deletado!');
+            } catch (err) {
+                console.error('Erro:', err);
+                alert('Erro ao deletar evento');
             }
         }
 
