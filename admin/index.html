@@ -728,6 +728,46 @@
         </div>
     </div>
 
+    <!-- MODAL: EVENTO DO CALENDÁRIO -->
+    <div class="modal" id="modalEvento">
+        <div class="modal-conteudo">
+            <h2 class="modal-titulo">Novo Evento</h2>
+            <div class="form-grupo">
+                <label>Título</label>
+                <input type="text" id="inputEventoTitulo" placeholder="Nome do evento">
+            </div>
+            <div class="form-grupo">
+                <label>Data</label>
+                <input type="date" id="inputEventoData">
+            </div>
+            <div class="form-grupo">
+                <label>Marca/Cliente</label>
+                <input type="text" id="inputEventoMarca" placeholder="Qual marca?">
+            </div>
+            <div class="form-grupo">
+                <label>Tipo</label>
+                <select id="inputEventoTipo">
+                    <option value="">Selecione</option>
+                    <option value="gravar">Gravar</option>
+                    <option value="editar">Editar</option>
+                    <option value="entregar">Entregar</option>
+                    <option value="reunião">Reunião</option>
+                    <option value="outro">Outro</option>
+                </select>
+            </div>
+            <div class="form-grupo">
+                <label>Status</label>
+                <select id="inputEventoStatus">
+                    <option value="a fazer">A fazer</option>
+                    <option value="em andamento">Em andamento</option>
+                    <option value="concluído">Concluído</option>
+                </select>
+            </div>
+            <button class="btn" onclick="salvarEvento()" style="width: 100%; margin-top: 20px;">Salvar</button>
+            <button class="btn btn-secundario" onclick="fecharModal('modalEvento')" style="width: 100%; margin-top: 10px;">Cancelar</button>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../js/banco.js"></script>
     <script src="../js/biblioteca.js"></script>
