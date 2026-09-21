@@ -727,6 +727,44 @@
 
                 document.getElementById('metVideoNoAr').textContent = videos.filter(v => v.visivel).length;
 
+                // Carregar métricas de visitas
+                const agora = new Date();
+                const hoje = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate()).toISOString();
+                const dias14aAtras = new Date(agora.getTime() - 14 * 24 * 60 * 60 * 1000).toISOString();
+
+                const { data: visitasHoje } = await supabaseClient
+                    .from('visitas')
+                    .select('*', { count: 'exact' })
+                    .gte('created_at', hoje);
+
+                const { data: visitas14 } = await supabaseClient
+                    .from('visitas')
+                    .select('*', { count: 'exact' })
+                    .gte('created_at', dias14aAtras);
+
+                const { data: todasVisitas } = await supabaseClient
+                    .from('visitas')
+                    .select('origem, pagina');
+
+                document.getElementById('metVisitas14Dias').textContent = visitas14?.length || 0;
+                document.getElementById('metVisitasHoje').textContent = visitasHoje?.length || 0;
+
+                if (todasVisitas && todasVisitas.length > 0) {
+                    const nichos = videos.reduce((acc, v) => {
+                        acc[v.nicho] = (acc[v.nicho] || 0) + 1;
+                        return acc;
+                    }, {});
+                    const nichoForte = Object.entries(nichos).sort((a, b) => b[1] - a[1])[0];
+                    document.getElementById('metNichoForte').textContent = nichoForte?.[0] || '-';
+
+                    const origens = todasVisitas.reduce((acc, v) => {
+                        acc[v.origem] = (acc[v.origem] || 0) + 1;
+                        return acc;
+                    }, {});
+                    const origemTop = Object.entries(origens).sort((a, b) => b[1] - a[1])[0];
+                    document.getElementById('metOrigemTop').textContent = origemTop?.[0] || '-';
+                }
+
                 const corpo = document.getElementById('corpoTabelaVideos');
                 corpo.innerHTML = videos.map(v => `
                     <tr>
@@ -813,8 +851,21 @@
             }
         }
 
-        function editarVideo(id) {
-            // TODO: implementar edição de vídeo
+        async function editarVideo(id) {
+            videoEditando = id;
+            try {
+                const { data } = await supabaseClient.from('videos').select('*').eq('id', id).single();
+                if (data) {
+                    document.getElementById('inputVideoTitulo').value = data.titulo || '';
+                    document.getElementById('inputVideoLink').value = data.link || '';
+                    document.getElementById('inputVideoNicho').value = data.nicho || '';
+                    document.getElementById('inputVideoMarca').value = data.marca || '';
+                    document.getElementById('inputVideoDestaque').value = data.destaque || '';
+                }
+                document.getElementById('modalVideo').classList.add('ativo');
+            } catch (err) {
+                alert('Erro ao carregar vídeo');
+            }
         }
 
         // ============ MARCAS ============
@@ -888,18 +939,80 @@
             }
         }
 
-        function editarMarca(id) {
+        async function editarMarca(id) {
             marcaEditando = id;
-            // TODO: preencher modal com dados da marca
+            try {
+                const { data } = await supabaseClient.from('marcas').select('*').eq('id', id).single();
+                if (data) {
+                    document.getElementById('inputMarcaNome').value = data.nome || '';
+                    document.getElementById('inputMarcaInstagram').value = data.instagram || '';
+                    document.getElementById('inputMarcaEmail').value = data.email || '';
+                    document.getElementById('inputMarcaTelefone').value = data.telefone || '';
+                    document.getElementById('inputMarcaSituacao').value = data.situacao || 'Lead';
+                }
+            } catch (err) {
+                console.error('Erro ao carregar marca:', err);
+            }
             document.getElementById('modalMarca').classList.add('ativo');
         }
 
-        function abrirMarcaParaEditar(id) {
-            // TODO: implementar
+        async function abrirMarcaParaEditar(id) {
+            await editarMarca(id);
         }
 
         function baixarMarcasCSV() {
-            // TODO: implementar download CSV
+            const tabela = document.getElementById('tabelaMarcas');
+            const linhas = Array.from(tabela.querySelectorAll('tbody tr'));
+            const dados = linhas.map(linha => ({
+                nome: linha.cells[0].textContent,
+                instagram: linha.cells[1].textContent,
+                email: linha.cells[2].textContent,
+                telefone: linha.cells[3].textContent,
+                situacao: linha.cells[4].textContent
+            }));
+
+            const csv = 'Nome,Instagram,Email,Telefone,Situação\n' +
+                dados.map(d => `"${d.nome}","${d.instagram}","${d.email}","${d.telefone}","${d.situacao}"`).join('\n');
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'marcas.csv';
+            link.click();
+        }
+
+        async function filtrarMarcas(termo, filtro) {
+            try {
+                let query = supabaseClient.from('marcas').select('*');
+
+                if (filtro && filtro !== 'todos') {
+                    query = query.eq('situacao', filtro);
+                }
+
+                if (termo) {
+                    query = query.or(`nome.ilike.%${termo}%,email.ilike.%${termo}%`);
+                }
+
+                const { data: marcas, error } = await query;
+
+                if (error) throw error;
+
+                const corpo = document.getElementById('corpoTabelaMarcas');
+                corpo.innerHTML = marcas.map(m => `
+                    <tr onclick="abrirMarcaParaEditar(${m.id})">
+                        <td>${m.nome}</td>
+                        <td><a href="https://instagram.com/${m.instagram?.replace('@', '')}" target="_blank">${m.instagram || '-'}</a></td>
+                        <td>${m.email || '-'}</td>
+                        <td><a href="https://wa.me/${m.telefone?.replace(/\D/g, '')}">${m.telefone || '-'}</a></td>
+                        <td><span class="badge badge-${m.situacao?.toLowerCase()}">${m.situacao}</span></td>
+                        <td>
+                            <button class="btn btn-pequeno" onclick="editarMarca(${m.id}); event.stopPropagation();">Editar</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                console.error('Erro ao filtrar marcas:', err);
+            }
         }
 
         // ============ CAMPANHAS ============
@@ -949,32 +1062,151 @@
         }
 
         // ============ CALENDÁRIO ============
-        function inicializarCalendario() {
-            // TODO: implementar calendário
-            document.getElementById('mesAtual').textContent = new Date().toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+        let dataSelecionada = new Date();
+
+        async function inicializarCalendario() {
+            renderizarCalendario();
+            await carregarEventosCalendario();
+        }
+
+        function renderizarCalendario() {
+            const ano = dataSelecionada.getFullYear();
+            const mes = dataSelecionada.getMonth();
+
+            document.getElementById('mesAtual').textContent = new Date(ano, mes).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+
+            const primeiro = new Date(ano, mes, 1);
+            const ultimo = new Date(ano, mes + 1, 0);
+            const diasMes = ultimo.getDate();
+            const diaInicio = primeiro.getDay();
+
+            let grid = '';
+            for (let i = 0; i < diaInicio; i++) grid += '<div class="dia vazio"></div>';
+            for (let dia = 1; dia <= diasMes; dia++) {
+                grid += `<div class="dia" onclick="selecionarDia(${dia})"><strong>${dia}</strong><div id="eventos-${dia}" class="eventos-mini"></div></div>`;
+            }
+
+            document.getElementById('gridCalendario').innerHTML = grid;
+        }
+
+        async function carregarEventosCalendario() {
+            try {
+                const { data: eventos } = await supabaseClient.from('calendario').select('*');
+                const ano = dataSelecionada.getFullYear();
+                const mes = dataSelecionada.getMonth() + 1;
+
+                eventos?.forEach(e => {
+                    const dataEvento = new Date(e.data);
+                    if (dataEvento.getFullYear() === ano && dataEvento.getMonth() + 1 === mes) {
+                        const dia = dataEvento.getDate();
+                        const container = document.getElementById(`eventos-${dia}`);
+                        if (container) {
+                            container.innerHTML += `<span class="evento-ponto" title="${e.titulo}">•</span>`;
+                        }
+                    }
+                });
+            } catch (err) {
+                console.error('Erro ao carregar eventos:', err);
+            }
         }
 
         function mesAnterior() {
-            // TODO: implementar navegação
+            dataSelecionada.setMonth(dataSelecionada.getMonth() - 1);
+            renderizarCalendario();
+            carregarEventosCalendario();
         }
 
         function mesProximo() {
-            // TODO: implementar navegação
+            dataSelecionada.setMonth(dataSelecionada.getMonth() + 1);
+            renderizarCalendario();
+            carregarEventosCalendario();
         }
 
         function voltarHoje() {
-            // TODO: implementar
+            dataSelecionada = new Date();
+            renderizarCalendario();
+            carregarEventosCalendario();
+        }
+
+        async function selecionarDia(dia) {
+            const data = new Date(dataSelecionada.getFullYear(), dataSelecionada.getMonth(), dia);
+            document.getElementById('inputEventoData').value = data.toISOString().split('T')[0];
+            document.getElementById('modalEvento').classList.add('ativo');
+        }
+
+        async function salvarEvento() {
+            const dados = {
+                titulo: document.getElementById('inputEventoTitulo').value,
+                marca: document.getElementById('inputEventoMarca').value,
+                tipo: document.getElementById('inputEventoTipo').value,
+                data: document.getElementById('inputEventoData').value,
+                status: document.getElementById('inputEventoStatus').value
+            };
+
+            if (!dados.titulo || !dados.data) {
+                alert('Título e data são obrigatórios');
+                return;
+            }
+
+            try {
+                await supabaseClient.from('calendario').insert([dados]);
+                document.getElementById('modalEvento').classList.remove('ativo');
+                renderizarCalendario();
+                await carregarEventosCalendario();
+            } catch (err) {
+                alert('Erro ao salvar evento');
+            }
         }
 
         // ============ CHECKLIST ============
-        function inicializarChecklist() {
-            if (typeof Biblioteca !== 'undefined') {
-                // Carregar checklist da biblioteca
+        async function inicializarChecklist() {
+            try {
+                const { data: marcados } = await supabaseClient.from('marcados').select('chave');
+                const checklistMarcados = marcados?.map(m => m.chave) || [];
+
+                if (typeof Biblioteca !== 'undefined' && Biblioteca.CHECKLIST) {
+                    const html = Object.entries(Biblioteca.CHECKLIST).map(([secao, items]) => `
+                        <div class="checklist-secao">
+                            <h4>${secao}</h4>
+                            ${items.map((item, i) => {
+                                const chave = `${secao}-${i}`;
+                                const marcado = checklistMarcados.includes(chave);
+                                return `
+                                    <label style="display: flex; gap: 10px; margin: 8px 0; align-items: center;">
+                                        <input type="checkbox" ${marcado ? 'checked' : ''}
+                                            onchange="alternarChecklist('${chave}', this.checked)">
+                                        <span>${typeof item === 'string' ? item : item.titulo || item}</span>
+                                    </label>
+                                `;
+                            }).join('')}
+                        </div>
+                    `).join('');
+
+                    document.getElementById('conteudoChecklistPrincipal').innerHTML = html;
+                }
+            } catch (err) {
+                console.error('Erro ao carregar checklist:', err);
+            }
+        }
+
+        async function alternarChecklist(chave, marcado) {
+            try {
+                if (marcado) {
+                    await supabaseClient.from('marcados').insert([{ chave, ativo: true }]);
+                } else {
+                    await supabaseClient.from('marcados').delete().eq('chave', chave);
+                }
+            } catch (err) {
+                console.error('Erro ao atualizar checklist:', err);
             }
         }
 
         function abrirSubabaChecklist(sub) {
-            // TODO: implementar sub-abas
+            document.querySelectorAll('.subaba-checklist').forEach(el => el.classList.remove('ativo'));
+            document.getElementById('subaba-' + sub).classList.add('ativo');
+
+            document.querySelectorAll('.abas-checklist button').forEach(el => el.classList.remove('ativo'));
+            event.target.classList.add('ativo');
         }
 
         // ============ UTILITÁRIOS ============
