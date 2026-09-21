@@ -1372,11 +1372,11 @@
                         const dia = dataEvento.getDate();
                         const container = document.getElementById(`eventos-${dia}`);
                         if (container) {
-                            const label = `${e.marca || 'N/A'} - ${e.tipo || 'N/A'}`;
+                            const label = `${e.marca || 'N/A'} - ${e.tipo || 'N/A'} - ${e.conteudo || 'N/A'}`;
                             const badge = document.createElement('div');
                             badge.className = 'evento-badge';
                             badge.textContent = label;
-                            badge.title = `${e.titulo}\n${e.conteudo || ''}`;
+                            badge.title = `${e.titulo}`;
                             badge.onclick = (evt) => {
                                 evt.stopPropagation();
                                 editarEvento(e.id);
