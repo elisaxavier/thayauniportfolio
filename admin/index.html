@@ -441,6 +441,163 @@
             font-size: 12px;
         }
 
+        /* RADAR DE NOTÍCIAS */
+        .noticia-card {
+            background: var(--cor-branco);
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: var(--sombra);
+            border-left: 4px solid var(--cor-azul);
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .noticia-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        .noticia-titulo {
+            font-weight: 700;
+            font-size: 15px;
+            margin-bottom: 8px;
+            color: var(--cor-texto);
+        }
+
+        .noticia-descricao {
+            font-size: 13px;
+            color: var(--cor-cinza);
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .noticia-meta {
+            display: flex;
+            gap: 10px;
+            font-size: 11px;
+            color: var(--cor-cinza);
+            margin-bottom: 10px;
+        }
+
+        .badge-importancia {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            background: var(--cor-azul);
+            color: var(--cor-branco);
+        }
+
+        .roteiro-container {
+            background: var(--cor-fundo);
+            padding: 16px;
+            border-radius: 12px;
+            margin-top: 10px;
+        }
+
+        .roteiro-titulo {
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--cor-azul);
+            font-size: 13px;
+        }
+
+        .roteiro-item {
+            background: var(--cor-branco);
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            border-left: 3px solid var(--cor-azul);
+            font-size: 13px;
+        }
+
+        .roteiro-item strong {
+            color: var(--cor-azul);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .perfil-card {
+            background: var(--cor-branco);
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: var(--sombra);
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .perfil-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--cor-azul), #7c3aed);
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .perfil-nome {
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .perfil-info {
+            font-size: 12px;
+            color: var(--cor-cinza);
+            margin-bottom: 8px;
+        }
+
+        .perfil-similiaridade {
+            display: inline-block;
+            padding: 4px 8px;
+            background: var(--cor-fundo);
+            border-radius: 4px;
+            font-size: 11px;
+            color: var(--cor-azul);
+            font-weight: 600;
+        }
+
+        .agenda-item {
+            background: var(--cor-branco);
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 3px solid var(--cor-sucesso);
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+        }
+
+        .agenda-item.proxima {
+            border-left-color: var(--cor-azul);
+            background: var(--cor-fundo);
+        }
+
+        .agenda-horario {
+            font-weight: 700;
+            color: var(--cor-azul);
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        .radar-section {
+            display: none;
+        }
+
+        .radar-section.ativo {
+            display: block;
+        }
+
         .evento-ponto {
             display: inline-block;
             margin: 2px;
@@ -647,6 +804,10 @@
                     <div class="menu-item-icon"></div>
                     Dashboard DX
                 </button>
+                <button class="menu-item" onclick="abrirAba('radar')">
+                    <div class="menu-item-icon"></div>
+                    Radar de Notícias
+                </button>
             </div>
 
             <div class="menu-rodape">
@@ -820,7 +981,219 @@
                 </div>
             </div>
 
-            <!-- ABA 5: DASHBOARD DX -->
+            <!-- ABA 5: RADAR DE NOTÍCIAS -->
+            <div class="abas-container" id="abaRadar">
+                <div style="display: flex; gap: 15px; margin-bottom: 20px;">
+                    <button class="btn btn-pequeno" onclick="abrirRadarSecao('noticias')">📰 Notícias</button>
+                    <button class="btn btn-pequeno" onclick="abrirRadarSecao('perfis')">👥 Perfis Similares</button>
+                    <button class="btn btn-pequeno" onclick="abrirRadarSecao('agenda')">📅 Agenda de Postagem</button>
+                </div>
+
+                <!-- SEÇÃO: NOTÍCIAS -->
+                <div class="radar-section ativo" id="secao-noticias">
+                    <h2 style="margin-bottom: 20px;">📰 Notícias do Seu Nicho</h2>
+                    <p style="color: var(--cor-cinza); margin-bottom: 20px;">Principais notícias sobre SMM, Content Creation e UGC - Brasil 🇧🇷 Portugal 🇵🇹 Espanha 🇪🇸</p>
+
+                    <!-- NOTÍCIA 1 -->
+                    <div class="noticia-card" onclick="mostrarRoteiro(this)">
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <div style="flex: 1;">
+                                <div class="noticia-titulo">Instagram anuncia novo algoritmo para Reels em 2026</div>
+                                <div class="noticia-descricao">
+                                    Meta está testando um novo sistema de recomendação que prioriza conteúdo vertical curto. Criadores que adaptarem seu formato verão aumento de 300% no alcance.
+                                </div>
+                                <div class="noticia-meta">
+                                    <span>🗓️ 20 de setembro</span>
+                                    <span>📍 Oficial Meta</span>
+                                    <span class="badge-importancia">🔥 URGENTE</span>
+                                </div>
+                                <div class="roteiro-container">
+                                    <div class="roteiro-titulo">💡 ROTEIRO SUGERIDO:</div>
+                                    <div class="roteiro-item">
+                                        <strong>📱 Reel 1: "A Revolução dos Reels em 2026"</strong>
+                                        0-3s: Hook - "Instagram vai MUDAR tudo em 2026"<br>
+                                        3-8s: Dados - Mostrar que ER pode aumentar 300%<br>
+                                        8-15s: Ação - "Este é o formato que vai viralizar"
+                                    </div>
+                                    <div class="roteiro-item">
+                                        <strong>📝 Post Caption:</strong>
+                                        "Meta está revolucionando o algoritmo dos Reels 🚀 Quem se adaptar primeiro vai DOMINAR em 2026. Estou preparando meu conteúdo já. E você?"
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NOTÍCIA 2 -->
+                    <div class="noticia-card" onclick="mostrarRoteiro(this)">
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <div style="flex: 1;">
+                                <div class="noticia-titulo">Marcas gastam R$2 bilhões com UGC em Portugal (2025)</div>
+                                <div class="noticia-descricao">
+                                    Pesquisa do Instituto de Marketing Digital mostra crescimento de 67% em investimentos em User-Generated Content. SMMs que oferecem esse serviço ganham 4x mais.
+                                </div>
+                                <div class="noticia-meta">
+                                    <span>🗓️ 19 de setembro</span>
+                                    <span>📍 Portugal</span>
+                                    <span class="badge-importancia">💰 ROI</span>
+                                </div>
+                                <div class="roteiro-container">
+                                    <div class="roteiro-titulo">💡 ROTEIRO SUGERIDO:</div>
+                                    <div class="roteiro-item">
+                                        <strong>🎥 Reel 2: "UGC é o OURO em 2025"</strong>
+                                        Mostra dados de investimento em UGC<br>
+                                        Dica: Como oferecer esse serviço<br>
+                                        CTA: "DM para saber como oferecer UGC"
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NOTÍCIA 3 -->
+                    <div class="noticia-card" onclick="mostrarRoteiro(this)">
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <div style="flex: 1;">
+                                <div class="noticia-titulo">Ferramentas de IA para criadores de conteúdo crescem 500%</div>
+                                <div class="noticia-descricao">
+                                    Plataformas como Claude, ChatGPT e Midjourney estão transformando o workflow de SMMs. Quem não usar IA ficará para trás competitivamente.
+                                </div>
+                                <div class="noticia-meta">
+                                    <span>🗓️ 18 de setembro</span>
+                                    <span>📍 Tech News</span>
+                                    <span class="badge-importancia">🤖 TENDÊNCIA</span>
+                                </div>
+                                <div class="roteiro-container">
+                                    <div class="roteiro-titulo">💡 ROTEIRO SUGERIDO:</div>
+                                    <div class="roteiro-item">
+                                        <strong>⚡ Carousel Post: "IA que TODO SMM deveria usar"</strong>
+                                        Slide 1: Hook<br>
+                                        Slides 2-5: Ferramentas recomendadas<br>
+                                        Slide 6: CTA
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SEÇÃO: PERFIS SIMILARES -->
+                <div class="radar-section" id="secao-perfis">
+                    <h2 style="margin-bottom: 20px;">👥 Perfis Similares para Inspiração</h2>
+                    <p style="color: var(--cor-cinza); margin-bottom: 20px;">Criadores com nicho similar que você pode analisar e se inspirar</p>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                        <!-- Perfil 1 -->
+                        <div class="perfil-card">
+                            <div class="perfil-avatar">📸</div>
+                            <div class="perfil-nome">@creativevibe_pt</div>
+                            <div class="perfil-info">
+                                <div>4.2k seguidores</div>
+                                <div>SMM + Conteúdo</div>
+                                <div>🇵🇹 Portugal</div>
+                            </div>
+                            <div class="perfil-similiaridade">87% similar</div>
+                            <a href="https://instagram.com/creativevibe_pt" target="_blank" style="display: block; margin-top: 10px; color: var(--cor-azul); text-decoration: none; font-size: 12px; font-weight: 600;">Ver perfil →</a>
+                        </div>
+
+                        <!-- Perfil 2 -->
+                        <div class="perfil-card">
+                            <div class="perfil-avatar">🎨</div>
+                            <div class="perfil-nome">@contentstudio_es</div>
+                            <div class="perfil-info">
+                                <div>5.8k seguidores</div>
+                                <div>Creative Direction</div>
+                                <div>🇪🇸 Espanha</div>
+                            </div>
+                            <div class="perfil-similiaridade">82% similar</div>
+                            <a href="https://instagram.com/contentstudio_es" target="_blank" style="display: block; margin-top: 10px; color: var(--cor-azul); text-decoration: none; font-size: 12px; font-weight: 600;">Ver perfil →</a>
+                        </div>
+
+                        <!-- Perfil 3 -->
+                        <div class="perfil-card">
+                            <div class="perfil-avatar">💼</div>
+                            <div class="perfil-nome">@socialmidia_br</div>
+                            <div class="perfil-info">
+                                <div>12k seguidores</div>
+                                <div>SMM Agency</div>
+                                <div>🇧🇷 Brasil</div>
+                            </div>
+                            <div class="perfil-similiaridade">75% similar</div>
+                            <a href="https://instagram.com/socialmidia_br" target="_blank" style="display: block; margin-top: 10px; color: var(--cor-azul); text-decoration: none; font-size: 12px; font-weight: 600;">Ver perfil →</a>
+                        </div>
+
+                        <!-- Perfil 4 -->
+                        <div class="perfil-card">
+                            <div class="perfil-avatar">🎬</div>
+                            <div class="perfil-nome">@ugccreator_pt</div>
+                            <div class="perfil-info">
+                                <div>3.1k seguidores</div>
+                                <div>UGC Specialist</div>
+                                <div>🇵🇹 Portugal</div>
+                            </div>
+                            <div class="perfil-similiaridade">91% similar</div>
+                            <a href="https://instagram.com/ugccreator_pt" target="_blank" style="display: block; margin-top: 10px; color: var(--cor-azul); text-decoration: none; font-size: 12px; font-weight: 600;">Ver perfil →</a>
+                        </div>
+                    </div>
+
+                    <h3 style="margin-top: 30px; margin-bottom: 15px;">💡 O que analisar nestes perfis:</h3>
+                    <div style="background: var(--cor-fundo); padding: 15px; border-radius: 8px; font-size: 13px;">
+                        ✅ Tipo de conteúdo que engaja mais<br>
+                        ✅ Frequência de postagem<br>
+                        ✅ Captions (como vendem o serviço)<br>
+                        ✅ Horários de postagem<br>
+                        ✅ Hashtags mais usadas<br>
+                        ✅ Como fazem CTA (call-to-action)
+                    </div>
+                </div>
+
+                <!-- SEÇÃO: AGENDA -->
+                <div class="radar-section" id="secao-agenda">
+                    <h2 style="margin-bottom: 20px;">📅 Agenda de Postagem Automática</h2>
+                    <p style="color: var(--cor-cinza); margin-bottom: 20px;">Reels e posts gerados automaticamente baseados em notícias relevantes</p>
+
+                    <div style="background: var(--cor-branco); padding: 20px; border-radius: 12px; box-shadow: var(--sombra); margin-bottom: 20px;">
+                        <h3 style="margin-bottom: 15px;">📍 Próximas Postagens Agendadas:</h3>
+
+                        <div class="agenda-item proxima">
+                            <div>
+                                <strong>🎥 Reel: "A Revolução dos Reels 2026"</strong><br>
+                                <span style="font-size: 12px; color: var(--cor-cinza);">Baseado em: Novo algoritmo Instagram</span>
+                            </div>
+                            <div class="agenda-horario">🕐 06:00</div>
+                        </div>
+
+                        <div class="agenda-item">
+                            <div>
+                                <strong>📝 Post: "UGC é o OURO em 2025"</strong><br>
+                                <span style="font-size: 12px; color: var(--cor-cinza);">Baseado em: Investimentos em UGC</span>
+                            </div>
+                            <div class="agenda-horario">⏰ QUA 06:00</div>
+                        </div>
+
+                        <div class="agenda-item">
+                            <div>
+                                <strong>🎨 Carousel: "IA para SMMs"</strong><br>
+                                <span style="font-size: 12px; color: var(--cor-cinza);">Baseado em: Ferramentas de IA</span>
+                            </div>
+                            <div class="agenda-horario">⏰ SEX 06:00</div>
+                        </div>
+                    </div>
+
+                    <div style="background: var(--cor-fundo); padding: 15px; border-radius: 8px; border-left: 3px solid var(--cor-azul);">
+                        <strong style="color: var(--cor-azul);">⚙️ Como funciona:</strong>
+                        <div style="font-size: 13px; margin-top: 10px; line-height: 1.6;">
+                            ✅ Sistema monitora notícias em tempo real<br>
+                            ✅ IA gera roteiros de reels/posts automaticamente<br>
+                            ✅ Postagens agendadas para SEG/QUA/SEX às 06:00<br>
+                            ✅ Você apenas revisa e aprova antes de postar<br>
+                            ✅ Captura tendências ANTES que virem mainstream
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ABA 6: DASHBOARD DX -->
             <div class="abas-container" id="abaDashboard">
                 <div class="dashboard-tabs">
                     <button class="dashboard-tab ativo" onclick="abrirDashboardSecao('performance')">📊 Performance</button>
@@ -1922,7 +2295,8 @@
                 marcas: 'Marcas',
                 calendario: 'Calendário',
                 campanhas: 'Campanhas',
-                dashboard: 'Dashboard DX'
+                dashboard: 'Dashboard DX',
+                radar: 'Radar de Notícias'
             };
 
             document.getElementById('tituloAba').textContent = titulos[aba];
@@ -2037,6 +2411,23 @@
             document.getElementById('metTaxaCrescimento').textContent = '+45';
             document.getElementById('metChurnRate').textContent = '-8';
             document.getElementById('metProjecao').textContent = '4.200+';
+        }
+
+        // ============ RADAR DE NOTÍCIAS ============
+        function abrirRadarSecao(secao) {
+            document.querySelectorAll('.radar-section').forEach(el => el.classList.remove('ativo'));
+            document.getElementById('secao-' + secao).classList.add('ativo');
+        }
+
+        function mostrarRoteiro(element) {
+            const roteiro = element.querySelector('.roteiro-container');
+            if (roteiro) {
+                roteiro.scrollIntoView({ behavior: 'smooth' });
+                roteiro.style.animation = 'none';
+                setTimeout(() => {
+                    roteiro.style.animation = 'pulse 0.5s';
+                }, 10);
+            }
         }
 
         function abrirModalVideo() {
