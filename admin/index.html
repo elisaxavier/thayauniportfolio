@@ -595,9 +595,21 @@
 
                 <div id="calendarioGrid"></div>
 
-                <div style="margin-top: 30px; padding: 20px; background: var(--cor-branco); border-radius: 12px;">
-                    <h3 style="font-weight: 700; margin-bottom: 15px;">Ficou pra trás</h3>
-                    <div id="atrasados"></div>
+                <div style="margin-top: 30px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                    <div style="padding: 20px; background: var(--cor-branco); border-radius: 12px; border-left: 4px solid var(--cor-cinza);">
+                        <h3 style="font-weight: 700; margin-bottom: 15px; color: var(--cor-cinza);">ONTEM</h3>
+                        <div id="eventosOntem" style="display: flex; flex-direction: column; gap: 8px;"></div>
+                    </div>
+
+                    <div style="padding: 20px; background: var(--cor-branco); border-radius: 12px; border-left: 4px solid var(--cor-azul);">
+                        <h3 style="font-weight: 700; margin-bottom: 15px; color: var(--cor-azul);">HOJE</h3>
+                        <div id="eventosHoje" style="display: flex; flex-direction: column; gap: 8px;"></div>
+                    </div>
+
+                    <div style="padding: 20px; background: var(--cor-branco); border-radius: 12px; border-left: 4px solid var(--cor-sucesso);">
+                        <h3 style="font-weight: 700; margin-bottom: 15px; color: var(--cor-sucesso);">AMANHÃ</h3>
+                        <div id="eventosAmanha" style="display: flex; flex-direction: column; gap: 8px;"></div>
+                    </div>
                 </div>
             </div>
 
@@ -1176,6 +1188,59 @@
         async function inicializarCalendario() {
             renderizarCalendario();
             await carregarEventosCalendario();
+            await carregarEventosPorDia();
+        }
+
+        async function carregarEventosPorDia() {
+            try {
+                const { data: eventos } = await supabaseClient.from('calendario').select('*');
+
+                const agora = new Date();
+                const ontem = new Date(agora);
+                ontem.setDate(agora.getDate() - 1);
+                const amanha = new Date(agora);
+                amanha.setDate(agora.getDate() + 1);
+
+                const formatarData = (d) => d.toISOString().split('T')[0];
+                const dataHoje = formatarData(agora);
+                const dataOntem = formatarData(ontem);
+                const dataAmanha = formatarData(amanha);
+
+                const eventosOntem = eventos?.filter(e => e.data?.startsWith(dataOntem)) || [];
+                const eventosHoje = eventos?.filter(e => e.data?.startsWith(dataHoje)) || [];
+                const eventosAmanha = eventos?.filter(e => e.data?.startsWith(dataAmanha)) || [];
+
+                const renderarEventos = (eventos, containerId) => {
+                    const container = document.getElementById(containerId);
+                    if (!container) return;
+
+                    if (eventos.length === 0) {
+                        container.innerHTML = '<span style="color: var(--cor-cinza); font-size: 13px;">Nenhum evento</span>';
+                        return;
+                    }
+
+                    container.innerHTML = eventos.map(e => `
+                        <div style="
+                            padding: 10px;
+                            background: var(--cor-fundo);
+                            border-radius: 6px;
+                            border-left: 3px solid var(--cor-azul);
+                            font-size: 13px;
+                            cursor: pointer;
+                        " title="${e.titulo}">
+                            <div style="font-weight: 600;">${e.titulo}</div>
+                            ${e.tipo ? `<div style="color: var(--cor-cinza); font-size: 12px;">${e.tipo}</div>` : ''}
+                            ${e.conteudo ? `<div style="color: var(--cor-cinza); font-size: 12px;">${e.conteudo}</div>` : ''}
+                        </div>
+                    `).join('');
+                };
+
+                renderarEventos(eventosOntem, 'eventosOntem');
+                renderarEventos(eventosHoje, 'eventosHoje');
+                renderarEventos(eventosAmanha, 'eventosAmanha');
+            } catch (err) {
+                console.error('Erro ao carregar eventos por dia:', err);
+            }
         }
 
         function renderizarCalendario() {
