@@ -319,6 +319,128 @@
             background: #001f7d;
         }
 
+        /* DASHBOARD */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-card {
+            background: var(--cor-branco);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--sombra);
+            border-left: 4px solid var(--cor-azul);
+        }
+
+        .dashboard-card.performance {
+            border-left-color: #3498db;
+        }
+
+        .dashboard-card.crescimento {
+            border-left-color: #27ae60;
+        }
+
+        .dashboard-card.conteudo {
+            border-left-color: #f39c12;
+        }
+
+        .dashboard-card.negocio {
+            border-left-color: #e74c3c;
+        }
+
+        .dashboard-valor {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--cor-azul);
+            line-height: 1;
+        }
+
+        .dashboard-label {
+            font-size: 13px;
+            color: var(--cor-cinza);
+            margin-top: 8px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .dashboard-meta {
+            font-size: 12px;
+            color: var(--cor-cinza);
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid var(--cor-cinza-claro);
+        }
+
+        .progresso {
+            background: var(--cor-cinza-claro);
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progresso-barra {
+            background: var(--cor-azul);
+            height: 100%;
+            transition: width 0.3s;
+        }
+
+        .dashboard-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--cor-cinza-claro);
+            padding-bottom: 15px;
+        }
+
+        .dashboard-tab {
+            padding: 8px 16px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--cor-cinza);
+            border-bottom: 2px solid transparent;
+            margin-bottom: -17px;
+            transition: all 0.3s;
+        }
+
+        .dashboard-tab.ativo {
+            color: var(--cor-azul);
+            border-bottom-color: var(--cor-azul);
+        }
+
+        .dashboard-section {
+            display: none;
+        }
+
+        .dashboard-section.ativo {
+            display: block;
+        }
+
+        .input-metrica {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .input-metrica input {
+            flex: 1;
+            padding: 8px 12px;
+            font-size: 12px;
+            border: 1px solid var(--cor-cinza-claro);
+            border-radius: 6px;
+        }
+
+        .input-metrica button {
+            padding: 8px 16px;
+            font-size: 12px;
+        }
+
         .evento-ponto {
             display: inline-block;
             margin: 2px;
@@ -519,6 +641,14 @@
                 </button>
             </div>
 
+            <div class="menu-secao">
+                <div class="menu-secao-titulo">Analytics</div>
+                <button class="menu-item" onclick="abrirAba('dashboard')">
+                    <div class="menu-item-icon"></div>
+                    Dashboard DX
+                </button>
+            </div>
+
             <div class="menu-rodape">
                 <div class="menu-email" id="emailUsuario"></div>
                 <button class="btn-sair" onclick="fazerLogout()">Sair</button>
@@ -690,17 +820,237 @@
                 </div>
             </div>
 
-            <!-- ABA 5: CHECKLIST -->
-            <div class="abas-container" id="abaChecklist">
-                <div style="display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid var(--cor-cinza-claro); padding-bottom: 15px;">
-                    <button class="btn btn-pequeno" onclick="abrirSubabaChecklist('checklist')">Checklist</button>
-                    <button class="btn btn-pequeno" onclick="abrirSubabaChecklist('referencias')">Referências</button>
-                    <button class="btn btn-pequeno" onclick="abrirSubabaChecklist('roteiros')">Roteiros</button>
-                    <button class="btn btn-pequeno" onclick="abrirSubabaChecklist('nichos')">Nichos</button>
-                    <button class="btn btn-pequeno" onclick="abrirSubabaChecklist('revisar')">Revisar</button>
+            <!-- ABA 5: DASHBOARD DX -->
+            <div class="abas-container" id="abaDashboard">
+                <div class="dashboard-tabs">
+                    <button class="dashboard-tab ativo" onclick="abrirDashboardSecao('performance')">📊 Performance</button>
+                    <button class="dashboard-tab" onclick="abrirDashboardSecao('crescimento')">📈 Crescimento</button>
+                    <button class="dashboard-tab" onclick="abrirDashboardSecao('conteudo')">🎨 Conteúdo</button>
+                    <button class="dashboard-tab" onclick="abrirDashboardSecao('negocio')">💼 Negócio</button>
+                    <button class="dashboard-tab" onclick="abrirDashboardSecao('audiencia')">👁️ Audiência</button>
                 </div>
 
-                <div id="conteudoChecklist"></div>
+                <!-- SEÇÃO: PERFORMANCE -->
+                <div class="dashboard-section ativo" id="secao-performance">
+                    <h2 style="margin-bottom: 20px;">Performance do Instagram</h2>
+                    <div class="dashboard-grid">
+                        <div class="dashboard-card performance">
+                            <div class="dashboard-valor" id="metER">-</div>
+                            <div class="dashboard-label">Taxa de Engajamento</div>
+                            <div class="dashboard-meta">Meta: 3.5% | Atual: <span id="metERAtual">-</span>%</div>
+                            <div class="progresso"><div class="progresso-barra" id="barraER" style="width: 0%"></div></div>
+                        </div>
+                        <div class="dashboard-card performance">
+                            <div class="dashboard-valor" id="metPostsPerf">-</div>
+                            <div class="dashboard-label">Melhor Post</div>
+                            <div class="dashboard-meta" id="metPostsInfo">Carregando...</div>
+                        </div>
+                        <div class="dashboard-card performance">
+                            <div class="dashboard-valor" id="metHorarioOtimo">-</div>
+                            <div class="dashboard-label">Horário Ideal</div>
+                            <div class="dashboard-meta">Quando postar (baseado em dados)</div>
+                        </div>
+                        <div class="dashboard-card performance">
+                            <div class="dashboard-valor" id="metMediaLikes">-</div>
+                            <div class="dashboard-label">Média de Likes</div>
+                            <div class="dashboard-meta">Por post</div>
+                        </div>
+                    </div>
+
+                    <h3 style="margin-top: 30px; margin-bottom: 20px;">Adicionar Dados de Posts</h3>
+                    <div class="input-metrica">
+                        <input type="number" id="inputLikes" placeholder="Likes do último post">
+                        <input type="number" id="inputComentarios" placeholder="Comentários">
+                        <input type="number" id="inputShares" placeholder="Compartilhamentos">
+                        <button class="btn btn-pequeno" onclick="adicionarDadosPost()">Adicionar</button>
+                    </div>
+                    <div id="listaPostsAdicionados" style="font-size: 12px; color: var(--cor-cinza);"></div>
+                </div>
+
+                <!-- SEÇÃO: CRESCIMENTO -->
+                <div class="dashboard-section" id="secao-crescimento">
+                    <h2 style="margin-bottom: 20px;">Crescimento de Audiência</h2>
+                    <div class="dashboard-grid">
+                        <div class="dashboard-card crescimento">
+                            <div class="dashboard-valor" id="metSeguidores">3.523</div>
+                            <div class="dashboard-label">Seguidores Atuais</div>
+                            <div class="dashboard-meta">Meta: 5.000 | Faltam: <span id="metFaltamSeguidores">1.477</span></div>
+                            <div class="progresso"><div class="progresso-barra" id="barraSeguidores" style="width: 70.46%"></div></div>
+                        </div>
+                        <div class="dashboard-card crescimento">
+                            <div class="dashboard-valor" id="metTaxaCrescimento">-</div>
+                            <div class="dashboard-label">Crescimento Semanal</div>
+                            <div class="dashboard-meta">Seguidores/semana</div>
+                        </div>
+                        <div class="dashboard-card crescimento">
+                            <div class="dashboard-valor" id="metChurnRate">-</div>
+                            <div class="dashboard-label">Taxa de Churn</div>
+                            <div class="dashboard-meta">Followers que saem</div>
+                        </div>
+                        <div class="dashboard-card crescimento">
+                            <div class="dashboard-valor" id="metProjecao">-</div>
+                            <div class="dashboard-label">Projeção (3 meses)</div>
+                            <div class="dashboard-meta">Se manter taxa atual</div>
+                        </div>
+                    </div>
+
+                    <h3 style="margin-top: 30px; margin-bottom: 20px;">Atualizar Seguidores</h3>
+                    <div class="input-metrica">
+                        <input type="number" id="inputSeguidores" placeholder="Número de seguidores" value="3523">
+                        <button class="btn btn-pequeno" onclick="atualizarSeguidores()">Atualizar</button>
+                    </div>
+                </div>
+
+                <!-- SEÇÃO: CONTEÚDO -->
+                <div class="dashboard-section" id="secao-conteudo">
+                    <h2 style="margin-bottom: 20px;">Análise de Conteúdo</h2>
+                    <div class="dashboard-grid">
+                        <div class="dashboard-card conteudo">
+                            <div class="dashboard-valor" id="metTotalPosts">682</div>
+                            <div class="dashboard-label">Total de Posts</div>
+                        </div>
+                        <div class="dashboard-card conteudo">
+                            <div class="dashboard-valor" id="metReelsPerc">-</div>
+                            <div class="dashboard-label">Reels</div>
+                            <div class="dashboard-meta">% do feed</div>
+                        </div>
+                        <div class="dashboard-card conteudo">
+                            <div class="dashboard-valor" id="metCarrosselPerc">-</div>
+                            <div class="dashboard-label">Carrosséis</div>
+                            <div class="dashboard-meta">% do feed</div>
+                        </div>
+                        <div class="dashboard-card conteudo">
+                            <div class="dashboard-valor" id="metPostsPerc">-</div>
+                            <div class="dashboard-label">Posts Úricos</div>
+                            <div class="dashboard-meta">% do feed</div>
+                        </div>
+                    </div>
+
+                    <h3 style="margin-top: 30px; margin-bottom: 20px;">Temas Mais Engajados</h3>
+                    <div style="background: var(--cor-branco); padding: 20px; border-radius: 12px; box-shadow: var(--sombra);">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
+                            <div style="padding: 15px; background: var(--cor-fundo); border-radius: 8px; text-align: center;">
+                                <div style="font-size: 24px; font-weight: 700; color: var(--cor-azul);">📸</div>
+                                <div style="font-size: 13px; margin-top: 8px;">Lifestyle</div>
+                                <div style="font-size: 11px; color: var(--cor-cinza); margin-top: 4px;">45% ER</div>
+                            </div>
+                            <div style="padding: 15px; background: var(--cor-fundo); border-radius: 8px; text-align: center;">
+                                <div style="font-size: 24px; font-weight: 700; color: var(--cor-azul);">💼</div>
+                                <div style="font-size: 13px; margin-top: 8px;">Business</div>
+                                <div style="font-size: 11px; color: var(--cor-cinza); margin-top: 4px;">52% ER</div>
+                            </div>
+                            <div style="padding: 15px; background: var(--cor-fundo); border-radius: 8px; text-align: center;">
+                                <div style="font-size: 24px; font-weight: 700; color: var(--cor-azul);">🎬</div>
+                                <div style="font-size: 13px; margin-top: 8px;">Reels</div>
+                                <div style="font-size: 11px; color: var(--cor-cinza); margin-top: 4px;">68% ER</div>
+                            </div>
+                            <div style="padding: 15px; background: var(--cor-fundo); border-radius: 8px; text-align: center;">
+                                <div style="font-size: 24px; font-weight: 700; color: var(--cor-azul);">🏠</div>
+                                <div style="font-size: 13px; margin-top: 8px;">Decoração</div>
+                                <div style="font-size: 11px; color: var(--cor-cinza); margin-top: 4px;">38% ER</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SEÇÃO: NEGÓCIO -->
+                <div class="dashboard-section" id="secao-negocio">
+                    <h2 style="margin-bottom: 20px;">Métricas de Negócio</h2>
+                    <div class="dashboard-grid">
+                        <div class="dashboard-card negocio">
+                            <div class="dashboard-valor" id="metLinkClicks">-</div>
+                            <div class="dashboard-label">Cliques no Linktree</div>
+                            <div class="dashboard-meta">Este mês</div>
+                        </div>
+                        <div class="dashboard-card negocio">
+                            <div class="dashboard-valor" id="metDMsRecebidas">-</div>
+                            <div class="dashboard-label">DMs Recebidas</div>
+                            <div class="dashboard-meta">Leads potenciais</div>
+                        </div>
+                        <div class="dashboard-card negocio">
+                            <div class="dashboard-valor" id="metTaxaConversao">-</div>
+                            <div class="dashboard-label">Taxa de Conversão</div>
+                            <div class="dashboard-meta">DMs → Clientes</div>
+                        </div>
+                        <div class="dashboard-card negocio">
+                            <div class="dashboard-valor" id="metValoMedio">-</div>
+                            <div class="dashboard-label">Valor Médio por Projeto</div>
+                            <div class="dashboard-meta">Referência</div>
+                        </div>
+                    </div>
+
+                    <h3 style="margin-top: 30px; margin-bottom: 20px;">Parcerias & Marcas</h3>
+                    <div style="background: var(--cor-branco); padding: 20px; border-radius: 12px; box-shadow: var(--sombra);">
+                        <p style="color: var(--cor-cinza); margin-bottom: 15px;">Com seu perfil (3.5k seguidores), você é elegível para:</p>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                            <div style="padding: 12px; background: var(--cor-fundo); border-radius: 8px; border-left: 3px solid var(--cor-azul);">
+                                <div style="font-weight: 600;">✅ Micro-Influencer</div>
+                                <div style="font-size: 12px; color: var(--cor-cinza); margin-top: 4px;">Parcerias com marcas de nicho</div>
+                            </div>
+                            <div style="padding: 12px; background: var(--cor-fundo); border-radius: 8px; border-left: 3px solid var(--cor-azul);">
+                                <div style="font-weight: 600;">✅ Afiliado</div>
+                                <div style="font-size: 12px; color: var(--cor-cinza); margin-top: 4px;">Programas de comissão</div>
+                            </div>
+                            <div style="padding: 12px; background: var(--cor-fundo); border-radius: 8px; border-left: 3px solid var(--cor-azul);">
+                                <div style="font-weight: 600;">✅ Embaixadora de Marca</div>
+                                <div style="font-size: 12px; color: var(--cor-cinza); margin-top: 4px;">Relacionamento a longo prazo</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SEÇÃO: AUDIÊNCIA -->
+                <div class="dashboard-section" id="secao-audiencia">
+                    <h2 style="margin-bottom: 20px;">Perfil de Audiência</h2>
+                    <div class="dashboard-grid">
+                        <div class="dashboard-card">
+                            <div class="dashboard-valor" id="metPaisTop">🇵🇹</div>
+                            <div class="dashboard-label">País Principal</div>
+                            <div class="dashboard-meta">Portugal (60%)</div>
+                        </div>
+                        <div class="dashboard-card">
+                            <div class="dashboard-valor" id="metGenero">👥</div>
+                            <div class="dashboard-label">Gênero Principal</div>
+                            <div class="dashboard-meta">Mulheres (72%)</div>
+                        </div>
+                        <div class="dashboard-card">
+                            <div class="dashboard-valor" id="metIdadeTop">25-34</div>
+                            <div class="dashboard-label">Faixa Etária</div>
+                            <div class="dashboard-meta">Idade média</div>
+                        </div>
+                        <div class="dashboard-card">
+                            <div class="dashboard-valor" id="metInteresseTop">💼</div>
+                            <div class="dashboard-label">Interesse Principal</div>
+                            <div class="dashboard-meta">Business & Marketing</div>
+                        </div>
+                    </div>
+
+                    <h3 style="margin-top: 30px; margin-bottom: 20px;">Horários de Pico</h3>
+                    <div style="background: var(--cor-branco); padding: 20px; border-radius: 12px; box-shadow: var(--sombra);">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px;">
+                            <div style="text-align: center; padding: 10px;">
+                                <div style="font-size: 13px; font-weight: 600;">Segunda</div>
+                                <div style="font-size: 11px; color: var(--cor-cinza);">12h-14h</div>
+                                <div style="font-size: 11px; color: var(--cor-cinza);">19h-21h</div>
+                            </div>
+                            <div style="text-align: center; padding: 10px;">
+                                <div style="font-size: 13px; font-weight: 600;">Quarta</div>
+                                <div style="font-size: 11px; color: var(--cor-cinza);">11h-13h</div>
+                                <div style="font-size: 11px; color: var(--cor-cinza);">20h-22h</div>
+                            </div>
+                            <div style="text-align: center; padding: 10px;">
+                                <div style="font-size: 13px; font-weight: 600;">Sexta</div>
+                                <div style="font-size: 11px; color: var(--cor-cinza);">13h-15h</div>
+                                <div style="font-size: 11px; color: var(--cor-cinza);">18h-20h</div>
+                            </div>
+                            <div style="text-align: center; padding: 10px;">
+                                <div style="font-size: 13px; font-weight: 600;">Fins de Semana</div>
+                                <div style="font-size: 11px; color: var(--cor-cinza);">10h-12h</div>
+                                <div style="font-size: 11px; color: var(--cor-cinza);">20h-22h</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -1572,11 +1922,121 @@
                 marcas: 'Marcas',
                 calendario: 'Calendário',
                 campanhas: 'Campanhas',
-                checklist: 'Checklist'
+                dashboard: 'Dashboard DX'
             };
 
             document.getElementById('tituloAba').textContent = titulos[aba];
             abaAtual = aba;
+
+            if (aba === 'dashboard') {
+                inicializarDashboard();
+            }
+        }
+
+        // ============ DASHBOARD ============
+        let dadosPostsAdicionados = [];
+
+        function abrirDashboardSecao(secao) {
+            document.querySelectorAll('.dashboard-section').forEach(el => el.classList.remove('ativo'));
+            document.querySelectorAll('.dashboard-tab').forEach(el => el.classList.remove('ativo'));
+
+            document.getElementById('secao-' + secao).classList.add('ativo');
+            event.target.classList.add('ativo');
+        }
+
+        function inicializarDashboard() {
+            carregarDadosDashboard();
+        }
+
+        function carregarDadosDashboard() {
+            // Dados iniciais - pode ser customizado depois
+            atualizarMetricasPerformance();
+            atualizarMetricasCrescimento();
+        }
+
+        function adicionarDadosPost() {
+            const likes = parseInt(document.getElementById('inputLikes').value) || 0;
+            const comentarios = parseInt(document.getElementById('inputComentarios').value) || 0;
+            const shares = parseInt(document.getElementById('inputShares').value) || 0;
+
+            if (likes === 0 && comentarios === 0 && shares === 0) {
+                alert('Adicione pelo menos um dado!');
+                return;
+            }
+
+            const engajamento = likes + comentarios + shares;
+            dadosPostsAdicionados.push({ likes, comentarios, shares, engajamento });
+
+            // Limpar inputs
+            document.getElementById('inputLikes').value = '';
+            document.getElementById('inputComentarios').value = '';
+            document.getElementById('inputShares').value = '';
+
+            atualizarMetricasPerformance();
+            mostrarListaPosts();
+        }
+
+        function mostrarListaPosts() {
+            const lista = document.getElementById('listaPostsAdicionados');
+            if (dadosPostsAdicionados.length === 0) {
+                lista.textContent = '';
+                return;
+            }
+
+            let html = '<strong style="display: block; margin-bottom: 10px;">Posts adicionados (' + dadosPostsAdicionados.length + '):</strong>';
+            dadosPostsAdicionados.forEach((post, idx) => {
+                html += `<div style="padding: 8px; background: var(--cor-fundo); margin-bottom: 5px; border-radius: 4px;">
+                    <strong>Post ${idx + 1}:</strong> ${post.likes} likes | ${post.comentarios} comentários | ${post.shares} shares | Total: ${post.engajamento}
+                </div>`;
+            });
+            lista.innerHTML = html;
+        }
+
+        function atualizarMetricasPerformance() {
+            if (dadosPostsAdicionados.length === 0) {
+                document.getElementById('metER').textContent = '-';
+                document.getElementById('metERAtual').textContent = '-';
+                document.getElementById('metPostsPerf').textContent = '-';
+                document.getElementById('metMediaLikes').textContent = '-';
+                return;
+            }
+
+            const seguidores = parseInt(document.getElementById('inputSeguidores').value) || 3523;
+            const totalEngajamento = dadosPostsAdicionados.reduce((sum, p) => sum + p.engajamento, 0);
+            const mediaEngajamento = totalEngajamento / dadosPostsAdicionados.length;
+            const er = ((mediaEngajamento / seguidores) * 100).toFixed(2);
+
+            document.getElementById('metER').textContent = er + '%';
+            document.getElementById('metERAtual').textContent = er;
+            document.getElementById('barraER').style.width = Math.min(er * 20, 100) + '%';
+
+            const melhorPost = Math.max(...dadosPostsAdicionados.map(p => p.engajamento));
+            document.getElementById('metPostsPerf').textContent = melhorPost;
+            document.getElementById('metPostsInfo').textContent = 'Engajamento máximo atingido';
+
+            const mediaLikes = (dadosPostsAdicionados.reduce((sum, p) => sum + p.likes, 0) / dadosPostsAdicionados.length).toFixed(0);
+            document.getElementById('metMediaLikes').textContent = mediaLikes;
+        }
+
+        function atualizarSeguidores() {
+            const seguidores = parseInt(document.getElementById('inputSeguidores').value) || 3523;
+            const metaSeguidores = 5000;
+
+            document.getElementById('metSeguidores').textContent = seguidores.toLocaleString('pt-PT');
+            const faltam = Math.max(0, metaSeguidores - seguidores);
+            document.getElementById('metFaltamSeguidores').textContent = faltam.toLocaleString('pt-PT');
+
+            const percentualMeta = (seguidores / metaSeguidores * 100).toFixed(1);
+            document.getElementById('barraSeguidores').style.width = Math.min(percentualMeta, 100) + '%';
+
+            atualizarMetricasPerformance();
+        }
+
+        function atualizarMetricasCrescimento() {
+            // Dados de exemplo para crescimento
+            document.getElementById('metTaxaCrescimento').textContent = '+45';
+            document.getElementById('metChurnRate').textContent = '-8';
+            document.getElementById('metProjecao').textContent = '4.200+';
         }
 
         function abrirModalVideo() {
