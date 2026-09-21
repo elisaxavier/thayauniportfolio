@@ -585,11 +585,12 @@
 
             <!-- ABA 3: CALENDÁRIO -->
             <div class="abas-container" id="abaCalendario">
-                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <div style="display: flex; gap: 10px; margin-bottom: 20px; align-items: center;">
                     <button class="btn btn-pequeno" onclick="mesAnterior()">Anterior</button>
                     <span id="mesAtual" style="flex: 1; text-align: center; font-weight: 600;"></span>
                     <button class="btn btn-pequeno" onclick="mesProximo()">Próximo</button>
                     <button class="btn btn-secundario btn-pequeno" onclick="voltarHoje()">Este mês</button>
+                    <button class="btn" onclick="conectarGoogleCalendar()" style="background: #4285F4; margin-left: auto;">📅 Google Calendar</button>
                 </div>
 
                 <div id="calendarioGrid"></div>
@@ -728,6 +729,8 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://accounts.google.com/gsi/client"></script>
+    <script async defer src="https://apis.google.com/js/api.js"></script>
     <script src="../js/banco.js"></script>
     <script src="../js/biblioteca.js"></script>
     <script>
@@ -1310,6 +1313,65 @@
                 e.target.classList.remove('ativo');
             }
         });
+
+        // ============ GOOGLE CALENDAR ============
+        const GOOGLE_CLIENT_ID = '850387266021-cj70buuescocbfthnund2ni4sa7iugle.apps.googleusercontent.com';
+        const SCOPES = 'https://www.googleapis.com/auth/calendar.readonly';
+
+        function conectarGoogleCalendar() {
+            gapi.load('client:auth2', () => {
+                gapi.auth2.init({
+                    client_id: GOOGLE_CLIENT_ID,
+                    scope: SCOPES
+                }).then(() => {
+                    const auth2 = gapi.auth2.getAuthInstance();
+                    auth2.signIn().then(() => {
+                        carregarEventosDoGoogleCalendar();
+                    }).catch(err => {
+                        console.error('Erro ao conectar com Google:', err);
+                        alert('Erro ao conectar com Google Calendar');
+                    });
+                });
+            });
+        }
+
+        async function carregarEventosDoGoogleCalendar() {
+            try {
+                gapi.client.load('calendar', 'v3', async () => {
+                    const result = await gapi.client.calendar.events.list({
+                        'calendarId': 'primary',
+                        'timeMin': new Date().toISOString(),
+                        'showDeleted': false,
+                        'singleEvents': true,
+                        'maxResults': 100,
+                        'orderBy': 'startTime'
+                    });
+
+                    const eventos = result.result.items || [];
+                    let sincronizados = 0;
+
+                    for (const evento of eventos) {
+                        const data = evento.start.dateTime || evento.start.date;
+                        const { error } = await supabaseClient
+                            .from('calendario')
+                            .insert([{
+                                titulo: evento.summary,
+                                data: data,
+                                tipo: 'Google Calendar',
+                                status: 'confirmado'
+                            }]);
+                        if (!error) sincronizados++;
+                    }
+
+                    alert(`✅ ${sincronizados} eventos sincronizados do Google Calendar!`);
+                    renderizarCalendario();
+                    await carregarEventosCalendario();
+                });
+            } catch (err) {
+                console.error('Erro ao carregar eventos:', err);
+                alert('Erro ao sincronizar eventos');
+            }
+        }
 
         // Carregar ao abrir
         verificarSessao();
