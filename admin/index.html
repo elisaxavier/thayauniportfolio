@@ -772,6 +772,7 @@
                 document.getElementById('metVideoNoAr').textContent = videos.filter(v => v.visivel).length;
 
                 // Carregar métricas de visitas
+                let todasVisitas = [];
                 try {
                     const agora = new Date();
                     const hoje = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate()).toISOString();
@@ -787,9 +788,11 @@
                         .select('id')
                         .gte('data', dias14aAtras);
 
-                    const { data: todasVisitas } = await supabaseClient
+                    const { data: todasVisitasData } = await supabaseClient
                         .from('visitas')
                         .select('origem, pagina');
+
+                    todasVisitas = todasVisitasData || [];
 
                     if (document.getElementById('metVisitas14')) {
                         document.getElementById('metVisitas14').textContent = visitas14?.length || 0;
@@ -801,7 +804,7 @@
                     console.error('Erro ao carregar visitas:', err);
                 }
 
-                if (todasVisitas && todasVisitas.length > 0) {
+                if (todasVisitas.length > 0) {
                     const nichos = videos.reduce((acc, v) => {
                         acc[v.nicho] = (acc[v.nicho] || 0) + 1;
                         return acc;
