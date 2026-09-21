@@ -1182,8 +1182,11 @@
 
         async function selecionarDia(dia) {
             const data = new Date(dataSelecionada.getFullYear(), dataSelecionada.getMonth(), dia);
-            document.getElementById('inputEventoData').value = data.toISOString().split('T')[0];
-            document.getElementById('modalEvento').classList.add('ativo');
+            const inputData = document.getElementById('inputEventoData');
+            const modal = document.getElementById('modalEvento');
+
+            if (inputData) inputData.value = data.toISOString().split('T')[0];
+            if (modal) modal.classList.add('ativo');
         }
 
         async function salvarEvento() {
