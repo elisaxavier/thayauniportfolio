@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Admin - Thayna Auni</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --cor-fundo: #f3f4f2;
+            --cor-azul: #002FA7;
+            --cor-texto: #1a1a1a;
+            --cor-branco: #ffffff;
+            --cor-cinza: #8a8a8a;
+            --cor-cinza-claro: #e8e8e8;
+            --cor-sucesso: #27ae60;
+            --cor-aviso: #f39c12;
+            --cor-erro: #e74c3c;
+            --sombra: 0 8px 24px rgba(0, 0, 0, 0.08);
+            --transicao: all 0.3s;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: var(--cor-fundo);
+            color: var(--cor-texto);
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* MENU LATERAL */
+        .menu {
+            width: 250px;
+            background: var(--cor-branco);
+            border-right: 1px solid var(--cor-cinza-claro);
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .menu-titulo {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--cor-azul);
+            margin-bottom: 30px;
+        }
+
+        .menu-secao {
+            margin-bottom: 30px;
+        }
+
+        .menu-secao-titulo {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--cor-cinza);
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .menu-item {
+            padding: 12px 15px;
+            margin-bottom: 5px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--cor-texto);
+            transition: var(--transicao);
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .menu-item:hover {
+            background: rgba(0, 47, 167, 0.05);
+        }
+
+        .menu-item.ativo {
+            background: rgba(0, 47, 167, 0.1);
+            color: var(--cor-azul);
+        }
+
+        .menu-item-icon {
+            width: 4px;
+            height: 16px;
+            background: var(--cor-azul);
+            border-radius: 2px;
+            display: none;
+        }
+
+        .menu-item.ativo .menu-item-icon {
+            display: block;
+        }
+
+        .menu-rodape {
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 1px solid var(--cor-cinza-claro);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .menu-email {
+            font-size: 12px;
+            color: var(--cor-cinza);
+            word-break: break-all;
+        }
+
+        .btn-sair {
+            padding: 10px;
+            background: #e74c3c;
+            color: var(--cor-branco);
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transicao);
+        }
+
+        .btn-sair:hover {
+            background: #c0392b;
+        }
+
+        /* CONTEÚDO PRINCIPAL */
+        .conteudo {
+            flex: 1;
+            margin-left: 250px;
+            padding: 40px;
+        }
+
+        .conteudo-titulo {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 30px;
+        }
+
+        .abas-container {
+            display: none;
+        }
+
+        .abas-container.ativo {
+            display: block;
+        }
+
+        /* COMPONENTES GERAIS */
+        .faixa-info {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .info-card {
+            background: var(--cor-branco);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--sombra);
+        }
+
+        .info-valor {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--cor-azul);
+            line-height: 1;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: var(--cor-cinza);
+            margin-top: 8px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tabela-container {
+            background: var(--cor-branco);
+            border-radius: 12px;
+            box-shadow: var(--sombra);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: var(--cor-fundo);
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--cor-cinza);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        th:hover {
+            background: var(--cor-cinza-claro);
+        }
+
+        td {
+            padding: 15px;
+            border-top: 1px solid var(--cor-cinza-claro);
+            font-size: 14px;
+        }
+
+        tbody tr:hover {
+            background: var(--cor-fundo);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-lead { background: #dfe6e9; color: #2d3436; }
+        .badge-conversando { background: #74b9ff; color: #fff; }
+        .badge-cliente { background: #27ae60; color: #fff; }
+        .badge-parada { background: #e74c3c; color: #fff; }
+
+        .btn {
+            padding: 8px 16px;
+            background: var(--cor-azul);
+            color: var(--cor-branco);
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transicao);
+        }
+
+        .btn:hover {
+            background: #001f7d;
+        }
+
+        .btn-pequeno {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .btn-secundario {
+            background: var(--cor-branco);
+            color: var(--cor-azul);
+            border: 2px solid var(--cor-azul);
+        }
+
+        .btn-secundario:hover {
+            background: var(--cor-azul);
+            color: var(--cor-branco);
+        }
+
+        .form-grupo {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--cor-cinza-claro);
+            border-radius: 8px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 14px;
+            transition: var(--transicao);
+            background: var(--cor-fundo);
+            color: var(--cor-texto);
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--cor-azul);
+            box-shadow: 0 0 0 3px rgba(0, 47, 167, 0.1);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.ativo {
+            display: flex;
+        }
+
+        .modal-conteudo {
+            background: var(--cor-branco);
+            padding: 40px;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-titulo {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        /* RESPONSIVO */
+        @media (max-width: 768px) {
+            .menu {
+                width: 100%;
+                height: auto;
+                position: static;
+                flex-direction: row;
+                align-items: center;
+                padding: 15px 20px;
+                margin-bottom: 20px;
+                flex-wrap: wrap;
+            }
+
+            .menu-titulo {
+                margin-bottom: 10px;
+                width: 100%;
+            }
+
+            .menu-secao {
+                margin-bottom: 0;
+                display: flex;
+                gap: 15px;
+            }
+
+            .menu-secao-titulo {
+                display: none;
+            }
+
+            .menu-item {
+                padding: 8px 12px;
+                font-size: 13px;
+                margin-bottom: 0;
+            }
+
+            .menu-rodape {
+                width: 100%;
+                margin-top: 15px;
+                flex-direction: row;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .menu-email {
+                flex: 1;
+            }
+
+            .conteudo {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .conteudo-titulo {
+                font-size: 24px;
+            }
+
+            .faixa-info {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            table {
+                font-size: 12px;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- MENU LATERAL -->
+        <div class="menu">
+            <div class="menu-titulo">Thayna Auni</div>
+
+            <div class="menu-secao">
+                <div class="menu-secao-titulo">Meu site</div>
+                <button class="menu-item ativo" onclick="abrirAba('portfolio')">
+                    <div class="menu-item-icon"></div>
+                    Portfólio
+                </button>
+                <button class="menu-item" onclick="abrirAba('marcas')">
+                    <div class="menu-item-icon"></div>
+                    Marcas
+                </button>
+            </div>
+
+            <div class="menu-secao">
+                <div class="menu-secao-titulo">Minha rotina</div>
+                <button class="menu-item" onclick="abrirAba('calendario')">
+                    <div class="menu-item-icon"></div>
+                    Calendário
+                </button>
+                <button class="menu-item" onclick="abrirAba('campanhas')">
+                    <div class="menu-item-icon"></div>
+                    Campanhas
+                </button>
+                <button class="menu-item" onclick="abrirAba('checklist')">
+                    <div class="menu-item-icon"></div>
+                    Checklist
+                </button>
+            </div>
+
+            <div class="menu-rodape">
+                <div class="menu-email" id="emailUsuario"></div>
+                <button class="btn-sair" onclick="fazerLogout()">Sair</button>
+            </div>
+        </div>
+
+        <!-- CONTEÚDO -->
+        <div class="conteudo">
+            <h1 class="conteudo-titulo" id="tituloAba">Portfólio</h1>
+
+            <!-- ABA 1: PORTFÓLIO -->
+            <div class="abas-container ativo" id="abaPortfolio">
+                <div class="faixa-info">
+                    <div class="info-card">
+                        <div class="info-valor" id="metVisitas14">0</div>
+                        <div class="info-label">Visitas 14 dias</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-valor" id="metVisitasHoje">0</div>
+                        <div class="info-label">Visitas hoje</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-valor" id="metVideoNoAr">0</div>
+                        <div class="info-label">Vídeos no ar</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-valor" id="metNichoForte">-</div>
+                        <div class="info-label">Nicho forte</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-valor" id="metOrigem">-</div>
+                        <div class="info-label">Origem top</div>
+                    </div>
+                </div>
+
+                <div id="graficosPortfolio"></div>
+
+                <div style="margin-top: 30px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h2 style="font-size: 20px; font-weight: 700;">Seus vídeos</h2>
+                        <button class="btn" onclick="abrirModalVideo()">Adicionar</button>
+                    </div>
+                    <div class="tabela-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 30px;">Vis</th>
+                                    <th>Título</th>
+                                    <th>Nicho</th>
+                                    <th>Marca</th>
+                                    <th>Destaque</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="corpoTabelaVideos"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ABA 2: MARCAS -->
+            <div class="abas-container" id="abaMarcas">
+                <div style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
+                    <input type="text" id="buscaMarcas" placeholder="Buscar por nome, @, email" style="flex: 1; min-width: 200px;">
+                    <select id="filtroSituacao" style="width: 150px;">
+                        <option value="">Todas as situações</option>
+                        <option value="Lead">Lead</option>
+                        <option value="Conversando">Conversando</option>
+                        <option value="Cliente">Cliente</option>
+                        <option value="Parada">Parada</option>
+                    </select>
+                    <button class="btn" onclick="abrirModalMarca()">Adicionar</button>
+                    <button class="btn btn-secundario" onclick="baixarMarcasCSV()">Baixar</button>
+                </div>
+
+                <div class="tabela-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Marca</th>
+                                <th>Instagram</th>
+                                <th>E-mail</th>
+                                <th>Telefone</th>
+                                <th>Situação</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="corpoTabelaMarcas"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ABA 3: CALENDÁRIO -->
+            <div class="abas-container" id="abaCalendario">
+                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    <button class="btn btn-pequeno" onclick="mesAnterior()">Anterior</button>
+                    <span id="mesAtual" style="flex: 1; text-align: center; font-weight: 600;"></span>
+                    <button class="btn btn-pequeno" onclick="mesProximo()">Próximo</button>
+                    <button class="btn btn-secundario btn-pequeno" onclick="voltarHoje()">Este mês</button>
+                </div>
+
+                <div id="calendarioGrid"></div>
+
+                <div style="margin-top: 30px; padding: 20px; background: var(--cor-branco); border-radius: 12px;">
+                    <h3 style="font-weight: 700; margin-bottom: 15px;">Ficou pra trás</h3>
+                    <div id="atrasados"></div>
+                </div>
+            </div>
+
+            <!-- ABA 4: CAMPANHAS -->
+            <div class="abas-container" id="abaCampanhas">
+                <div class="faixa-info" style="grid-template-columns: repeat(4, 1fr);">
+                    <div class="info-card">
+                        <div class="info-valor" id="metCampanhasTotal">0</div>
+                        <div class="info-label">Total</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-valor" id="metCampanhasAtivas">0</div>
+                        <div class="info-label">Ativas</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-valor" id="metValorTotal">R$ 0</div>
+                        <div class="info-label">Valor total</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-valor" id="metAReceber">R$ 0</div>
+                        <div class="info-label">A receber</div>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    <button class="btn btn-pequeno" onclick="filtrarCampanhas('todas')">Todas</button>
+                    <button class="btn btn-pequeno" onclick="filtrarCampanhas('ativas')">Ativas</button>
+                    <button class="btn btn-pequeno" onclick="filtrarCampanhas('finalizadas')">Finalizadas</button>
+                    <input type="text" id="buscaCampanhas" placeholder="Buscar..." style="flex: 1;">
+                    <button class="btn btn-secundario btn-pequeno" onclick="baixarCampanhasCSV()">Baixar</button>
+                </div>
+
+                <div class="tabela-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 30px;">Fav</th>
+                                <th onclick="ordenarCampanhas('campanha')">Campanha</th>
+                                <th onclick="ordenarCampanhas('cliente')">Cliente</th>
+                                <th onclick="ordenarCampanhas('tipo')">Tipo</th>
+                                <th onclick="ordenarCampanhas('status')">Status</th>
+                                <th onclick="ordenarCampanhas('qtd')">Qtd</th>
+                                <th onclick="ordenarCampanhas('valor')">Valor</th>
+                                <th onclick="ordenarCampanhas('prazo')">Prazo</th>
+                                <th>Pagamento</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="corpoTabelaCampanhas"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ABA 5: CHECKLIST -->
+            <div class="abas-container" id="abaChecklist">
+                <div style="display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid var(--cor-cinza-claro); padding-bottom: 15px;">
+                    <button class="btn btn-pequeno" onclick="abrirSubabaChecklist('checklist')">Checklist</button>
+                    <button class="btn btn-pequeno" onclick="abrirSubabaChecklist('referencias')">Referências</button>
+                    <button class="btn btn-pequeno" onclick="abrirSubabaChecklist('roteiros')">Roteiros</button>
+                    <button class="btn btn-pequeno" onclick="abrirSubabaChecklist('nichos')">Nichos</button>
+                    <button class="btn btn-pequeno" onclick="abrirSubabaChecklist('revisar')">Revisar</button>
+                </div>
+
+                <div id="conteudoChecklist"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAIS -->
+    <div class="modal" id="modalVideo">
+        <div class="modal-conteudo">
+            <h2 class="modal-titulo">Adicionar vídeo</h2>
+            <div class="form-grupo">
+                <label>Título</label>
+                <input type="text" id="inputVideoTitulo">
+            </div>
+            <div class="form-grupo">
+                <label>Link</label>
+                <input type="text" id="inputVideoLink">
+            </div>
+            <div class="form-grupo">
+                <label>Nicho</label>
+                <input type="text" id="inputVideoNicho">
+            </div>
+            <div class="form-grupo">
+                <label>Marca</label>
+                <input type="text" id="inputVideoMarca">
+            </div>
+            <div class="form-grupo">
+                <label>Destaque (ex: +2.4M views)</label>
+                <input type="text" id="inputVideoDestaque">
+            </div>
+            <button class="btn" onclick="salvarVideo()" style="width: 100%; margin-top: 20px;">Salvar</button>
+            <button class="btn btn-secundario" onclick="fecharModal('modalVideo')" style="width: 100%; margin-top: 10px;">Cancelar</button>
+        </div>
+    </div>
+
+    <div class="modal" id="modalMarca">
+        <div class="modal-conteudo">
+            <h2 class="modal-titulo">Adicionar marca</h2>
+            <div class="form-grupo">
+                <label>Nome</label>
+                <input type="text" id="inputMarcaNome">
+            </div>
+            <div class="form-grupo">
+                <label>Instagram</label>
+                <input type="text" id="inputMarcaInstagram">
+            </div>
+            <div class="form-grupo">
+                <label>E-mail</label>
+                <input type="email" id="inputMarcaEmail">
+            </div>
+            <div class="form-grupo">
+                <label>Telefone</label>
+                <input type="text" id="inputMarcaTelefone">
+            </div>
+            <div class="form-grupo">
+                <label>Situação</label>
+                <select id="inputMarcaSituacao">
+                    <option>Lead</option>
+                    <option>Conversando</option>
+                    <option>Cliente</option>
+                    <option>Parada</option>
+                </select>
+            </div>
+            <button class="btn" onclick="salvarMarca()" style="width: 100%; margin-top: 20px;">Salvar</button>
+            <button class="btn btn-secundario" onclick="fecharModal('modalMarca')" style="width: 100%; margin-top: 10px;">Cancelar</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/banco.js"></script>
+    <script src="../js/biblioteca.js"></script>
+    <script>
+        // Inicializa o Supabase
+        const { createClient } = supabase;
+        const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let usuarioAtual = null;
+        let abaAtual = 'portfolio';
+        let videoEditando = null;
+        let marcaEditando = null;
+
+        // Verificar sessão ao carregar
+        async function verificarSessao() {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+
+            if (!session) {
+                window.location.href = '../login/';
+                return;
+            }
+
+            usuarioAtual = session.user;
+            document.getElementById('emailUsuario').textContent = usuarioAtual.email;
+
+            carregarPortfolio();
+            carregarMarcas();
+            carregarCampanhas();
+            inicializarCalendario();
+            inicializarChecklist();
+        }
+
+        // ============ PORTFÓLIO ============
+        async function carregarPortfolio() {
+            try {
+                const { data: videos, error } = await supabaseClient
+                    .from('videos')
+                    .select('*')
+                    .order('ordem');
+
+                if (error) throw error;
+
+                document.getElementById('metVideoNoAr').textContent = videos.filter(v => v.visivel).length;
+
+                const corpo = document.getElementById('corpoTabelaVideos');
+                corpo.innerHTML = videos.map(v => `
+                    <tr>
+                        <td>
+                            <input type="checkbox" ${v.visivel ? 'checked' : ''} onchange="alternarVisibilidadeVideo(${v.id})">
+                        </td>
+                        <td>${v.titulo}</td>
+                        <td>${v.nicho || '-'}</td>
+                        <td>${v.marca || '-'}</td>
+                        <td>${v.destaque || '-'}</td>
+                        <td>
+                            <button class="btn btn-pequeno" onclick="editarVideo(${v.id})">Editar</button>
+                            <button class="btn btn-pequeno" style="background: #e74c3c; margin-left: 5px;" onclick="deletarVideo(${v.id})">Apagar</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                console.error('Erro ao carregar vídeos:', err);
+            }
+        }
+
+        function abrirModalVideo() {
+            videoEditando = null;
+            document.getElementById('inputVideoTitulo').value = '';
+            document.getElementById('inputVideoLink').value = '';
+            document.getElementById('inputVideoNicho').value = '';
+            document.getElementById('inputVideoMarca').value = '';
+            document.getElementById('inputVideoDestaque').value = '';
+            document.getElementById('modalVideo').classList.add('ativo');
+        }
+
+        async function salvarVideo() {
+            const dados = {
+                titulo: document.getElementById('inputVideoTitulo').value,
+                link: document.getElementById('inputVideoLink').value,
+                nicho: document.getElementById('inputVideoNicho').value,
+                marca: document.getElementById('inputVideoMarca').value,
+                destaque: document.getElementById('inputVideoDestaque').value,
+                visivel: true
+            };
+
+            if (!dados.titulo || !dados.link) {
+                alert('Título e link são obrigatórios');
+                return;
+            }
+
+            try {
+                if (videoEditando) {
+                    await supabaseClient
+                        .from('videos')
+                        .update(dados)
+                        .eq('id', videoEditando);
+                } else {
+                    await supabaseClient
+                        .from('videos')
+                        .insert([dados]);
+                }
+
+                fecharModal('modalVideo');
+                carregarPortfolio();
+            } catch (err) {
+                alert('Erro ao salvar vídeo');
+            }
+        }
+
+        async function deletarVideo(id) {
+            if (!confirm('Tem certeza que quer deletar?')) return;
+
+            try {
+                await supabaseClient.from('videos').delete().eq('id', id);
+                carregarPortfolio();
+            } catch (err) {
+                alert('Erro ao deletar vídeo');
+            }
+        }
+
+        async function alternarVisibilidadeVideo(id) {
+            try {
+                const { data } = await supabaseClient.from('videos').select('visivel').eq('id', id).single();
+                await supabaseClient.from('videos').update({ visivel: !data.visivel }).eq('id', id);
+                carregarPortfolio();
+            } catch (err) {
+                alert('Erro ao alterar visibilidade');
+            }
+        }
+
+        function editarVideo(id) {
+            // TODO: implementar edição de vídeo
+        }
+
+        // ============ MARCAS ============
+        async function carregarMarcas() {
+            try {
+                const { data: marcas, error } = await supabaseClient
+                    .from('marcas')
+                    .select('*');
+
+                if (error) throw error;
+
+                const corpo = document.getElementById('corpoTabelaMarcas');
+                corpo.innerHTML = marcas.map(m => `
+                    <tr onclick="abrirMarcaParaEditar(${m.id})">
+                        <td>${m.nome}</td>
+                        <td><a href="https://instagram.com/${m.instagram?.replace('@', '')}" target="_blank">${m.instagram || '-'}</a></td>
+                        <td>${m.email || '-'}</td>
+                        <td><a href="https://wa.me/${m.telefone?.replace(/\D/g, '')}">${m.telefone || '-'}</a></td>
+                        <td><span class="badge badge-${m.situacao?.toLowerCase()}">${m.situacao}</span></td>
+                        <td>
+                            <button class="btn btn-pequeno" onclick="editarMarca(${m.id}); event.stopPropagation();">Editar</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                console.error('Erro ao carregar marcas:', err);
+            }
+        }
+
+        function abrirModalMarca() {
+            marcaEditando = null;
+            document.getElementById('inputMarcaNome').value = '';
+            document.getElementById('inputMarcaInstagram').value = '';
+            document.getElementById('inputMarcaEmail').value = '';
+            document.getElementById('inputMarcaTelefone').value = '';
+            document.getElementById('inputMarcaSituacao').value = 'Lead';
+            document.getElementById('modalMarca').classList.add('ativo');
+        }
+
+        async function salvarMarca() {
+            const dados = {
+                nome: document.getElementById('inputMarcaNome').value,
+                instagram: document.getElementById('inputMarcaInstagram').value,
+                email: document.getElementById('inputMarcaEmail').value,
+                telefone: document.getElementById('inputMarcaTelefone').value,
+                situacao: document.getElementById('inputMarcaSituacao').value,
+                ultimo_contato: new Date().toISOString()
+            };
+
+            if (!dados.nome) {
+                alert('Nome é obrigatório');
+                return;
+            }
+
+            try {
+                if (marcaEditando) {
+                    await supabaseClient
+                        .from('marcas')
+                        .update(dados)
+                        .eq('id', marcaEditando);
+                } else {
+                    await supabaseClient
+                        .from('marcas')
+                        .insert([dados]);
+                }
+
+                fecharModal('modalMarca');
+                carregarMarcas();
+            } catch (err) {
+                alert('Erro ao salvar marca');
+            }
+        }
+
+        function editarMarca(id) {
+            marcaEditando = id;
+            // TODO: preencher modal com dados da marca
+            document.getElementById('modalMarca').classList.add('ativo');
+        }
+
+        function abrirMarcaParaEditar(id) {
+            // TODO: implementar
+        }
+
+        function baixarMarcasCSV() {
+            // TODO: implementar download CSV
+        }
+
+        // ============ CAMPANHAS ============
+        async function carregarCampanhas() {
+            try {
+                const { data: campanhas, error } = await supabaseClient
+                    .from('campanhas')
+                    .select('*');
+
+                if (error) throw error;
+
+                document.getElementById('metCampanhasTotal').textContent = campanhas.length;
+                document.getElementById('metCampanhasAtivas').textContent = campanhas.filter(c => c.ativa).length;
+                document.getElementById('metValorTotal').textContent = 'R$ ' + campanhas.reduce((sum, c) => sum + (c.valor || 0), 0).toFixed(2);
+                document.getElementById('metAReceber').textContent = 'R$ ' + campanhas.filter(c => c.pagamento === 'pendente').reduce((sum, c) => sum + (c.valor || 0), 0).toFixed(2);
+
+                const corpo = document.getElementById('corpoTabelaCampanhas');
+                corpo.innerHTML = campanhas.map(c => `
+                    <tr>
+                        <td><input type="checkbox" ${c.favorita ? 'checked' : ''}></td>
+                        <td>${c.campanha}</td>
+                        <td>${c.cliente}</td>
+                        <td><span class="badge">${c.tipo}</span></td>
+                        <td><span class="badge">${c.status}</span></td>
+                        <td>${c.qtd}</td>
+                        <td>R$ ${c.valor?.toFixed(2) || '0.00'}</td>
+                        <td>${c.prazo || '-'}</td>
+                        <td><span class="badge ${c.pagamento === 'pago' ? 'badge-cliente' : 'badge-aviso'}">${c.pagamento}</span></td>
+                        <td><button class="btn btn-pequeno">Editar</button></td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                console.error('Erro ao carregar campanhas:', err);
+            }
+        }
+
+        function filtrarCampanhas(filtro) {
+            // TODO: implementar filtro
+        }
+
+        function ordenarCampanhas(coluna) {
+            // TODO: implementar ordenação
+        }
+
+        function baixarCampanhasCSV() {
+            // TODO: implementar download CSV
+        }
+
+        // ============ CALENDÁRIO ============
+        function inicializarCalendario() {
+            // TODO: implementar calendário
+            document.getElementById('mesAtual').textContent = new Date().toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+        }
+
+        function mesAnterior() {
+            // TODO: implementar navegação
+        }
+
+        function mesProximo() {
+            // TODO: implementar navegação
+        }
+
+        function voltarHoje() {
+            // TODO: implementar
+        }
+
+        // ============ CHECKLIST ============
+        function inicializarChecklist() {
+            if (typeof Biblioteca !== 'undefined') {
+                // Carregar checklist da biblioteca
+            }
+        }
+
+        function abrirSubabaChecklist(sub) {
+            // TODO: implementar sub-abas
+        }
+
+        // ============ UTILITÁRIOS ============
+        function abrirAba(aba) {
+            document.querySelectorAll('.abas-container').forEach(el => el.classList.remove('ativo'));
+            document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('ativo'));
+
+            document.getElementById('aba' + aba.charAt(0).toUpperCase() + aba.slice(1)).classList.add('ativo');
+            event.target.closest('.menu-item').classList.add('ativo');
+
+            const titulos = {
+                portfolio: 'Portfólio',
+                marcas: 'Marcas',
+                calendario: 'Calendário',
+                campanhas: 'Campanhas',
+                checklist: 'Checklist'
+            };
+
+            document.getElementById('tituloAba').textContent = titulos[aba];
+            abaAtual = aba;
+        }
+
+        function abrirModalVideo() {
+            videoEditando = null;
+            document.getElementById('modalVideo').classList.add('ativo');
+        }
+
+        function fecharModal(id) {
+            document.getElementById(id).classList.remove('ativo');
+        }
+
+        async function fazerLogout() {
+            await supabaseClient.auth.signOut();
+            window.location.href = '../login/';
+        }
+
+        // Fechar modal ao clicar fora
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal')) {
+                e.target.classList.remove('ativo');
+            }
+        });
+
+        // Carregar ao abrir
+        verificarSessao();
+    </script>
+</body>
+</html>

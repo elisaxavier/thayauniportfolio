@@ -1144,7 +1144,59 @@
         }
 
         @media (max-width: 768px) {
-            .capa-conteudo,
+            .capa-conteudo {
+                display: flex;
+                flex-direction: column;
+                gap: 0;
+                padding: 0 20px;
+            }
+
+            .capa-texto {
+                display: flex;
+                flex-direction: column;
+                order: 1;
+                margin-bottom: 0;
+            }
+
+            .capa-texto h1,
+            .capa-texto p {
+                margin-bottom: 20px;
+            }
+
+            .capa-botoes {
+                margin-bottom: 30px;
+                margin-top: 0;
+            }
+
+            .capa-numeros {
+                order: 3;
+                display: flex !important;
+                justify-content: center;
+                gap: 30px;
+                margin-top: 30px;
+                margin-bottom: 0;
+                flex-direction: row !important;
+            }
+
+            .numero-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .capa-visual {
+                order: 2;
+                height: auto;
+                margin-bottom: 0;
+                margin-top: 0;
+            }
+
+            .foto-criador {
+                width: 100%;
+                height: 350px;
+            }
+
             .sobre-conteudo {
                 grid-template-columns: 1fr;
                 gap: 30px;
@@ -1421,35 +1473,7 @@
             'A-100 Hambúrgueres'
         ];
 
-        const destaques = [
-            {
-                id: 1,
-                titulo: 'UGC Shorts',
-                descricao: 'Fast-paced vertical content that drives engagement',
-                numero: '+2.4M',
-                label: 'reels views',
-                link: 'https://youtube.com/shorts/ibjViSHyJp8',
-                capa: 'Featured video 9:16 (VIDEO 1)'
-            },
-            {
-                id: 2,
-                titulo: 'Premium Unboxing',
-                descricao: 'Impactful product unboxing experience',
-                numero: '+1.8M',
-                label: 'TikTok views',
-                link: '#',
-                capa: 'Featured video 9:16 (VIDEO 2)'
-            },
-            {
-                id: 3,
-                titulo: 'Product in Action',
-                descricao: 'Practical and authentic product demonstration',
-                numero: '+3.1M',
-                label: 'impressions',
-                link: '#',
-                capa: 'Featured video 9:16 (VIDEO 3)'
-            }
-        ];
+        const destaques = [];
 
         const trabalhos = [
             { id: 1, nicho: 'beleza', titulo: 'Trabalho 1' },
@@ -1783,6 +1807,106 @@
                 }
             }, 30);
         }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/banco.js"></script>
+    <script>
+        // Inicializar Supabase
+        const { createClient } = supabase;
+        const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Carregar vídeos do banco
+        async function carregarVideosDoBanco() {
+            try {
+                const { data: videos, error } = await supabaseClient
+                    .from('videos')
+                    .select('*')
+                    .eq('visivel', true)
+                    .order('ordem');
+
+                if (error) throw error;
+
+                if (videos && videos.length > 0) {
+                    destaques.length = 0;
+                    videos.slice(0, 3).forEach((v, i) => {
+                        destaques.push({
+                            id: v.id,
+                            titulo: v.titulo,
+                            descricao: v.formato || 'Conteúdo de destaque',
+                            numero: v.destaque ? v.destaque.split(' ')[0] : '+0',
+                            label: v.destaque ? v.destaque.split(' ').slice(1).join(' ') : 'views',
+                            link: v.link,
+                            capa: 'Video ' + (i + 1)
+                        });
+                    });
+                }
+
+                renderDestaques();
+            } catch (err) {
+                console.error('Erro ao carregar vídeos:', err);
+                renderDestaques();
+            }
+        }
+
+        // Registrar visita
+        async function registrarVisita() {
+            try {
+                await supabaseClient.from('visitas').insert({
+                    pagina: window.location.pathname,
+                    origem: document.referrer || 'direto'
+                });
+            } catch (err) {
+                console.error('Erro ao registrar visita:', err);
+            }
+        }
+
+        // Enviar contato para banco de marcas
+        async function enviarContatoParaBanco(nome, email, mensagem) {
+            try {
+                await supabaseClient.from('marcas').insert({
+                    nome: nome,
+                    email: email,
+                    instagram: '',
+                    telefone: '',
+                    situacao: 'Lead',
+                    obs: mensagem,
+                    ultimo_contato: new Date().toISOString()
+                });
+            } catch (err) {
+                console.error('Erro ao salvar contato:', err);
+            }
+        }
+
+        // Modificar setupFormulario para enviar ao banco
+        document.addEventListener('DOMContentLoaded', function() {
+            const formOriginal = setupFormulario;
+            setupFormulario = function() {
+                const form = document.getElementById('formulario-contato');
+                const confirmacao = document.getElementById('confirmacao-envio');
+
+                form.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+
+                    const nome = document.getElementById('nome').value.trim();
+                    const email = document.getElementById('email').value.trim();
+                    const mensagem = document.getElementById('mensagem').value.trim();
+
+                    if (nome && email && mensagem) {
+                        await enviarContatoParaBanco(nome, email, mensagem);
+                        confirmacao.classList.add('mostrar');
+                        form.reset();
+
+                        setTimeout(() => {
+                            confirmacao.classList.remove('mostrar');
+                        }, 3000);
+                    }
+                });
+            };
+        });
+
+        // Carregar ao abrir
+        carregarVideosDoBanco();
+        registrarVisita();
     </script>
 </body>
 </html>

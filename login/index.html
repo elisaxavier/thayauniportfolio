@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="description" content="Painel de administração">
+    <title>Login - Thayna Auni Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --cor-fundo: #f3f4f2;
+            --cor-azul: #002FA7;
+            --cor-texto: #1a1a1a;
+            --cor-branco: #ffffff;
+            --cor-cinza: #8a8a8a;
+            --cor-erro: #e74c3c;
+            --sombra: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: var(--cor-fundo);
+            color: var(--cor-texto);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container-login {
+            background: var(--cor-branco);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: var(--sombra);
+            width: 100%;
+            max-width: 380px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--cor-azul);
+        }
+
+        .logo p {
+            font-size: 13px;
+            color: var(--cor-cinza);
+            margin-top: 5px;
+        }
+
+        .form-grupo {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e8e8e8;
+            border-radius: 8px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 14px;
+            transition: all 0.3s;
+            background: var(--cor-fundo);
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--cor-azul);
+            box-shadow: 0 0 0 3px rgba(0, 47, 167, 0.1);
+        }
+
+        .erro-msg {
+            display: none;
+            background: #fadbd8;
+            color: var(--cor-erro);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .erro-msg.mostrar {
+            display: block;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: var(--cor-azul);
+            color: var(--cor-branco);
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            font-family: 'Manrope', sans-serif;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #001f7d;
+            transform: translateY(-2px);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .links {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .links a {
+            color: var(--cor-azul);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .links a:hover {
+            text-decoration: underline;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            font-size: 13px;
+            color: var(--cor-cinza);
+            margin-top: 15px;
+        }
+
+        .loading.mostrar {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-login">
+        <div class="logo">
+            <h1>Thayna Auni</h1>
+            <p>Admin</p>
+        </div>
+
+        <div class="erro-msg" id="erroMsg"></div>
+
+        <form id="formularioLogin">
+            <div class="form-grupo">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="form-grupo">
+                <label for="senha">Senha</label>
+                <input type="password" id="senha" name="senha" required>
+            </div>
+
+            <button type="submit" id="btnEntrar">Entrar</button>
+
+            <div class="loading" id="loading">Entrando...</div>
+        </form>
+
+        <div class="links">
+            <a href="#" id="linkEsqueci">Esqueci minha senha</a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/banco.js"></script>
+    <script>
+        // Inicializa o Supabase
+        const { createClient } = supabase;
+        const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Verifica se já tem sessão
+        async function verificarSessao() {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (session) {
+                window.location.href = '../admin/';
+            }
+        }
+
+        // Fazer login
+        document.getElementById('formularioLogin').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const senha = document.getElementById('senha').value;
+            const erroMsg = document.getElementById('erroMsg');
+            const btnEntrar = document.getElementById('btnEntrar');
+            const loading = document.getElementById('loading');
+
+            erroMsg.classList.remove('mostrar');
+            btnEntrar.disabled = true;
+            loading.classList.add('mostrar');
+
+            try {
+                const { data, error } = await supabaseClient.auth.signInWithPassword({
+                    email: email,
+                    password: senha
+                });
+
+                if (error) {
+                    erroMsg.textContent = 'E-mail ou senha incorretos';
+                    erroMsg.classList.add('mostrar');
+                    btnEntrar.disabled = false;
+                    loading.classList.remove('mostrar');
+                } else {
+                    window.location.href = '../admin/';
+                }
+            } catch (err) {
+                erroMsg.textContent = 'E-mail ou senha incorretos';
+                erroMsg.classList.add('mostrar');
+                btnEntrar.disabled = false;
+                loading.classList.remove('mostrar');
+            }
+        });
+
+        // Recuperar senha
+        document.getElementById('linkEsqueci').addEventListener('click', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            if (!email) {
+                alert('Digite seu e-mail primeiro');
+                return;
+            }
+
+            try {
+                const { error } = await supabaseClient.auth.resetPasswordForEmail(email);
+                if (error) {
+                    alert('Erro ao enviar e-mail de recuperação');
+                } else {
+                    alert('E-mail de recuperação enviado. Verifique sua caixa de entrada.');
+                }
+            } catch (err) {
+                alert('Erro ao enviar e-mail de recuperação');
+            }
+        });
+
+        // Verificar sessão ao carregar
+        verificarSessao();
+    </script>
+</body>
+</html>
