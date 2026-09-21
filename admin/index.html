@@ -1408,24 +1408,25 @@
 
             try {
                 if (eventoEditando) {
-                    await supabaseClient
+                    const { error } = await supabaseClient
                         .from('calendario')
                         .update(dados)
                         .eq('id', eventoEditando);
+                    if (error) throw error;
                     alert('✅ Evento atualizado!');
                 } else {
-                    await supabaseClient
+                    const { error } = await supabaseClient
                         .from('calendario')
                         .insert([dados]);
+                    if (error) throw error;
                     alert('✅ Evento criado!');
                 }
                 document.getElementById('modalEvento').classList.remove('ativo');
                 renderizarCalendario();
-                await carregarEventosCalendario();
                 await carregarEventosPorDia();
             } catch (err) {
-                console.error('Erro:', err);
-                alert('Erro ao salvar evento');
+                console.error('Erro ao salvar evento:', err);
+                alert('Erro ao salvar evento: ' + err.message);
             }
         }
 
