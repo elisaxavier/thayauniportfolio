@@ -746,7 +746,7 @@
                     .from('visitas')
                     .select('origem, pagina');
 
-                document.getElementById('metVisitas14Dias').textContent = visitas14?.length || 0;
+                document.getElementById('metVisitas14').textContent = visitas14?.length || 0;
                 document.getElementById('metVisitasHoje').textContent = visitasHoje?.length || 0;
 
                 if (todasVisitas && todasVisitas.length > 0) {
@@ -762,7 +762,7 @@
                         return acc;
                     }, {});
                     const origemTop = Object.entries(origens).sort((a, b) => b[1] - a[1])[0];
-                    document.getElementById('metOrigemTop').textContent = origemTop?.[0] || '-';
+                    document.getElementById('metOrigem').textContent = origemTop?.[0] || '-';
                 }
 
                 const corpo = document.getElementById('corpoTabelaVideos');
