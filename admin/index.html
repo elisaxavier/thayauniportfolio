@@ -1418,11 +1418,15 @@
             document.getElementById('inputEventoConteudo').value = '';
             document.getElementById('inputEventoStatus').value = 'a fazer';
 
-            const data = new Date(dataSelecionada.getFullYear(), dataSelecionada.getMonth(), dia);
+            const ano = dataSelecionada.getFullYear();
+            const mes = String(dataSelecionada.getMonth() + 1).padStart(2, '0');
+            const diaStr = String(dia).padStart(2, '0');
+            const dataFormatada = `${ano}-${mes}-${diaStr}`;
+
             const inputData = document.getElementById('inputEventoData');
             const modal = document.getElementById('modalEvento');
 
-            if (inputData) inputData.value = data.toISOString().split('T')[0];
+            if (inputData) inputData.value = dataFormatada;
             if (modal) modal.classList.add('ativo');
         }
 
@@ -1479,6 +1483,7 @@
                 }
                 document.getElementById('modalEvento').classList.remove('ativo');
                 renderizarCalendario();
+                await carregarEventosCalendario();
                 await carregarEventosPorDia();
             } catch (err) {
                 console.error('Erro ao salvar evento:', err);
@@ -1491,15 +1496,16 @@
             if (!confirm('Tem certeza que quer deletar este evento?')) return;
 
             try {
-                await supabaseClient.from('calendario').delete().eq('id', eventoEditando);
+                const { error } = await supabaseClient.from('calendario').delete().eq('id', eventoEditando);
+                if (error) throw error;
                 document.getElementById('modalEvento').classList.remove('ativo');
                 renderizarCalendario();
                 await carregarEventosCalendario();
                 await carregarEventosPorDia();
                 alert('✅ Evento deletado!');
             } catch (err) {
-                console.error('Erro:', err);
-                alert('Erro ao deletar evento');
+                console.error('Erro ao deletar evento:', err);
+                alert('Erro ao deletar evento: ' + err.message);
             }
         }
 
