@@ -728,26 +728,34 @@
                 document.getElementById('metVideoNoAr').textContent = videos.filter(v => v.visivel).length;
 
                 // Carregar métricas de visitas
-                const agora = new Date();
-                const hoje = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate()).toISOString();
-                const dias14aAtras = new Date(agora.getTime() - 14 * 24 * 60 * 60 * 1000).toISOString();
+                try {
+                    const agora = new Date();
+                    const hoje = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate()).toISOString();
+                    const dias14aAtras = new Date(agora.getTime() - 14 * 24 * 60 * 60 * 1000).toISOString();
 
-                const { data: visitasHoje, count: countHoje } = await supabaseClient
-                    .from('visitas')
-                    .select('id', { count: 'exact', head: true })
-                    .gte('data', hoje);
+                    const { data: visitasHoje } = await supabaseClient
+                        .from('visitas')
+                        .select('id')
+                        .gte('data', hoje);
 
-                const { data: visitas14, count: count14 } = await supabaseClient
-                    .from('visitas')
-                    .select('id', { count: 'exact', head: true })
-                    .gte('data', dias14aAtras);
+                    const { data: visitas14 } = await supabaseClient
+                        .from('visitas')
+                        .select('id')
+                        .gte('data', dias14aAtras);
 
-                const { data: todasVisitas } = await supabaseClient
-                    .from('visitas')
-                    .select('origem, pagina');
+                    const { data: todasVisitas } = await supabaseClient
+                        .from('visitas')
+                        .select('origem, pagina');
 
-                document.getElementById('metVisitas14').textContent = count14 || 0;
-                document.getElementById('metVisitasHoje').textContent = countHoje || 0;
+                    if (document.getElementById('metVisitas14')) {
+                        document.getElementById('metVisitas14').textContent = visitas14?.length || 0;
+                    }
+                    if (document.getElementById('metVisitasHoje')) {
+                        document.getElementById('metVisitasHoje').textContent = visitasHoje?.length || 0;
+                    }
+                } catch (err) {
+                    console.error('Erro ao carregar visitas:', err);
+                }
 
                 if (todasVisitas && todasVisitas.length > 0) {
                     const nichos = videos.reduce((acc, v) => {
