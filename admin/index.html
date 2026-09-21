@@ -261,11 +261,12 @@
             border: 2px solid var(--cor-cinza-claro);
             border-radius: 12px;
             padding: 16px;
-            min-height: 140px;
+            height: 120px;
             cursor: pointer;
             transition: all 0.3s;
             display: flex;
             flex-direction: column;
+            justify-content: flex-start;
         }
 
         .dia:hover {
@@ -278,23 +279,20 @@
             background: transparent;
             cursor: default;
             border: none;
+            height: auto;
         }
 
         .dia strong {
             display: block;
             font-size: 20px;
             font-weight: 700;
-            margin-bottom: 12px;
             color: var(--cor-texto);
         }
 
         .eventos-mini {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--cor-texto);
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
+            margin-top: 6px;
         }
 
         .evento-ponto {
@@ -1230,15 +1228,38 @@
                         return;
                     }
 
-                    container.innerHTML = eventos.map(e => `
-                        <div style="display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--cor-cinza-claro);">
-                            <input type="checkbox" ${e.status === 'concluído' ? 'checked' : ''}
-                                onchange="atualizarStatusEvento(${e.id}, this.checked)"
-                                style="cursor: pointer; width: 18px; height: 18px;">
-                            <span style="flex: 1; font-size: 13px; ${e.status === 'concluído' ? 'text-decoration: line-through; color: var(--cor-cinza);' : ''}">${e.titulo}${e.tipo ? ' - ' + e.tipo : ''}</span>
-                            <button class="btn btn-pequeno" style="padding: 4px 8px; font-size: 11px;" onclick="deletarEventoDoDia(${e.id})">✕</button>
-                        </div>
-                    `).join('');
+                    const grupos = {
+                        'a fazer': [],
+                        'em andamento': [],
+                        'concluído': []
+                    };
+
+                    eventos.forEach(e => {
+                        const status = e.status || 'a fazer';
+                        if (grupos[status]) grupos[status].push(e);
+                    });
+
+                    let html = '';
+                    Object.entries(grupos).forEach(([status, items]) => {
+                        if (items.length > 0) {
+                            const statusLabel = status.charAt(0).toUpperCase() + status.slice(1);
+                            html += `<div style="margin-bottom: 12px;">
+                                <div style="font-size: 12px; font-weight: 600; color: var(--cor-azul); margin-bottom: 6px;">${statusLabel}</div>`;
+                            items.forEach(e => {
+                                const label = `${e.marca || '-'} - ${e.tipo || '-'} - ${e.conteudo || '-'}`;
+                                html += `<div style="display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--cor-cinza-claro);">
+                                    <input type="checkbox" ${e.status === 'concluído' ? 'checked' : ''} onchange="atualizarStatusEvento(${e.id}, this.checked)" style="cursor: pointer; width: 16px; height: 16px; margin-top: 2px; flex-shrink: 0;">
+                                    <div style="flex: 1; font-size: 12px; ${e.status === 'concluído' ? 'text-decoration: line-through; color: var(--cor-cinza);' : ''}">
+                                        <div style="font-weight: 500;">${e.titulo}</div>
+                                        <div style="color: var(--cor-cinza); font-size: 11px;">${label}</div>
+                                    </div>
+                                    <button class="btn btn-pequeno" style="padding: 2px 6px; font-size: 10px; flex-shrink: 0;" onclick="deletarEventoDoDia(${e.id})">✕</button>
+                                </div>`;
+                            });
+                            html += '</div>';
+                        }
+                    });
+                    container.innerHTML = html;
                 };
 
                 renderarEventos(eventosOntem, 'eventosOntem');
@@ -1287,83 +1308,30 @@
 
             const diasSemana = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB'];
 
-            let grid = '<div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 15px;">';
+            let grid = '<div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px;">';
 
-            // Cabeçalho com dias da semana
+            // Cabeçalho com dias da semana (alinhado com o grid)
             diasSemana.forEach(dia => {
-                grid += `<div style="text-align: center; font-weight: 600; color: var(--cor-azul); padding: 8px 0;">${dia}</div>`;
+                grid += `<div style="text-align: center; font-weight: 600; color: var(--cor-azul); padding: 8px 0; font-size: 13px;">${dia}</div>`;
             });
 
-            grid += '</div><div id="calendarioGridDias" class="calendarioGrid-dias"></div>';
-
-            document.getElementById('calendarioGrid').innerHTML = grid;
-
-            // Renderizar dias
-            let gridDias = '';
-            for (let i = 0; i < diaInicio; i++) gridDias += '<div class="dia vazio"></div>';
-            for (let dia = 1; dia <= diasMes; dia++) {
-                gridDias += `<div class="dia" onclick="selecionarDia(${dia})"><strong>${dia}</strong><div id="eventos-${dia}" class="eventos-mini"></div></div>`;
+            // Dias vazios
+            for (let i = 0; i < diaInicio; i++) {
+                grid += '<div class="dia vazio"></div>';
             }
 
-            document.getElementById('calendarioGridDias').innerHTML = gridDias;
-            document.getElementById('calendarioGridDias').style.display = 'grid';
-            document.getElementById('calendarioGridDias').style.gridTemplateColumns = 'repeat(7, 1fr)';
-            document.getElementById('calendarioGridDias').style.gap = '8px';
+            // Dias do mês
+            for (let dia = 1; dia <= diasMes; dia++) {
+                grid += `<div class="dia" onclick="selecionarDia(${dia})"><strong>${dia}</strong></div>`;
+            }
+
+            grid += '</div>';
+
+            document.getElementById('calendarioGrid').innerHTML = grid;
         }
 
         async function carregarEventosCalendario() {
-            try {
-                const { data: eventos } = await supabaseClient.from('calendario').select('*');
-                const ano = dataSelecionada.getFullYear();
-                const mes = dataSelecionada.getMonth() + 1;
-
-                // Limpar eventos anteriores
-                for (let dia = 1; dia <= 31; dia++) {
-                    const container = document.getElementById(`eventos-${dia}`);
-                    if (container) container.innerHTML = '';
-                }
-
-                eventos?.forEach(e => {
-                    const dataEvento = new Date(e.data);
-                    if (dataEvento.getFullYear() === ano && dataEvento.getMonth() + 1 === mes) {
-                        const dia = dataEvento.getDate();
-                        const container = document.getElementById(`eventos-${dia}`);
-                        if (container) {
-                            const titulo = e.titulo || 'Sem título';
-                            const tipo = e.tipo || '';
-                            const conteudo = e.conteudo || '';
-                            const texto = `${titulo}${tipo ? ' - ' + tipo : ''}${conteudo ? ' - ' + conteudo : ''}`;
-
-                            const div = document.createElement('div');
-                            div.className = 'evento-item';
-                            div.style.cssText = `
-                                background: var(--cor-azul);
-                                color: var(--cor-branco);
-                                padding: 6px 8px;
-                                border-radius: 4px;
-                                font-size: 11px;
-                                margin: 3px 0;
-                                white-space: nowrap;
-                                overflow: hidden;
-                                text-overflow: ellipsis;
-                                cursor: pointer;
-                                transition: all 0.2s;
-                            `;
-                            div.title = texto;
-                            div.textContent = texto;
-                            div.onclick = (evt) => {
-                                evt.stopPropagation();
-                                editarEvento(e.id);
-                            };
-                            div.onmouseover = () => div.style.background = '#001f7d';
-                            div.onmouseout = () => div.style.background = 'var(--cor-azul)';
-                            container.appendChild(div);
-                        }
-                    }
-                });
-            } catch (err) {
-                console.error('Erro ao carregar eventos:', err);
-            }
+            // Função agora não faz nada - eventos são mostrados na seção ONTEM/HOJE/AMANHÃ
         }
 
         function mesAnterior() {
