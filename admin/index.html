@@ -908,36 +908,49 @@
 
             <!-- ABA 3: CLIENTES -->
             <div class="abas-container" id="abaClientes">
-                <div style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
-                    <input type="text" id="buscaClientes" placeholder="Buscar por nome, email, telefone" style="flex: 1; min-width: 200px;">
-                    <button class="btn" onclick="abrirModalCliente()">+ Adicionar Cliente</button>
+                <div style="display: flex; gap: 10px; margin-bottom: 20px; align-items: center; flex-wrap: wrap; border-bottom: 2px solid var(--cor-cinza-claro); padding-bottom: 15px;">
+                    <div id="clientesTabs" style="display: flex; gap: 8px; flex-wrap: wrap;"></div>
+                    <button class="btn btn-pequeno" onclick="abrirModalNovoCliente()" style="margin-left: auto;">+ Novo Cliente</button>
                 </div>
 
-                <div style="background: var(--cor-branco); border-radius: 12px; box-shadow: var(--sombra); overflow: hidden;">
-                    <table style="width: 100%; border-collapse: collapse;">
-                        <thead style="background: var(--cor-fundo);">
-                            <tr>
-                                <th style="padding: 15px; text-align: left; font-weight: 600; border-bottom: 1px solid var(--cor-cinza-claro);">Nome</th>
-                                <th style="padding: 15px; text-align: left; font-weight: 600; border-bottom: 1px solid var(--cor-cinza-claro);">Email</th>
-                                <th style="padding: 15px; text-align: left; font-weight: 600; border-bottom: 1px solid var(--cor-cinza-claro);">Telefone</th>
-                                <th style="padding: 15px; text-align: left; font-weight: 600; border-bottom: 1px solid var(--cor-cinza-claro);">Tipo</th>
-                                <th style="padding: 15px; text-align: left; font-weight: 600; border-bottom: 1px solid var(--cor-cinza-claro);">Status</th>
-                                <th style="padding: 15px; text-align: left; font-weight: 600; border-bottom: 1px solid var(--cor-cinza-claro);">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="corpoTabelaClientes"></tbody>
-                    </table>
+                <div id="clienteConteudo" style="background: var(--cor-branco); border-radius: 12px; box-shadow: var(--sombra); padding: 30px;">
+                    <h2 id="clienteNomeDisplay" style="margin-bottom: 20px;"></h2>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                        <div style="background: var(--cor-fundo); padding: 15px; border-radius: 8px;">
+                            <div style="font-size: 12px; color: var(--cor-cinza); margin-bottom: 5px;">EMAIL</div>
+                            <div id="clienteEmailDisplay" style="font-weight: 600;"></div>
+                        </div>
+                        <div style="background: var(--cor-fundo); padding: 15px; border-radius: 8px;">
+                            <div style="font-size: 12px; color: var(--cor-cinza); margin-bottom: 5px;">TELEFONE</div>
+                            <div id="clienteTelefoneDisplay" style="font-weight: 600;"></div>
+                        </div>
+                        <div style="background: var(--cor-fundo); padding: 15px; border-radius: 8px;">
+                            <div style="font-size: 12px; color: var(--cor-cinza); margin-bottom: 5px;">TIPO</div>
+                            <div id="clienteTipoDisplay" style="font-weight: 600;"></div>
+                        </div>
+                        <div style="background: var(--cor-fundo); padding: 15px; border-radius: 8px;">
+                            <div style="font-size: 12px; color: var(--cor-cinza); margin-bottom: 5px;">STATUS</div>
+                            <div id="clienteStatusDisplay" style="font-weight: 600;"></div>
+                        </div>
+                    </div>
+
+                    <div style="border-top: 1px solid var(--cor-cinza-claro); padding-top: 20px;">
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn btn-pequeno" onclick="editarClienteAtual()">Editar</button>
+                            <button class="btn btn-pequeno btn-secundario" onclick="deletarClienteAtual()">Deletar</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <!-- MODAL CLIENTE -->
             <div id="modalCliente" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
                 <div style="background: white; padding: 30px; border-radius: 12px; max-width: 500px; width: 90%;">
-                    <h2 style="margin-bottom: 20px;">Adicionar Cliente</h2>
-                    <input type="text" id="clienteNome" placeholder="Nome da Marca" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid var(--cor-cinza-claro); border-radius: 6px;">
-                    <input type="email" id="clienteEmail" placeholder="Email" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid var(--cor-cinza-claro); border-radius: 6px;">
-                    <input type="tel" id="clienteTelefone" placeholder="Telefone" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid var(--cor-cinza-claro); border-radius: 6px;">
-                    <select id="clienteTipo" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid var(--cor-cinza-claro); border-radius: 6px;">
+                    <h2 id="modalTitulo" style="margin-bottom: 20px;">Novo Cliente</h2>
+                    <input type="text" id="clienteNomeInput" placeholder="Nome da Marca" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid var(--cor-cinza-claro); border-radius: 6px;">
+                    <input type="email" id="clienteEmailInput" placeholder="Email" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid var(--cor-cinza-claro); border-radius: 6px;">
+                    <input type="tel" id="clienteTelefoneInput" placeholder="Telefone" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid var(--cor-cinza-claro); border-radius: 6px;">
+                    <select id="clienteTipoInput" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid var(--cor-cinza-claro); border-radius: 6px;">
                         <option value="">Selecione o tipo</option>
                         <option value="Brand">Brand</option>
                         <option value="Agência">Agência</option>
@@ -945,7 +958,7 @@
                         <option value="Outro">Outro</option>
                     </select>
                     <div style="display: flex; gap: 10px; margin-top: 20px;">
-                        <button class="btn" onclick="salvarCliente()" style="flex: 1;">Salvar</button>
+                        <button class="btn" onclick="salvarClienteModal()" style="flex: 1;">Salvar</button>
                         <button class="btn btn-secundario" onclick="fecharModalCliente()" style="flex: 1;">Cancelar</button>
                     </div>
                 </div>
@@ -2145,83 +2158,116 @@
 
         // ============ CLIENTES ============
         let clientes = [
-            { id: 1, nome: 'LoveFood', email: 'contact@lovefood.com', telefone: '+55 11 98765-4321', tipo: 'Brand', status: 'Ativo', data_criacao: '2026-09-01' }
+            { id: 1, nome: 'LoveFood', email: 'contact@lovefood.com', telefone: '+55 11 98765-4321', tipo: 'Brand', status: 'Ativo', data_criacao: '2026-09-01' },
+            { id: 2, nome: 'She Travel', email: 'contact@shetravel.com', telefone: '+55 11 99999-8888', tipo: 'Brand', status: 'Ativo', data_criacao: '2026-09-15' },
+            { id: 3, nome: 'Traces of Me', email: 'contact@tracesofme.com', telefone: '+55 11 91234-5678', tipo: 'Brand', status: 'Ativo', data_criacao: '2026-09-20' }
         ];
+        let clienteAtualId = 1;
 
         function carregarClientes() {
-            const corpo = document.getElementById('corpoTabelaClientes');
-            corpo.innerHTML = clientes.map(c => `
-                <tr style="border-bottom: 1px solid var(--cor-cinza-claro); cursor: pointer;" onclick="editarCliente(${c.id})">
-                    <td style="padding: 15px;">${c.nome}</td>
-                    <td style="padding: 15px;">${c.email}</td>
-                    <td style="padding: 15px;">${c.telefone}</td>
-                    <td style="padding: 15px;">${c.tipo}</td>
-                    <td style="padding: 15px;">
-                        <span style="background: ${c.status === 'Ativo' ? '#27ae60' : '#e74c3c'}; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">
-                            ${c.status}
-                        </span>
-                    </td>
-                    <td style="padding: 15px;">
-                        <button class="btn btn-pequeno" onclick="editarCliente(${c.id}); event.stopPropagation();">Editar</button>
-                        <button class="btn btn-pequeno btn-secundario" onclick="deletarCliente(${c.id}); event.stopPropagation();">Deletar</button>
-                    </td>
-                </tr>
+            const tabsContainer = document.getElementById('clientesTabs');
+            tabsContainer.innerHTML = clientes.map(c => `
+                <button class="btn btn-pequeno ${clienteAtualId === c.id ? '' : 'btn-secundario'}"
+                    onclick="selecionarCliente(${c.id})"
+                    style="${clienteAtualId === c.id ? 'background: var(--cor-azul); color: white;' : ''}">
+                    ${c.nome}
+                </button>
             `).join('');
+
+            exibirClienteAtual();
         }
 
-        function abrirModalCliente() {
+        function selecionarCliente(id) {
+            clienteAtualId = id;
+            carregarClientes();
+        }
+
+        function exibirClienteAtual() {
+            const cliente = clientes.find(c => c.id === clienteAtualId);
+            if (cliente) {
+                document.getElementById('clienteNomeDisplay').textContent = cliente.nome;
+                document.getElementById('clienteEmailDisplay').textContent = cliente.email;
+                document.getElementById('clienteTelefoneDisplay').textContent = cliente.telefone;
+                document.getElementById('clienteTipoDisplay').textContent = cliente.tipo;
+                document.getElementById('clienteStatusDisplay').textContent = cliente.status;
+            }
+        }
+
+        function abrirModalNovoCliente() {
+            document.getElementById('modalTitulo').textContent = 'Novo Cliente';
+            document.getElementById('clienteNomeInput').value = '';
+            document.getElementById('clienteEmailInput').value = '';
+            document.getElementById('clienteTelefoneInput').value = '';
+            document.getElementById('clienteTipoInput').value = '';
             document.getElementById('modalCliente').style.display = 'flex';
-            document.getElementById('clienteNome').value = '';
-            document.getElementById('clienteEmail').value = '';
-            document.getElementById('clienteTelefone').value = '';
-            document.getElementById('clienteTipo').value = '';
+            document.getElementById('modalCliente').dataset.editando = 'false';
+        }
+
+        function editarClienteAtual() {
+            const cliente = clientes.find(c => c.id === clienteAtualId);
+            if (cliente) {
+                document.getElementById('modalTitulo').textContent = `Editar ${cliente.nome}`;
+                document.getElementById('clienteNomeInput').value = cliente.nome;
+                document.getElementById('clienteEmailInput').value = cliente.email;
+                document.getElementById('clienteTelefoneInput').value = cliente.telefone;
+                document.getElementById('clienteTipoInput').value = cliente.tipo;
+                document.getElementById('modalCliente').style.display = 'flex';
+                document.getElementById('modalCliente').dataset.editando = 'true';
+            }
         }
 
         function fecharModalCliente() {
             document.getElementById('modalCliente').style.display = 'none';
         }
 
-        function salvarCliente() {
-            const nome = document.getElementById('clienteNome').value;
-            const email = document.getElementById('clienteEmail').value;
-            const telefone = document.getElementById('clienteTelefone').value;
-            const tipo = document.getElementById('clienteTipo').value;
+        function salvarClienteModal() {
+            const nome = document.getElementById('clienteNomeInput').value;
+            const email = document.getElementById('clienteEmailInput').value;
+            const telefone = document.getElementById('clienteTelefoneInput').value;
+            const tipo = document.getElementById('clienteTipoInput').value;
 
             if (!nome || !email || !telefone || !tipo) {
                 alert('Por favor, preencha todos os campos');
                 return;
             }
 
-            const novoCliente = {
-                id: Math.max(...clientes.map(c => c.id), 0) + 1,
-                nome,
-                email,
-                telefone,
-                tipo,
-                status: 'Ativo',
-                data_criacao: new Date().toISOString().split('T')[0]
-            };
+            const editando = document.getElementById('modalCliente').dataset.editando === 'true';
 
-            clientes.push(novoCliente);
+            if (editando) {
+                const cliente = clientes.find(c => c.id === clienteAtualId);
+                if (cliente) {
+                    cliente.nome = nome;
+                    cliente.email = email;
+                    cliente.telefone = telefone;
+                    cliente.tipo = tipo;
+                }
+                alert('Cliente atualizado com sucesso!');
+            } else {
+                const novoCliente = {
+                    id: Math.max(...clientes.map(c => c.id), 0) + 1,
+                    nome,
+                    email,
+                    telefone,
+                    tipo,
+                    status: 'Ativo',
+                    data_criacao: new Date().toISOString().split('T')[0]
+                };
+                clientes.push(novoCliente);
+                clienteAtualId = novoCliente.id;
+                alert('Cliente adicionado com sucesso!');
+            }
+
             carregarClientes();
             fecharModalCliente();
-            alert('Cliente adicionado com sucesso!');
         }
 
-        function editarCliente(id) {
-            const cliente = clientes.find(c => c.id === id);
-            if (cliente) {
-                document.getElementById('clienteNome').value = cliente.nome;
-                document.getElementById('clienteEmail').value = cliente.email;
-                document.getElementById('clienteTelefone').value = cliente.telefone;
-                document.getElementById('clienteTipo').value = cliente.tipo;
-                document.getElementById('modalCliente').style.display = 'flex';
-            }
-        }
-
-        function deletarCliente(id) {
-            if (confirm('Tem certeza que deseja deletar este cliente?')) {
-                clientes = clientes.filter(c => c.id !== id);
+        function deletarClienteAtual() {
+            const cliente = clientes.find(c => c.id === clienteAtualId);
+            if (cliente && confirm(`Tem certeza que deseja deletar "${cliente.nome}"?`)) {
+                clientes = clientes.filter(c => c.id !== clienteAtualId);
+                if (clientes.length > 0) {
+                    clienteAtualId = clientes[0].id;
+                }
                 carregarClientes();
                 alert('Cliente deletado com sucesso!');
             }
