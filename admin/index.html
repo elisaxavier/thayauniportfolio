@@ -2170,6 +2170,72 @@
         </div>
     </div>
 
+    <!-- MODAL: LOVEFOOD CONTEÚDO -->
+    <div class="modal" id="lf_modal">
+        <div class="modal-conteudo" style="max-width: 500px;">
+            <div class="modal-titulo">Novo Conteúdo</div>
+
+            <div class="form-grupo">
+                <label>Título *</label>
+                <input type="text" id="lf_titulo" placeholder="Título do conteúdo">
+            </div>
+
+            <div class="form-grupo">
+                <label>Descrição</label>
+                <textarea id="lf_descricao" placeholder="Descrição (opcional)" rows="2"></textarea>
+            </div>
+
+            <div class="form-grupo">
+                <label>Tipo *</label>
+                <select id="lf_tipo">
+                    <option value="">Selecionar...</option>
+                    <option value="Reels">Reels</option>
+                    <option value="Carrossel">Carrossel</option>
+                    <option value="Post">Post</option>
+                    <option value="Newsletter">Newsletter</option>
+                </select>
+            </div>
+
+            <div class="form-grupo">
+                <label>Estado *</label>
+                <select id="lf_estado">
+                    <option value="">Selecionar...</option>
+                    <option value="Em andamento">Em andamento</option>
+                    <option value="Aguardando aprovação">Aguardando aprovação</option>
+                    <option value="Aprovado">Aprovado</option>
+                </select>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="form-grupo">
+                    <label>Agendado?</label>
+                    <select id="lf_agendado">
+                        <option value="Não">Não</option>
+                        <option value="Sim">Sim</option>
+                    </select>
+                </div>
+                <div class="form-grupo">
+                    <label>Design?</label>
+                    <select id="lf_design">
+                        <option value="Não">Não</option>
+                        <option value="Sim">Sim</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-grupo">
+                <label>Observações</label>
+                <textarea id="lf_observacoes" placeholder="Observações (opcional)" rows="2"></textarea>
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+                <button class="btn" onclick="lf_salvar()" style="flex: 1;">Salvar</button>
+                <button class="btn btn-pequeno" id="lf_btnDeletar" onclick="lf_deletar()" style="background: #e74c3c; display: none;">Deletar</button>
+                <button class="btn btn-secundario" onclick="lf_fecharModal()" style="flex: 1;">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../js/banco.js"></script>
     <script src="../js/biblioteca.js"></script>
@@ -2978,8 +3044,26 @@
 
         // ============ CALENDÁRIO LOVEFOOD (ISOLADO) ============
         let lf_data = new Date();
+        let lf_db;
+        let lf_editandoId = null;
 
-        function lf_renderizar() {
+        function lf_abrirDB() {
+            return new Promise((resolve) => {
+                const req = indexedDB.open('LFCalendario', 1);
+                req.onupgradeneeded = (e) => {
+                    const db = e.target.result;
+                    if (!db.objectStoreNames.contains('conteudos')) {
+                        db.createObjectStore('conteudos', { keyPath: 'id', autoIncrement: true });
+                    }
+                };
+                req.onsuccess = (e) => {
+                    lf_db = e.target.result;
+                    resolve();
+                };
+            });
+        }
+
+        async function lf_renderizar() {
             const ano = lf_data.getFullYear();
             const mes = lf_data.getMonth();
             const primeiro = new Date(ano, mes, 1);
@@ -3007,6 +3091,52 @@
             document.getElementById('lf_grid').innerHTML = grid;
             document.getElementById('lf_grid').style.gridTemplateColumns = 'repeat(7, 1fr)';
             document.getElementById('lf_grid').style.gap = '18px';
+
+            lf_renderizarConteudos();
+        }
+
+        function lf_renderizarConteudos() {
+            if (!lf_db) return;
+            const t = lf_db.transaction('conteudos', 'readonly');
+            const store = t.objectStore('conteudos');
+            const req = store.getAll();
+
+            req.onsuccess = () => {
+                const conteudos = req.result;
+                const ano = lf_data.getFullYear();
+                const mes = lf_data.getMonth() + 1;
+
+                for (let dia = 1; dia <= 31; dia++) {
+                    const el = document.getElementById(`lf_conteudos_${dia}`);
+                    if (el) el.innerHTML = '';
+                }
+
+                conteudos.forEach(c => {
+                    const d = new Date(c.data);
+                    if (d.getFullYear() === ano && d.getMonth() + 1 === mes) {
+                        const dia = d.getDate();
+                        const el = document.getElementById(`lf_conteudos_${dia}`);
+                        if (el) {
+                            const cores = { 'Reels': '#FF6B6B', 'Carrossel': '#FFD93D', 'Post': '#6BCB77', 'Newsletter': '#4D96FF' };
+                            const coresEstado = { 'Em andamento': '#FFC107', 'Aguardando aprovação': '#FF9800', 'Aprovado': '#4CAF50' };
+
+                            let html = `<div style="font-weight: 600; font-size: 11px; margin-bottom: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer;" onclick="lf_editar(${c.id}); event.stopPropagation();">${c.titulo}</div>`;
+
+                            html += `<span style="background: ${cores[c.tipo] || '#999'}; color: white; padding: 2px 4px; border-radius: 2px; font-size: 9px; display: inline-block; margin-right: 2px; margin-bottom: 2px;">${c.tipo}</span>`;
+                            html += `<span style="background: ${coresEstado[c.estado] || '#999'}; color: white; padding: 2px 4px; border-radius: 2px; font-size: 9px; display: inline-block; margin-right: 2px; margin-bottom: 2px;">${c.estado}</span>`;
+
+                            if (c.agendado === 'Sim') {
+                                html += `<span style="background: #E91E63; color: white; padding: 2px 4px; border-radius: 2px; font-size: 9px; display: inline-block; margin-right: 2px; margin-bottom: 2px;">AGENDADO</span>`;
+                            }
+                            if (c.design === 'Sim') {
+                                html += `<span style="background: #9C27B0; color: white; padding: 2px 4px; border-radius: 2px; font-size: 9px; display: inline-block; margin-bottom: 2px;">Design</span>`;
+                            }
+
+                            el.innerHTML = html;
+                        }
+                    }
+                });
+            };
         }
 
         function lf_mesAnterior() {
@@ -3025,14 +3155,134 @@
         }
 
         function lf_novoConteudo() {
-            alert('Criar novo conteúdo - em desenvolvimento');
+            lf_editandoId = null;
+            document.getElementById('lf_titulo').value = '';
+            document.getElementById('lf_descricao').value = '';
+            document.getElementById('lf_tipo').value = '';
+            document.getElementById('lf_estado').value = '';
+            document.getElementById('lf_agendado').value = 'Não';
+            document.getElementById('lf_design').value = 'Não';
+            document.getElementById('lf_observacoes').value = '';
+            document.getElementById('lf_btnDeletar').style.display = 'none';
+            document.querySelector('#lf_modal .modal-titulo').textContent = 'Novo Conteúdo';
+            document.getElementById('lf_modal').classList.add('ativo');
         }
 
         function lf_abrirDia(dia) {
-            alert(`Clicou no dia ${dia} - em desenvolvimento`);
+            lf_editandoId = null;
+            const ano = lf_data.getFullYear();
+            const mes = String(lf_data.getMonth() + 1).padStart(2, '0');
+            const diaStr = String(dia).padStart(2, '0');
+
+            document.getElementById('lf_titulo').value = '';
+            document.getElementById('lf_descricao').value = '';
+            document.getElementById('lf_tipo').value = '';
+            document.getElementById('lf_estado').value = '';
+            document.getElementById('lf_agendado').value = 'Não';
+            document.getElementById('lf_design').value = 'Não';
+            document.getElementById('lf_observacoes').value = '';
+            document.getElementById('lf_btnDeletar').style.display = 'none';
+            document.querySelector('#lf_modal .modal-titulo').textContent = 'Novo Conteúdo';
+
+            // Adicionar campo de data ao modal (criar se não existir)
+            if (!document.getElementById('lf_data')) {
+                const formGrupo = document.createElement('div');
+                formGrupo.className = 'form-grupo';
+                formGrupo.innerHTML = '<label>Data *</label><input type="date" id="lf_data">';
+                document.querySelector('#lf_modal .form-grupo').parentNode.insertBefore(formGrupo, document.querySelector('#lf_modal .form-grupo'));
+            }
+            document.getElementById('lf_data').value = `${ano}-${mes}-${diaStr}`;
+
+            document.getElementById('lf_modal').classList.add('ativo');
         }
 
-        function lf_inicializar() {
+        function lf_editar(id) {
+            if (!lf_db) return;
+            lf_editandoId = id;
+            const t = lf_db.transaction('conteudos', 'readonly');
+            const store = t.objectStore('conteudos');
+            const req = store.get(id);
+
+            req.onsuccess = () => {
+                const c = req.result;
+                if (c) {
+                    document.getElementById('lf_titulo').value = c.titulo || '';
+                    document.getElementById('lf_descricao').value = c.descricao || '';
+                    document.getElementById('lf_data').value = c.data || '';
+                    document.getElementById('lf_tipo').value = c.tipo || '';
+                    document.getElementById('lf_estado').value = c.estado || '';
+                    document.getElementById('lf_agendado').value = c.agendado || 'Não';
+                    document.getElementById('lf_design').value = c.design || 'Não';
+                    document.getElementById('lf_observacoes').value = c.observacoes || '';
+                    document.getElementById('lf_btnDeletar').style.display = 'block';
+                    document.querySelector('#lf_modal .modal-titulo').textContent = 'Editar Conteúdo';
+                    document.getElementById('lf_modal').classList.add('ativo');
+                }
+            };
+        }
+
+        function lf_salvar() {
+            const titulo = document.getElementById('lf_titulo').value.trim();
+            const data = document.getElementById('lf_data').value;
+            const tipo = document.getElementById('lf_tipo').value;
+            const estado = document.getElementById('lf_estado').value;
+
+            if (!titulo || !data || !tipo || !estado) {
+                alert('Preencha: Título, Data, Tipo e Estado');
+                return;
+            }
+
+            if (!lf_db) return;
+
+            const conteudo = {
+                titulo,
+                descricao: document.getElementById('lf_descricao').value,
+                data,
+                tipo,
+                estado,
+                agendado: document.getElementById('lf_agendado').value,
+                design: document.getElementById('lf_design').value,
+                observacoes: document.getElementById('lf_observacoes').value
+            };
+
+            const t = lf_db.transaction('conteudos', 'readwrite');
+            const store = t.objectStore('conteudos');
+
+            if (lf_editandoId) {
+                conteudo.id = lf_editandoId;
+                store.put(conteudo);
+            } else {
+                store.add(conteudo);
+            }
+
+            t.oncomplete = () => {
+                lf_fecharModal();
+                lf_renderizar();
+                alert('✅ Salvo!');
+            };
+        }
+
+        function lf_deletar() {
+            if (!lf_editandoId || !confirm('Deletar?')) return;
+            if (!lf_db) return;
+
+            const t = lf_db.transaction('conteudos', 'readwrite');
+            const store = t.objectStore('conteudos');
+            store.delete(lf_editandoId);
+
+            t.oncomplete = () => {
+                lf_fecharModal();
+                lf_renderizar();
+                alert('✅ Deletado!');
+            };
+        }
+
+        function lf_fecharModal() {
+            document.getElementById('lf_modal').classList.remove('ativo');
+        }
+
+        async function lf_inicializar() {
+            await lf_abrirDB();
             lf_renderizar();
         }
 
