@@ -1288,11 +1288,17 @@
 
                 <!-- CALENDÁRIO PAGE -->
                 <div id="lovefood-calendario" class="lovefood-pagina" style="display: none;">
-                    <div style="text-align: center; padding: 60px 30px; color: #999;">
-                        <h2 style="font-size: 24px; font-weight: 600; color: var(--cor-texto); margin-bottom: 15px;">Calendário</h2>
-                        <p>Planejamento de conteúdo mensal do LoveFood</p>
-                        <p style="margin-top: 20px; font-size: 13px;">Em desenvolvimento...</p>
+                    <div style="display: flex; gap: 10px; margin-bottom: 20px; align-items: center; justify-content: space-between;">
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <button class="btn btn-pequeno" onclick="lfCalAnterior()">Anterior</button>
+                            <span id="lfMesAtual" style="flex: 1; text-align: center; font-weight: 600; min-width: 150px;"></span>
+                            <button class="btn btn-pequeno" onclick="lfCalProximo()">Próximo</button>
+                            <button class="btn btn-secundario btn-pequeno" onclick="lfCalVoltarHoje()">Este mês</button>
+                        </div>
+                        <button class="btn" onclick="abrirModalLFConteudo()">+ Novo Conteúdo</button>
                     </div>
+
+                    <div id="lfCalendarioGrid" style="width: 100%; display: grid;"></div>
                 </div>
 
             </div>
@@ -2166,6 +2172,78 @@
         </div>
     </div>
 
+    <!-- MODAL: CONTEÚDO DO CALENDÁRIO LOVEFOOD -->
+    <div class="modal" id="modalLFConteudo">
+        <div class="modal-conteudo" style="max-width: 600px;">
+            <div class="modal-titulo" id="tituloModalLFConteudo">Novo Conteúdo</div>
+
+            <div class="form-grupo">
+                <label>Título *</label>
+                <input type="text" id="lfInputTitulo" placeholder="Título do conteúdo">
+            </div>
+
+            <div class="form-grupo">
+                <label>Descrição</label>
+                <textarea id="lfInputDescricao" placeholder="Descrição (opcional)" rows="3" style="resize: vertical;"></textarea>
+            </div>
+
+            <div class="form-grupo">
+                <label>Data de Publicação *</label>
+                <input type="date" id="lfInputData">
+            </div>
+
+            <div class="form-grupo">
+                <label>Tipo de Conteúdo *</label>
+                <select id="lfInputTipo">
+                    <option value="">Selecionar...</option>
+                    <option value="Reels">Reels</option>
+                    <option value="Carrossel">Carrossel</option>
+                    <option value="Post">Post</option>
+                    <option value="Newsletter">Newsletter</option>
+                </select>
+            </div>
+
+            <div class="form-grupo">
+                <label>Estado de Produção *</label>
+                <select id="lfInputEstado">
+                    <option value="">Selecionar...</option>
+                    <option value="Em andamento">Em andamento</option>
+                    <option value="Aguardando aprovação">Aguardando aprovação</option>
+                    <option value="Aprovado">Aprovado</option>
+                </select>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="form-grupo">
+                    <label>Agendado?</label>
+                    <select id="lfInputAgendado">
+                        <option value="Não">Não</option>
+                        <option value="Sim">Sim</option>
+                    </select>
+                </div>
+
+                <div class="form-grupo">
+                    <label>Necessita de Design?</label>
+                    <select id="lfInputDesign">
+                        <option value="Não">Não</option>
+                        <option value="Sim">Sim</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-grupo">
+                <label>Observações</label>
+                <textarea id="lfInputObservacoes" placeholder="Observações (opcional)" rows="2" style="resize: vertical;"></textarea>
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+                <button class="btn" onclick="salvarLFConteudo()" style="flex: 1;">Salvar</button>
+                <button class="btn btn-pequeno" id="btnDeletarLFConteudo" onclick="deletarLFConteudo()" style="background: #e74c3c; display: none;">Deletar</button>
+                <button class="btn btn-secundario" onclick="fecharModal('modalLFConteudo')" style="flex: 1;">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../js/banco.js"></script>
     <script src="../js/biblioteca.js"></script>
@@ -2969,6 +3047,250 @@
             }
         }
 
+        // ============ CALENDÁRIO LOVEFOOD ============
+        let lfCalendarDB;
+        let lfDataSelecionada = new Date();
+        let lfConteudoEditando = null;
+
+        async function inicializarLFCalendario() {
+            await lfInicializarDB();
+            lfRenderizarCalendario();
+        }
+
+        function lfInicializarDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open('LFCalendarioDB', 1);
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => {
+                    lfCalendarDB = request.result;
+                    resolve();
+                };
+                request.onupgradeneeded = (e) => {
+                    const db = e.target.result;
+                    if (!db.objectStoreNames.contains('conteudos')) {
+                        const store = db.createObjectStore('conteudos', { keyPath: 'id', autoIncrement: true });
+                        store.createIndex('data', 'data', { unique: false });
+                    }
+                };
+            });
+        }
+
+        function lfRenderizarCalendario() {
+            const ano = lfDataSelecionada.getFullYear();
+            const mes = lfDataSelecionada.getMonth();
+
+            document.getElementById('lfMesAtual').textContent = new Date(ano, mes).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+
+            const primeiro = new Date(ano, mes, 1);
+            const ultimo = new Date(ano, mes + 1, 0);
+            const diasMes = ultimo.getDate();
+            const diaInicio = primeiro.getDay();
+
+            const diasSemana = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB'];
+
+            let grid = '';
+
+            diasSemana.forEach(dia => {
+                grid += `<div style="text-align: center; font-weight: 700; color: var(--cor-azul); padding: 12px 0; font-size: 15px; text-transform: uppercase; letter-spacing: 0.5px;">${dia}</div>`;
+            });
+
+            for (let i = 0; i < diaInicio; i++) {
+                grid += '<div class="dia vazio"></div>';
+            }
+
+            for (let dia = 1; dia <= diasMes; dia++) {
+                grid += `<div class="dia" style="cursor: pointer;" onclick="lfAbrirDia(${dia})"><strong>${dia}</strong><div id="lfConteudos-${dia}" class="eventos-mini"></div></div>`;
+            }
+
+            document.getElementById('lfCalendarioGrid').innerHTML = grid;
+            document.getElementById('lfCalendarioGrid').style.gridTemplateColumns = 'repeat(7, 1fr)';
+            document.getElementById('lfCalendarioGrid').style.gap = '18px';
+
+            lfCarregarConteudos();
+        }
+
+        function lfCarregarConteudos() {
+            if (!lfCalendarDB) return;
+
+            const transaction = lfCalendarDB.transaction(['conteudos'], 'readonly');
+            const store = transaction.objectStore('conteudos');
+            const request = store.getAll();
+
+            request.onsuccess = () => {
+                const conteudos = request.result;
+                const ano = lfDataSelecionada.getFullYear();
+                const mes = lfDataSelecionada.getMonth() + 1;
+
+                for (let dia = 1; dia <= 31; dia++) {
+                    const container = document.getElementById(`lfConteudos-${dia}`);
+                    if (container) container.innerHTML = '';
+                }
+
+                conteudos.forEach(c => {
+                    const dataConteudo = new Date(c.data);
+                    if (dataConteudo.getFullYear() === ano && dataConteudo.getMonth() + 1 === mes) {
+                        const dia = dataConteudo.getDate();
+                        const container = document.getElementById(`lfConteudos-${dia}`);
+                        if (container) {
+                            const badge = document.createElement('div');
+                            badge.style.cssText = 'padding: 4px 6px; margin-bottom: 2px; border-radius: 3px; font-size: 10px; font-weight: 500; cursor: pointer; background: #f0f0f0; color: #333;';
+
+                            let html = `<div style="font-weight: 600; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${c.titulo}</div>`;
+
+                            const cores = { 'Reels': '#FF6B6B', 'Carrossel': '#FFD93D', 'Post': '#6BCB77', 'Newsletter': '#4D96FF' };
+                            html += `<span style="display: inline-block; background: ${cores[c.tipo] || '#999'}; color: white; padding: 2px 4px; border-radius: 2px; font-size: 9px; margin-right: 2px;">${c.tipo}</span>`;
+
+                            const coresEstado = { 'Em andamento': '#FFC107', 'Aguardando aprovação': '#FF9800', 'Aprovado': '#4CAF50' };
+                            html += `<span style="display: inline-block; background: ${coresEstado[c.estado] || '#999'}; color: white; padding: 2px 4px; border-radius: 2px; font-size: 9px; margin-right: 2px;">${c.estado}</span>`;
+
+                            if (c.agendado === 'Sim') {
+                                html += `<span style="display: inline-block; background: #E91E63; color: white; padding: 2px 4px; border-radius: 2px; font-size: 9px; margin-right: 2px;">AGENDADO</span>`;
+                            }
+
+                            if (c.design === 'Sim') {
+                                html += `<span style="display: inline-block; background: #9C27B0; color: white; padding: 2px 4px; border-radius: 2px; font-size: 9px;">Design</span>`;
+                            }
+
+                            badge.innerHTML = html;
+                            badge.onclick = (e) => {
+                                e.stopPropagation();
+                                lfEditarConteudo(c.id);
+                            };
+                            container.appendChild(badge);
+                        }
+                    }
+                });
+            };
+        }
+
+        function lfCalAnterior() {
+            lfDataSelecionada.setMonth(lfDataSelecionada.getMonth() - 1);
+            lfRenderizarCalendario();
+        }
+
+        function lfCalProximo() {
+            lfDataSelecionada.setMonth(lfDataSelecionada.getMonth() + 1);
+            lfRenderizarCalendario();
+        }
+
+        function lfCalVoltarHoje() {
+            lfDataSelecionada = new Date();
+            lfRenderizarCalendario();
+        }
+
+        function lfAbrirDia(dia) {
+            lfConteudoEditando = null;
+            document.getElementById('tituloModalLFConteudo').textContent = 'Novo Conteúdo';
+            document.getElementById('btnDeletarLFConteudo').style.display = 'none';
+
+            document.getElementById('lfInputTitulo').value = '';
+            document.getElementById('lfInputDescricao').value = '';
+            document.getElementById('lfInputTipo').value = '';
+            document.getElementById('lfInputEstado').value = '';
+            document.getElementById('lfInputAgendado').value = 'Não';
+            document.getElementById('lfInputDesign').value = 'Não';
+            document.getElementById('lfInputObservacoes').value = '';
+
+            const ano = lfDataSelecionada.getFullYear();
+            const mes = String(lfDataSelecionada.getMonth() + 1).padStart(2, '0');
+            const diaStr = String(dia).padStart(2, '0');
+            document.getElementById('lfInputData').value = `${ano}-${mes}-${diaStr}`;
+
+            document.getElementById('modalLFConteudo').classList.add('ativo');
+        }
+
+        function lfEditarConteudo(id) {
+            lfConteudoEditando = id;
+
+            if (!lfCalendarDB) return;
+
+            const transaction = lfCalendarDB.transaction(['conteudos'], 'readonly');
+            const store = transaction.objectStore('conteudos');
+            const request = store.get(id);
+
+            request.onsuccess = () => {
+                const c = request.result;
+                if (c) {
+                    document.getElementById('tituloModalLFConteudo').textContent = 'Editar Conteúdo';
+                    document.getElementById('btnDeletarLFConteudo').style.display = 'block';
+
+                    document.getElementById('lfInputTitulo').value = c.titulo || '';
+                    document.getElementById('lfInputDescricao').value = c.descricao || '';
+                    document.getElementById('lfInputData').value = c.data || '';
+                    document.getElementById('lfInputTipo').value = c.tipo || '';
+                    document.getElementById('lfInputEstado').value = c.estado || '';
+                    document.getElementById('lfInputAgendado').value = c.agendado || 'Não';
+                    document.getElementById('lfInputDesign').value = c.design || 'Não';
+                    document.getElementById('lfInputObservacoes').value = c.observacoes || '';
+
+                    document.getElementById('modalLFConteudo').classList.add('ativo');
+                }
+            };
+        }
+
+        function salvarLFConteudo() {
+            const titulo = document.getElementById('lfInputTitulo').value.trim();
+            const data = document.getElementById('lfInputData').value;
+            const tipo = document.getElementById('lfInputTipo').value;
+            const estado = document.getElementById('lfInputEstado').value;
+
+            if (!titulo || !data || !tipo || !estado) {
+                alert('Preencha os campos obrigatórios: Título, Data, Tipo e Estado');
+                return;
+            }
+
+            const conteudo = {
+                titulo,
+                descricao: document.getElementById('lfInputDescricao').value,
+                data,
+                tipo,
+                estado,
+                agendado: document.getElementById('lfInputAgendado').value,
+                design: document.getElementById('lfInputDesign').value,
+                observacoes: document.getElementById('lfInputObservacoes').value
+            };
+
+            if (!lfCalendarDB) return;
+
+            const transaction = lfCalendarDB.transaction(['conteudos'], 'readwrite');
+            const store = transaction.objectStore('conteudos');
+
+            if (lfConteudoEditando) {
+                conteudo.id = lfConteudoEditando;
+                store.put(conteudo);
+                alert('✅ Conteúdo atualizado!');
+            } else {
+                store.add(conteudo);
+                alert('✅ Conteúdo criado!');
+            }
+
+            transaction.oncomplete = () => {
+                document.getElementById('modalLFConteudo').classList.remove('ativo');
+                lfRenderizarCalendario();
+            };
+        }
+
+        function deletarLFConteudo() {
+            if (!lfConteudoEditando) return;
+            if (!confirm('Tem certeza que quer deletar este conteúdo?')) return;
+
+            if (!lfCalendarDB) return;
+
+            const transaction = lfCalendarDB.transaction(['conteudos'], 'readwrite');
+            const store = transaction.objectStore('conteudos');
+            store.delete(lfConteudoEditando);
+
+            transaction.oncomplete = () => {
+                document.getElementById('modalLFConteudo').classList.remove('ativo');
+                lfRenderizarCalendario();
+                alert('✅ Conteúdo deletado!');
+            };
+        }
+
+        function abrirModalLFConteudo() {
+            lfAbrirDia(new Date().getDate());
+        }
+
         // ============ CHECKLIST ============
         async function inicializarChecklist() {
             try {
@@ -3083,6 +3405,10 @@
             const paginaElement = document.getElementById('lovefood-' + pagina);
             if (paginaElement) {
                 paginaElement.style.display = 'block';
+            }
+
+            if (pagina === 'calendario') {
+                inicializarLFCalendario();
             }
 
             event.target.style.borderBottomColor = 'var(--cor-azul)';
