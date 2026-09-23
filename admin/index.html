@@ -3117,19 +3117,19 @@
                         const dia = d.getDate();
                         const el = document.getElementById(`lf_conteudos_${dia}`);
                         if (el) {
-                            const cores = { 'Reels': '#FF6B6B', 'Carrossel': '#FFD93D', 'Post': '#6BCB77', 'Newsletter': '#4D96FF' };
-                            const coresEstado = { 'Em andamento': '#FFC107', 'Aguardando aprovação': '#FF9800', 'Aprovado': '#4CAF50' };
+                            const cores = { 'Reels': '#FFB3BA', 'Carrossel': '#FFFFBA', 'Post': '#BAE1BA', 'Newsletter': '#BAC7FF' };
+                            const coresEstado = { 'Em andamento': '#FFD9B3', 'Aguardando aprovação': '#FFCCCC', 'Aprovado': '#D4F1D4' };
 
-                            let html = `<div style="font-weight: 600; font-size: 11px; margin-bottom: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer;" onclick="lf_editar(${c.id}); event.stopPropagation();">${c.titulo}</div>`;
+                            let html = `<div style="font-weight: bold; font-size: 13px; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; color: #333;" onclick="lf_editar(${c.id}); event.stopPropagation();">${c.titulo}</div>`;
 
-                            html += `<span style="background: ${cores[c.tipo] || '#999'}; color: white; padding: 2px 4px; border-radius: 2px; font-size: 9px; display: inline-block; margin-right: 2px; margin-bottom: 2px;">${c.tipo}</span>`;
-                            html += `<span style="background: ${coresEstado[c.estado] || '#999'}; color: white; padding: 2px 4px; border-radius: 2px; font-size: 9px; display: inline-block; margin-right: 2px; margin-bottom: 2px;">${c.estado}</span>`;
+                            html += `<span style="background: ${cores[c.tipo] || '#E0E0E0'}; color: #333; padding: 3px 6px; border-radius: 3px; font-size: 10px; font-weight: 600; display: inline-block; margin-right: 3px; margin-bottom: 2px;">${c.tipo}</span>`;
+                            html += `<span style="background: ${coresEstado[c.estado] || '#E0E0E0'}; color: #333; padding: 3px 6px; border-radius: 3px; font-size: 10px; font-weight: 600; display: inline-block; margin-right: 3px; margin-bottom: 2px;">${c.estado}</span>`;
 
                             if (c.agendado === 'Sim') {
-                                html += `<span style="background: #E91E63; color: white; padding: 2px 4px; border-radius: 2px; font-size: 9px; display: inline-block; margin-right: 2px; margin-bottom: 2px;">AGENDADO</span>`;
+                                html += `<span style="background: #FFB6E1; color: #333; padding: 3px 6px; border-radius: 3px; font-size: 10px; font-weight: 600; display: inline-block; margin-right: 3px; margin-bottom: 2px;">AGENDADO</span>`;
                             }
                             if (c.design === 'Sim') {
-                                html += `<span style="background: #9C27B0; color: white; padding: 2px 4px; border-radius: 2px; font-size: 9px; display: inline-block; margin-bottom: 2px;">Design</span>`;
+                                html += `<span style="background: #E1D5FF; color: #333; padding: 3px 6px; border-radius: 3px; font-size: 10px; font-weight: 600; display: inline-block; margin-bottom: 2px;">Design</span>`;
                             }
 
                             el.innerHTML = html;
