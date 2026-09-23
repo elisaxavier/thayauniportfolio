@@ -3895,7 +3895,7 @@
                                 <div style="font-size: 13px; color: #666; margin-bottom: 8px;">${item.tipo} · ${data}</div>
                                 <div style="font-size: 12px; color: #999;">${item.estado}${item.agendado === 'Sim' ? ' · Agendado' : ''}</div>
                             </div>
-                            ${isAguardandoAprovacao ? `<button onclick="lf_aprovarConteudo(${item.id}); lf_fecharListaFiltrada();" style="padding: 6px 12px; background: var(--cor-azul); color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 12px; white-space: nowrap;">✓ Aprovar</button>` : ''}
+                            ${isAguardandoAprovacao ? '<button onclick="lf_aprovarConteudo('+item.id+'); lf_fecharListaFiltrada();" style="padding: 6px 12px; background: var(--cor-azul); color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 12px; white-space: nowrap;">✓ Aprovar</button>' : ''}
                         </div>
                     `;
                 });
