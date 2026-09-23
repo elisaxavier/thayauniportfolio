@@ -1329,10 +1329,20 @@
 
                 <!-- CONTENT GRID PAGE -->
                 <div id="lovefood-contentgrid" class="lovefood-pagina" style="display: none;">
-                    <div style="text-align: center; padding: 60px 30px; color: #999;">
-                        <h2 style="font-size: 24px; font-weight: 600; color: var(--cor-texto); margin-bottom: 15px;">Content Grid</h2>
-                        <p>Grade visual de todos os posts do LoveFood</p>
-                        <p style="margin-top: 20px; font-size: 13px;">Em desenvolvimento...</p>
+                    <div style="margin-bottom: 40px;">
+                        <h2 style="font-size: 24px; font-weight: 600; color: var(--cor-texto); margin-bottom: 24px;">CONTENT GRID</h2>
+
+                        <!-- UPLOAD AREA -->
+                        <div style="border: 2px dashed #e0e0e0; border-radius: 8px; padding: 40px; text-align: center; cursor: pointer; transition: all 0.3s; background: #f8f9fa;" id="lf_uploadArea" onclick="document.getElementById('lf_uploadInput').click();" onmouseover="this.style.borderColor='var(--cor-azul)'; this.style.background='#e8f4f8'" onmouseout="this.style.borderColor='#e0e0e0'; this.style.background='#f8f9fa'">
+                            <div style="font-size: 14px; font-weight: 600; color: var(--cor-azul); margin-bottom: 8px;">Clique ou arraste imagens aqui</div>
+                            <div style="font-size: 12px; color: #999;">PNG, JPG até 5MB</div>
+                            <input type="file" id="lf_uploadInput" multiple accept="image/*" onchange="lf_adicionarImagens(event)" style="display: none;">
+                        </div>
+                    </div>
+
+                    <!-- GRID DE IMAGENS -->
+                    <div id="lf_gridImagens" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; margin-top: 40px;">
+                        <!-- Imagens preenchidas dinamicamente -->
                     </div>
                 </div>
 
@@ -2221,6 +2231,40 @@
     </div>
 
     <!-- MODAL: LOVEFOOD CONTEÚDO -->
+    <div class="modal" id="lf_modalImagem">
+        <div class="modal-conteudo" style="max-width: 700px;">
+            <div class="modal-titulo">Imagem - Content Grid</div>
+
+            <div style="display: flex; gap: 24px; margin-bottom: 24px;">
+                <img id="lf_imagemPreview" src="" style="width: 300px; height: 300px; object-fit: cover; border-radius: 8px;">
+
+                <div style="flex: 1;">
+                    <div class="form-grupo">
+                        <label>Legenda (Admin edita)</label>
+                        <textarea id="lf_imagemLegenda" placeholder="Adicione uma legenda..." rows="4" style="width: 100%; padding: 8px; border: 1px solid #e0e0e0; border-radius: 4px; font-family: inherit;"></textarea>
+                    </div>
+                    <button class="btn" onclick="lf_salvarLegenda()" style="margin-top: 8px;">Salvar Legenda</button>
+                </div>
+            </div>
+
+            <div style="border-top: 1px solid #e0e0e0; padding-top: 16px;">
+                <h3 style="font-size: 14px; font-weight: 600; margin-bottom: 12px; color: var(--cor-texto);">Comentários</h3>
+                <div id="lf_comentariosLista" style="max-height: 200px; overflow-y: auto; margin-bottom: 12px;">
+                    <!-- Comentários preenchidos dinamicamente -->
+                </div>
+                <div class="form-grupo">
+                    <input type="text" id="lf_comentarioNovo" placeholder="Deixe um comentário..." style="width: 100%; padding: 8px; border: 1px solid #e0e0e0; border-radius: 4px;">
+                </div>
+                <button class="btn btn-pequeno" onclick="lf_adicionarComentario()">Comentar</button>
+            </div>
+
+            <div style="margin-top: 20px; display: flex; gap: 8px;">
+                <button class="btn btn-pequeno" onclick="lf_deletarImagem()" style="background: #e74c3c;">🗑 Deletar</button>
+                <button class="btn btn-secundario" style="flex: 1;" onclick="lf_fecharModalImagem()">Fechar</button>
+            </div>
+        </div>
+    </div>
+
     <div class="modal" id="lf_modal">
         <div class="modal-conteudo" style="max-width: 500px;">
             <div class="modal-titulo">Novo Conteúdo</div>
@@ -3460,6 +3504,10 @@
                 lf_carregarVisaoGeral();
             }
 
+            if (pagina === 'contentgrid') {
+                lf_carregarContentGrid();
+            }
+
             event.target.style.borderBottomColor = 'var(--cor-azul)';
             event.target.style.color = 'var(--cor-azul)';
         }
@@ -3941,6 +3989,176 @@
                 alert('✓ Conteúdo aprovado!');
             };
         }
+
+        // ============ LOVEFOOD CONTENT GRID ============
+        let lf_dbImagens;
+        let lf_imagemAtualId = null;
+
+        function lf_abrirDBImagens() {
+            return new Promise((resolve) => {
+                const req = indexedDB.open('LFContentGrid', 1);
+                req.onupgradeneeded = (e) => {
+                    const db = e.target.result;
+                    if (!db.objectStoreNames.contains('imagens')) {
+                        db.createObjectStore('imagens', { keyPath: 'id', autoIncrement: true });
+                    }
+                };
+                req.onsuccess = (e) => {
+                    lf_dbImagens = e.target.result;
+                    resolve();
+                };
+            });
+        }
+
+        async function lf_carregarContentGrid() {
+            await lf_abrirDBImagens();
+            lf_renderizarGrid();
+        }
+
+        function lf_renderizarGrid() {
+            if (!lf_dbImagens) return;
+
+            const t = lf_dbImagens.transaction('imagens', 'readonly');
+            const store = t.objectStore('imagens');
+            const req = store.getAll();
+
+            req.onsuccess = () => {
+                const imagens = req.result;
+                const container = document.getElementById('lf_gridImagens');
+                container.innerHTML = '';
+
+                imagens.forEach(img => {
+                    const div = document.createElement('div');
+                    div.style.cssText = 'position: relative; overflow: hidden; border-radius: 8px; aspect-ratio: 1; cursor: pointer; background: #f0f0f0;';
+                    div.innerHTML = `
+                        <img src="${img.blob}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                        <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0); transition: background 0.3s;" onmouseover="this.style.background='rgba(0,0,0,0.3)'" onmouseout="this.style.background='rgba(0,0,0,0)'"></div>
+                    `;
+                    div.onclick = () => lf_abrirModalImagem(img.id);
+                    container.appendChild(div);
+                });
+            };
+        }
+
+        function lf_adicionarImagens(event) {
+            const files = event.target.files;
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const blob = e.target.result;
+                    const imagem = {
+                        blob,
+                        legenda: '',
+                        comentarios: [],
+                        data: new Date().toISOString()
+                    };
+
+                    const t = lf_dbImagens.transaction('imagens', 'readwrite');
+                    const store = t.objectStore('imagens');
+                    store.add(imagem);
+
+                    t.oncomplete = () => {
+                        lf_renderizarGrid();
+                    };
+                };
+                reader.readAsDataURL(file);
+            });
+            event.target.value = '';
+        }
+
+        function lf_abrirModalImagem(id) {
+            if (!lf_dbImagens) return;
+
+            lf_imagemAtualId = id;
+            const t = lf_dbImagens.transaction('imagens', 'readonly');
+            const store = t.objectStore('imagens');
+            const req = store.get(id);
+
+            req.onsuccess = () => {
+                const img = req.result;
+                if (img) {
+                    document.getElementById('lf_imagemPreview').src = img.blob;
+                    document.getElementById('lf_imagemLegenda').value = img.legenda || '';
+
+                    const comentariosDiv = document.getElementById('lf_comentariosLista');
+                    comentariosDiv.innerHTML = '';
+                    (img.comentarios || []).forEach(com => {
+                        const p = document.createElement('p');
+                        p.style.cssText = 'margin: 8px 0; padding: 8px; background: #f8f9fa; border-radius: 4px; font-size: 13px; color: #666;';
+                        p.textContent = com;
+                        comentariosDiv.appendChild(p);
+                    });
+
+                    document.getElementById('lf_modalImagem').classList.add('ativo');
+                }
+            };
+        }
+
+        function lf_fecharModalImagem() {
+            document.getElementById('lf_modalImagem').classList.remove('ativo');
+            lf_imagemAtualId = null;
+        }
+
+        function lf_salvarLegenda() {
+            if (!lf_imagemAtualId || !lf_dbImagens) return;
+
+            const legenda = document.getElementById('lf_imagemLegenda').value;
+            const t = lf_dbImagens.transaction('imagens', 'readwrite');
+            const store = t.objectStore('imagens');
+            const req = store.get(lf_imagemAtualId);
+
+            req.onsuccess = () => {
+                const img = req.result;
+                img.legenda = legenda;
+                store.put(img);
+            };
+
+            t.oncomplete = () => {
+                alert('Legenda salva!');
+                lf_renderizarGrid();
+            };
+        }
+
+        function lf_adicionarComentario() {
+            if (!lf_imagemAtualId || !lf_dbImagens) return;
+
+            const comentario = document.getElementById('lf_comentarioNovo').value.trim();
+            if (!comentario) return;
+
+            const t = lf_dbImagens.transaction('imagens', 'readwrite');
+            const store = t.objectStore('imagens');
+            const req = store.get(lf_imagemAtualId);
+
+            req.onsuccess = () => {
+                const img = req.result;
+                if (!img.comentarios) img.comentarios = [];
+                img.comentarios.push(comentario);
+                store.put(img);
+            };
+
+            t.oncomplete = () => {
+                document.getElementById('lf_comentarioNovo').value = '';
+                lf_abrirModalImagem(lf_imagemAtualId);
+            };
+        }
+
+        function lf_deletarImagem() {
+            if (!lf_imagemAtualId || !lf_dbImagens) return;
+
+            if (!confirm('Tem certeza que quer deletar esta imagem?')) return;
+
+            const t = lf_dbImagens.transaction('imagens', 'readwrite');
+            const store = t.objectStore('imagens');
+            store.delete(lf_imagemAtualId);
+
+            t.oncomplete = () => {
+                lf_fecharModalImagem();
+                lf_renderizarGrid();
+                alert('Imagem deletada!');
+            };
+        }
+
+        lf_abrirDBImagens();
 
         // Carregar ao abrir
         verificarSessao();
