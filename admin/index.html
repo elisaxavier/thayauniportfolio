@@ -3726,8 +3726,9 @@
                 }
                 document.getElementById('lf_resumoDinamico').textContent = resumo;
 
-                // Itens prioritários
+                // Itens prioritários (sem duplicação)
                 const itensAtencao = [];
+                const idsAdicionados = new Set();
 
                 // 1. Atrasados
                 const atrasadosLista = conteudos.filter(c => {
@@ -3735,15 +3736,30 @@
                     dataCont.setHours(0, 0, 0, 0);
                     return dataCont < hoje && c.agendado === 'Não';
                 });
-                atrasadosLista.forEach(c => itensAtencao.push({...c, prioridade: 1}));
+                atrasadosLista.forEach(c => {
+                    if (!idsAdicionados.has(c.id)) {
+                        itensAtencao.push({...c, prioridade: 1});
+                        idsAdicionados.add(c.id);
+                    }
+                });
 
                 // 2. Aguardando aprovação
                 const aguardandoLista = conteudos.filter(c => c.estado === 'Aguardando aprovação');
-                aguardandoLista.forEach(c => itensAtencao.push({...c, prioridade: 2}));
+                aguardandoLista.forEach(c => {
+                    if (!idsAdicionados.has(c.id)) {
+                        itensAtencao.push({...c, prioridade: 2});
+                        idsAdicionados.add(c.id);
+                    }
+                });
 
                 // 3. Aprovados mas não agendados
                 const aprovadosNaoAgendados = conteudos.filter(c => c.estado === 'Aprovado' && c.agendado === 'Não');
-                aprovadosNaoAgendados.forEach(c => itensAtencao.push({...c, prioridade: 3}));
+                aprovadosNaoAgendados.forEach(c => {
+                    if (!idsAdicionados.has(c.id)) {
+                        itensAtencao.push({...c, prioridade: 3});
+                        idsAdicionados.add(c.id);
+                    }
+                });
 
                 // Ordenar por prioridade e limite a 5
                 itensAtencao.sort((a, b) => a.prioridade - b.prioridade);
@@ -3796,18 +3812,109 @@
         }
 
         function lf_filtrarPorEstado(estado) {
-            abrirClienteSecao('lovefood-visaogeral');
-            alert(`Filtrar por: ${estado === 'todos' ? 'Todos' : estado}`);
+            if (!lf_db) return;
+
+            const t = lf_db.transaction('conteudos', 'readonly');
+            const store = t.objectStore('conteudos');
+            const req = store.getAll();
+
+            req.onsuccess = () => {
+                const conteudos = req.result;
+                let filtrados = conteudos;
+
+                if (estado === 'Em andamento') {
+                    filtrados = conteudos.filter(c => c.estado === 'Em andamento');
+                } else if (estado === 'Aguardando aprovação') {
+                    filtrados = conteudos.filter(c => c.estado === 'Aguardando aprovação');
+                } else if (estado === 'Aprovado') {
+                    filtrados = conteudos.filter(c => c.estado === 'Aprovado');
+                }
+
+                lf_mostrarListaFiltrada(filtrados, `Conteúdos: ${estado === 'todos' ? 'Todos' : estado}`);
+            };
         }
 
         function lf_filtrarAgendadas() {
-            abrirClienteSecao('lovefood-visaogeral');
-            alert('Filtrar por: Agendadas');
+            if (!lf_db) return;
+
+            const t = lf_db.transaction('conteudos', 'readonly');
+            const store = t.objectStore('conteudos');
+            const req = store.getAll();
+
+            req.onsuccess = () => {
+                const conteudos = req.result;
+                const filtrados = conteudos.filter(c => c.agendado === 'Sim');
+                lf_mostrarListaFiltrada(filtrados, 'Conteúdos: Agendados');
+            };
         }
 
         function lf_filtrarAtrasadas() {
-            abrirClienteSecao('lovefood-visaogeral');
-            alert('Filtrar por: Atrasadas');
+            if (!lf_db) return;
+
+            const t = lf_db.transaction('conteudos', 'readonly');
+            const store = t.objectStore('conteudos');
+            const req = store.getAll();
+
+            req.onsuccess = () => {
+                const conteudos = req.result;
+                const hoje = new Date();
+                hoje.setHours(0, 0, 0, 0);
+                const filtrados = conteudos.filter(c => {
+                    const dataCont = new Date(c.data);
+                    dataCont.setHours(0, 0, 0, 0);
+                    return dataCont < hoje && c.agendado === 'Não';
+                });
+                lf_mostrarListaFiltrada(filtrados, 'Conteúdos: Atrasados');
+            };
+        }
+
+        function lf_mostrarListaFiltrada(items, titulo) {
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; z-index: 9999;';
+
+            const conteudo = document.createElement('div');
+            conteudo.style.cssText = 'background: white; border-radius: 8px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 4px 16px rgba(0,0,0,0.15);';
+
+            let html = `
+                <div style="padding: 24px; border-bottom: 1px solid #e0e0e0;">
+                    <h2 style="font-size: 18px; font-weight: 600; margin: 0; color: var(--cor-texto);">${titulo}</h2>
+                </div>
+                <div style="padding: 24px;">
+            `;
+
+            if (items.length === 0) {
+                html += '<p style="color: #999; text-align: center;">Nenhum item encontrado.</p>';
+            } else {
+                items.forEach(item => {
+                    const data = new Date(item.data).toLocaleDateString('pt-BR');
+                    html += `
+                        <div style="padding: 12px; background: #f8f9fa; border-radius: 4px; margin-bottom: 12px; cursor: pointer; transition: all 0.3s;" onclick="lf_editar(${item.id}); lf_fecharListaFiltrada();" onmouseover="this.style.background='#e8f4f8'" onmouseout="this.style.background='#f8f9fa'">
+                            <div style="font-weight: 600; color: var(--cor-texto); margin-bottom: 4px;">${item.titulo}</div>
+                            <div style="font-size: 13px; color: #666; margin-bottom: 8px;">${item.tipo} · ${data}</div>
+                            <div style="font-size: 12px; color: #999;">${item.estado}${item.agendado === 'Sim' ? ' · Agendado' : ''}</div>
+                        </div>
+                    `;
+                });
+            }
+
+            html += `
+                </div>
+                <div style="padding: 16px; border-top: 1px solid #e0e0e0; text-align: right;">
+                    <button onclick="lf_fecharListaFiltrada()" style="padding: 8px 16px; background: none; border: 1px solid #e0e0e0; border-radius: 4px; cursor: pointer; color: var(--cor-texto); font-weight: 500;">Fechar</button>
+                </div>
+            `;
+
+            conteudo.innerHTML = html;
+            modal.appendChild(conteudo);
+            document.body.appendChild(modal);
+            window.lf_modalFiltro = modal;
+        }
+
+        function lf_fecharListaFiltrada() {
+            if (window.lf_modalFiltro) {
+                window.lf_modalFiltro.remove();
+                window.lf_modalFiltro = null;
+            }
         }
 
         // Carregar ao abrir
