@@ -875,10 +875,6 @@
 
             <div class="menu-secao">
                 <div class="menu-secao-titulo">Minha rotina</div>
-                <button class="menu-item" onclick="abrirAba('calendario')">
-                    <div class="menu-item-icon"></div>
-                    Calendário
-                </button>
                 <button class="menu-item" onclick="abrirAba('campanhas')">
                     <div class="menu-item-icon"></div>
                     Campanhas
@@ -995,17 +991,14 @@
 
                 <!-- MENU PÁGINAS LOVEFOOD -->
                 <div style="display: flex; gap: 40px; border-bottom: 1px solid #e0e0e0; margin-bottom: 40px; flex-wrap: wrap; padding-bottom: 0;">
-                    <button class="btn-dashboard-tab ativo" onclick="abrirLovefoodPagina('dashboard')" style="border: none; background: none; padding: 0; font-size: 14px; font-weight: 700; color: var(--cor-texto); border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.3s; padding-bottom: 12px; text-transform: uppercase;">
-                        <strong>DASHBOARD</strong>
+                    <button class="btn-dashboard-tab ativo" onclick="abrirLovefoodPagina('dashboard')" style="border: none; background: none; padding: 0; font-size: 14px; font-weight: 500; color: var(--cor-texto); border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.3s; padding-bottom: 12px;">
+                        Dashboard
                     </button>
-                    <button class="btn-dashboard-tab" onclick="abrirLovefoodPagina('contentgrid')" style="border: none; background: none; padding: 0; font-size: 14px; font-weight: 700; color: var(--cor-texto); border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.3s; padding-bottom: 12px; text-transform: uppercase;">
-                        <strong>CONTENT GRID</strong>
+                    <button class="btn-dashboard-tab" onclick="abrirLovefoodPagina('contentgrid')" style="border: none; background: none; padding: 0; font-size: 14px; font-weight: 500; color: var(--cor-texto); border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.3s; padding-bottom: 12px;">
+                        Content Grid
                     </button>
-                    <button class="btn-dashboard-tab" onclick="abrirLovefoodPagina('calendario')" style="border: none; background: none; padding: 0; font-size: 14px; font-weight: 700; color: var(--cor-texto); border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.3s; padding-bottom: 12px; text-transform: uppercase;">
-                        <strong>CALENDÁRIO</strong>
-                    </button>
-                    <button class="btn-dashboard-tab" onclick="abrirLovefoodPagina('documentos')" style="border: none; background: none; padding: 0; font-size: 14px; font-weight: 700; color: var(--cor-texto); border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.3s; padding-bottom: 12px; text-transform: uppercase;">
-                        <strong>DOCUMENTOS</strong>
+                    <button class="btn-dashboard-tab" onclick="abrirLovefoodPagina('calendario')" style="border: none; background: none; padding: 0; font-size: 14px; font-weight: 500; color: var(--cor-texto); border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.3s; padding-bottom: 12px;">
+                        Calendário
                     </button>
                 </div>
 
@@ -1298,25 +1291,6 @@
                     </div>
                 </div>
 
-                <!-- DOCUMENTOS PAGE -->
-                <div id="lovefood-documentos" class="lovefood-pagina" style="display: none;">
-                    <div style="margin-bottom: 50px;">
-                        <h2 style="font-size: 20px; font-weight: 600; margin-bottom: 30px; color: var(--cor-texto);">Upload de Documentos</h2>
-
-                        <div style="background: #f8f9fa; padding: 30px; border-radius: 8px; border: 2px dashed #e0e0e0; text-align: center; margin-bottom: 40px;">
-                            <input type="file" id="lovefoodFileInput" accept=".pdf,.doc,.docx" style="display: none;" onchange="lovefoodAdicionarArquivo(event)">
-                            <button onclick="document.getElementById('lovefoodFileInput').click()" style="background: var(--cor-azul); color: white; border: none; padding: 12px 24px; border-radius: 6px; font-size: 14px; font-weight: 500; cursor: pointer;">
-                                + Adicionar PDF ou DOC
-                            </button>
-                            <p style="font-size: 12px; color: #999; margin-top: 15px;">Clique para selecionar ou arraste um arquivo aqui</p>
-                        </div>
-
-                        <div id="lovefoodDocumentosList">
-                            <!-- Arquivos serão listados aqui -->
-                        </div>
-                    </div>
-                </div>
-
             </div>
 
             <!-- CLIENTES - She Travel -->
@@ -1340,34 +1314,6 @@
                 <!-- Formulário será adicionado aqui -->
             </div>
 
-            <!-- ABA 4: CALENDÁRIO -->
-            <div class="abas-container" id="abaCalendario">
-                <div style="display: flex; gap: 10px; margin-bottom: 20px; align-items: center;">
-                    <button class="btn btn-pequeno" onclick="mesAnterior()">Anterior</button>
-                    <span id="mesAtual" style="flex: 1; text-align: center; font-weight: 600;"></span>
-                    <button class="btn btn-pequeno" onclick="mesProximo()">Próximo</button>
-                    <button class="btn btn-secundario btn-pequeno" onclick="voltarHoje()">Este mês</button>
-                </div>
-
-                <div id="calendarioGrid" style="width: 100%;"></div>
-
-                <div style="margin-top: 40px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
-                    <div style="padding: 20px; background: var(--cor-branco); border-radius: 12px; border-left: 4px solid var(--cor-cinza);">
-                        <h3 style="font-weight: 700; margin-bottom: 15px; color: var(--cor-cinza);">ONTEM</h3>
-                        <div id="eventosOntem" style="display: flex; flex-direction: column; gap: 8px;"></div>
-                    </div>
-
-                    <div style="padding: 20px; background: var(--cor-branco); border-radius: 12px; border-left: 4px solid var(--cor-azul);">
-                        <h3 style="font-weight: 700; margin-bottom: 15px; color: var(--cor-azul);">HOJE</h3>
-                        <div id="eventosHoje" style="display: flex; flex-direction: column; gap: 8px;"></div>
-                    </div>
-
-                    <div style="padding: 20px; background: var(--cor-branco); border-radius: 12px; border-left: 4px solid var(--cor-sucesso);">
-                        <h3 style="font-weight: 700; margin-bottom: 15px; color: var(--cor-sucesso);">AMANHÃ</h3>
-                        <div id="eventosAmanha" style="display: flex; flex-direction: column; gap: 8px;"></div>
-                    </div>
-                </div>
-            </div>
 
             <!-- ABA 4: CAMPANHAS -->
             <div class="abas-container" id="abaCampanhas">
@@ -2215,9 +2161,8 @@
 
             carregarPortfolio();
             carregarMarcas();
-            carregarClientes();
+            // carregarClientes(); // Comentado - elemento clientesTabs não existe
             carregarCampanhas();
-            inicializarCalendario();
             inicializarChecklist();
         }
 
@@ -2542,6 +2487,7 @@
 
         function carregarClientes() {
             const tabsContainer = document.getElementById('clientesTabs');
+            if (!tabsContainer) return;
             tabsContainer.innerHTML = clientes.map(c => `
                 <button class="btn btn-pequeno ${clienteAtualId === c.id ? '' : 'btn-secundario'}"
                     onclick="selecionarCliente(${c.id})"
@@ -3121,72 +3067,6 @@
             event.target.style.borderBottomColor = 'var(--cor-azul)';
             event.target.style.color = 'var(--cor-azul)';
         }
-
-        // ============ DOCUMENTOS LOVEFOOD ============
-        let lovefoodDocumentos = JSON.parse(localStorage.getItem('lovefoodDocumentos')) || [];
-
-        function lovefoodAdicionarArquivo(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const documento = {
-                    id: Date.now(),
-                    nome: file.name,
-                    tipo: file.type,
-                    tamanho: (file.size / 1024).toFixed(2), // em KB
-                    data: new Date().toLocaleDateString('pt-BR'),
-                    dados: e.target.result
-                };
-
-                lovefoodDocumentos.push(documento);
-                localStorage.setItem('lovefoodDocumentos', JSON.stringify(lovefoodDocumentos));
-                lovefoodRenderizarDocumentos();
-                document.getElementById('lovefoodFileInput').value = '';
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function lovefoodRemoverDocumento(id) {
-            if (confirm('Tem certeza que deseja remover este documento?')) {
-                lovefoodDocumentos = lovefoodDocumentos.filter(d => d.id !== id);
-                localStorage.setItem('lovefoodDocumentos', JSON.stringify(lovefoodDocumentos));
-                lovefoodRenderizarDocumentos();
-            }
-        }
-
-        function lovefoodRenderizarDocumentos() {
-            const container = document.getElementById('lovefoodDocumentosList');
-
-            if (lovefoodDocumentos.length === 0) {
-                container.innerHTML = '<p style="text-align: center; color: #999; font-size: 14px;">Nenhum documento adicionado ainda</p>';
-                return;
-            }
-
-            container.innerHTML = '<h3 style="font-size: 16px; font-weight: 600; margin-bottom: 20px; color: var(--cor-texto);">Documentos</h3>' +
-            lovefoodDocumentos.map(doc => `
-                <div style="display: flex; align-items: center; justify-content: space-between; padding: 15px; background: white; border: 1px solid #e0e0e0; border-radius: 6px; margin-bottom: 10px;">
-                    <div style="flex: 1;">
-                        <div style="font-size: 14px; font-weight: 500; color: var(--cor-texto); margin-bottom: 4px;">📄 ${doc.nome}</div>
-                        <div style="font-size: 12px; color: #999;">${doc.tamanho} KB • ${doc.data}</div>
-                    </div>
-                    <div style="display: flex; gap: 10px;">
-                        <a href="${doc.dados}" download="${doc.nome}" style="background: var(--cor-azul); color: white; padding: 8px 16px; border-radius: 4px; font-size: 12px; font-weight: 500; text-decoration: none; cursor: pointer;">
-                            Download
-                        </a>
-                        <button onclick="lovefoodRemoverDocumento(${doc.id})" style="background: #e74c3c; color: white; border: none; padding: 8px 16px; border-radius: 4px; font-size: 12px; font-weight: 500; cursor: pointer;">
-                            Remover
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Renderizar documentos ao carregar
-        window.addEventListener('load', function() {
-            lovefoodRenderizarDocumentos();
-        });
 
         // ============ DASHBOARD ============
         let dadosPostsAdicionados = [];
