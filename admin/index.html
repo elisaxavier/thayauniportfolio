@@ -1288,11 +1288,16 @@
 
                 <!-- CALENDÁRIO PAGE -->
                 <div id="lovefood-calendario" class="lovefood-pagina" style="display: none;">
-                    <div style="text-align: center; padding: 60px 30px; color: #999;">
-                        <h2 style="font-size: 24px; font-weight: 600; color: var(--cor-texto); margin-bottom: 15px;">Calendário</h2>
-                        <p>Planejamento de conteúdo mensal do LoveFood</p>
-                        <p style="margin-top: 20px; font-size: 13px;">Em desenvolvimento...</p>
+                    <div style="display: flex; gap: 10px; margin-bottom: 20px; align-items: center; justify-content: space-between;">
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <button class="btn btn-pequeno" onclick="lf_mesAnterior()">Anterior</button>
+                            <span id="lf_mesAtual" style="flex: 1; text-align: center; font-weight: 600; min-width: 150px;"></span>
+                            <button class="btn btn-pequeno" onclick="lf_mesProximo()">Próximo</button>
+                            <button class="btn btn-secundario btn-pequeno" onclick="lf_voltarHoje()">Este mês</button>
+                        </div>
+                        <button class="btn" onclick="lf_novoConteudo()">+ Novo Conteúdo</button>
                     </div>
+                    <div id="lf_grid" style="width: 100%; display: grid;"></div>
                 </div>
 
             </div>
@@ -2970,6 +2975,66 @@
             }
         }
 
+        // ============ CALENDÁRIO LOVEFOOD (ISOLADO) ============
+        let lf_data = new Date();
+
+        function lf_renderizar() {
+            const ano = lf_data.getFullYear();
+            const mes = lf_data.getMonth();
+            const primeiro = new Date(ano, mes, 1);
+            const ultimo = new Date(ano, mes + 1, 0);
+            const diaInicio = primeiro.getDay();
+            const diasMes = ultimo.getDate();
+
+            document.getElementById('lf_mesAtual').textContent = new Date(ano, mes).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+
+            const diasSemana = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB'];
+            let grid = '';
+
+            diasSemana.forEach(dia => {
+                grid += `<div style="text-align: center; font-weight: 700; color: var(--cor-azul); padding: 12px 0; font-size: 15px; text-transform: uppercase; letter-spacing: 0.5px;">${dia}</div>`;
+            });
+
+            for (let i = 0; i < diaInicio; i++) {
+                grid += '<div class="dia vazio"></div>';
+            }
+
+            for (let dia = 1; dia <= diasMes; dia++) {
+                grid += `<div class="dia" style="cursor: pointer;" onclick="lf_abrirDia(${dia})"><strong>${dia}</strong><div id="lf_conteudos_${dia}" class="eventos-mini"></div></div>`;
+            }
+
+            document.getElementById('lf_grid').innerHTML = grid;
+            document.getElementById('lf_grid').style.gridTemplateColumns = 'repeat(7, 1fr)';
+            document.getElementById('lf_grid').style.gap = '18px';
+        }
+
+        function lf_mesAnterior() {
+            lf_data.setMonth(lf_data.getMonth() - 1);
+            lf_renderizar();
+        }
+
+        function lf_mesProximo() {
+            lf_data.setMonth(lf_data.getMonth() + 1);
+            lf_renderizar();
+        }
+
+        function lf_voltarHoje() {
+            lf_data = new Date();
+            lf_renderizar();
+        }
+
+        function lf_novoConteudo() {
+            alert('Criar novo conteúdo - em desenvolvimento');
+        }
+
+        function lf_abrirDia(dia) {
+            alert(`Clicou no dia ${dia} - em desenvolvimento`);
+        }
+
+        function lf_inicializar() {
+            lf_renderizar();
+        }
+
         // ============ CHECKLIST ============
         async function inicializarChecklist() {
             try {
@@ -3084,6 +3149,10 @@
             const paginaElement = document.getElementById('lovefood-' + pagina);
             if (paginaElement) {
                 paginaElement.style.display = 'block';
+            }
+
+            if (pagina === 'calendario') {
+                lf_inicializar();
             }
 
             event.target.style.borderBottomColor = 'var(--cor-azul)';
