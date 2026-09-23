@@ -992,72 +992,86 @@
             <!-- ABA 3: CLIENTES -->
             <!-- CLIENTES - LoveFood -->
             <div class="abas-container" id="abaLovefood">
-                <div style="margin-bottom: 30px;">
-                    <h1 style="margin-bottom: 20px;">LoveFood - Dashboard</h1>
 
-                    <!-- MENU HORIZONTAL -->
-                    <div style="display: flex; gap: 15px; border-bottom: 2px solid var(--cor-cinza-claro); margin-bottom: 30px; flex-wrap: wrap;">
-                        <button class="btn-dashboard-tab ativo" onclick="abrirClienteSecao('lovefood-overview')" style="border: none; background: none; padding: 12px 0; font-size: 15px; font-weight: 500; color: var(--cor-texto); border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.3s;">
-                            📊 Overview
-                        </button>
-                        <button class="btn-dashboard-tab" onclick="abrirClienteSecao('lovefood-publico')" style="border: none; background: none; padding: 12px 0; font-size: 15px; font-weight: 500; color: var(--cor-texto); border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.3s;">
-                            👥 Público Alvo
-                        </button>
-                        <button class="btn-dashboard-tab" onclick="abrirClienteSecao('lovefood-posts')" style="border: none; background: none; padding: 12px 0; font-size: 15px; font-weight: 500; color: var(--cor-texto); border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.3s;">
-                            📸 Posts
-                        </button>
-                        <button class="btn-dashboard-tab" onclick="abrirClienteSecao('lovefood-metricas')" style="border: none; background: none; padding: 12px 0; font-size: 15px; font-weight: 500; color: var(--cor-texto); border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.3s;">
-                            📈 Métricas
-                        </button>
-                    </div>
+                <!-- MENU HORIZONTAL CLEAN -->
+                <div style="display: flex; gap: 40px; border-bottom: 1px solid #e0e0e0; margin-bottom: 50px; flex-wrap: wrap; padding-bottom: 0;">
+                    <button class="btn-dashboard-tab ativo" onclick="abrirClienteSecao('lovefood-overview')" style="border: none; background: none; padding: 0; font-size: 14px; font-weight: 500; color: var(--cor-texto); border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.3s; padding-bottom: 12px;">
+                        Overview
+                    </button>
+                    <button class="btn-dashboard-tab" onclick="abrirClienteSecao('lovefood-posts')" style="border: none; background: none; padding: 0; font-size: 14px; font-weight: 500; color: var(--cor-texto); border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.3s; padding-bottom: 12px;">
+                        Posts
+                    </button>
+                    <button class="btn-dashboard-tab" onclick="abrirClienteSecao('lovefood-metricas')" style="border: none; background: none; padding: 0; font-size: 14px; font-weight: 500; color: var(--cor-texto); border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.3s; padding-bottom: 12px;">
+                        Métricas
+                    </button>
+                    <button class="btn-dashboard-tab" onclick="abrirClienteSecao('lovefood-publico')" style="border: none; background: none; padding: 0; font-size: 14px; font-weight: 500; color: var(--cor-texto); border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.3s; padding-bottom: 12px;">
+                        Público Alvo
+                    </button>
+                </div>
 
-                    <!-- OVERVIEW -->
-                    <div id="lovefood-overview" class="cliente-secao ativo">
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 30px;">
-                            <div style="background: var(--cor-branco); padding: 20px; border-radius: 12px; box-shadow: var(--sombra); text-align: center;">
-                                <div style="font-size: 32px; font-weight: 700; color: var(--cor-azul); margin-bottom: 5px;">303</div>
-                                <div style="font-size: 13px; color: var(--cor-cinza); font-weight: 500;">Visualizações</div>
-                                <div style="font-size: 12px; color: #27ae60; margin-top: 5px;">↑ 40.9%</div>
+                <!-- OVERVIEW -->
+                <div id="lovefood-overview" class="cliente-secao ativo">
+                    <div style="margin-bottom: 60px;">
+                        <h2 style="font-size: 28px; font-weight: 600; margin-bottom: 30px; color: var(--cor-texto);">Período: Ago 26 - Set 22 (27 dias)</h2>
+
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 50px; margin-bottom: 50px;">
+                            <div>
+                                <div style="font-size: 48px; font-weight: 700; color: var(--cor-azul); margin-bottom: 8px;">303</div>
+                                <div style="font-size: 14px; color: #666; font-weight: 500; margin-bottom: 12px;">Visualizações</div>
+                                <div style="font-size: 13px; color: #999; line-height: 1.6;">
+                                    <strong>+40.9%</strong> vs período anterior<br>(comparado com Ago 1-25)
+                                </div>
                             </div>
-                            <div style="background: var(--cor-branco); padding: 20px; border-radius: 12px; box-shadow: var(--sombra); text-align: center;">
-                                <div style="font-size: 32px; font-weight: 700; color: var(--cor-azul); margin-bottom: 5px;">102</div>
-                                <div style="font-size: 13px; color: var(--cor-cinza); font-weight: 500;">Visitantes</div>
-                                <div style="font-size: 12px; color: #27ae60; margin-top: 5px;">↑ 168.4%</div>
+                            <div>
+                                <div style="font-size: 48px; font-weight: 700; color: var(--cor-azul); margin-bottom: 8px;">102</div>
+                                <div style="font-size: 14px; color: #666; font-weight: 500; margin-bottom: 12px;">Visitantes Únicos</div>
+                                <div style="font-size: 13px; color: #999; line-height: 1.6;">
+                                    <strong>+168.4%</strong> vs período anterior<br>(novo crescimento Facebook)
+                                </div>
                             </div>
-                            <div style="background: var(--cor-branco); padding: 20px; border-radius: 12px; box-shadow: var(--sombra); text-align: center;">
-                                <div style="font-size: 32px; font-weight: 700; color: var(--cor-azul); margin-bottom: 5px;">4,598</div>
-                                <div style="font-size: 13px; color: var(--cor-cinza); font-weight: 500;">Seguidores</div>
-                                <div style="font-size: 12px; color: #e74c3c; margin-top: 5px;">Ago 26 - Set 22</div>
-                            </div>
-                            <div style="background: var(--cor-branco); padding: 20px; border-radius: 12px; box-shadow: var(--sombra); text-align: center;">
-                                <div style="font-size: 32px; font-weight: 700; color: var(--cor-azul); margin-bottom: 5px;">7</div>
-                                <div style="font-size: 13px; color: var(--cor-cinza); font-weight: 500;">Posts (últimos 30 dias)</div>
-                                <div style="font-size: 12px; color: #f39c12; margin-top: 5px;">2 Carrosséis</div>
+                            <div>
+                                <div style="font-size: 48px; font-weight: 700; color: var(--cor-azul); margin-bottom: 8px;">4.6K</div>
+                                <div style="font-size: 14px; color: #666; font-weight: 500; margin-bottom: 12px;">Seguidores</div>
+                                <div style="font-size: 13px; color: #999; line-height: 1.6;">
+                                    Base estável em Facebook<br>Crescimento orgânico esperado
+                                </div>
                             </div>
                         </div>
 
-                        <div style="background: var(--cor-branco); padding: 25px; border-radius: 12px; box-shadow: var(--sombra);">
-                            <h3 style="margin-bottom: 20px; font-size: 16px; font-weight: 600;">Engajamento Total</h3>
-                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px;">
-                                <div style="text-align: center; padding: 15px; background: #f8f9fa; border-radius: 8px;">
-                                    <div style="font-size: 24px; font-weight: 700; color: #e74c3c;">75</div>
-                                    <div style="font-size: 12px; color: var(--cor-cinza);">Curtidas</div>
+                        <div style="border-top: 1px solid #e0e0e0; padding-top: 50px;">
+                            <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 30px; color: var(--cor-texto);">Engajamento Total</h3>
+                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; max-width: 600px;">
+                                <div>
+                                    <div style="font-size: 32px; font-weight: 700; color: #e74c3c; margin-bottom: 6px;">75</div>
+                                    <div style="font-size: 13px; color: #999;">Curtidas</div>
                                 </div>
-                                <div style="text-align: center; padding: 15px; background: #f8f9fa; border-radius: 8px;">
-                                    <div style="font-size: 24px; font-weight: 700; color: #3498db;">4</div>
-                                    <div style="font-size: 12px; color: var(--cor-cinza);">Comentários</div>
+                                <div>
+                                    <div style="font-size: 32px; font-weight: 700; color: #3498db; margin-bottom: 6px;">4</div>
+                                    <div style="font-size: 13px; color: #999;">Comentários</div>
                                 </div>
-                                <div style="text-align: center; padding: 15px; background: #f8f9fa; border-radius: 8px;">
-                                    <div style="font-size: 24px; font-weight: 700; color: #9b59b6;">2</div>
-                                    <div style="font-size: 12px; color: var(--cor-cinza);">Compartilhamentos</div>
+                                <div>
+                                    <div style="font-size: 32px; font-weight: 700; color: #9b59b6; margin-bottom: 6px;">2</div>
+                                    <div style="font-size: 13px; color: #999;">Compartilhamentos</div>
                                 </div>
-                                <div style="text-align: center; padding: 15px; background: #f8f9fa; border-radius: 8px;">
-                                    <div style="font-size: 24px; font-weight: 700; color: #1abc9c;">4</div>
-                                    <div style="font-size: 12px; color: var(--cor-cinza);">Salvamentos</div>
+                                <div>
+                                    <div style="font-size: 32px; font-weight: 700; color: #1abc9c; margin-bottom: 6px;">4</div>
+                                    <div style="font-size: 13px; color: #999;">Salvamentos</div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- INSIGHTS -->
+                    <div style="background: #f8f9fa; padding: 30px; border-radius: 8px; line-height: 1.8;">
+                        <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 20px; color: var(--cor-texto);">📌 Insights</h3>
+                        <ul style="list-style: none; padding: 0; color: #666; font-size: 14px;">
+                            <li style="margin-bottom: 12px;">• <strong>Post de melhor desempenho:</strong> "Beta-glucana" (3.477 alcance) — Carrossel educativo tem 2x+ alcance que imagens simples</li>
+                            <li style="margin-bottom: 12px;">• <strong>Público principal:</strong> Mulheres 45-54 em Lisboa (40% da audiência) — Ajustar tom para lifestyle "cuidado" e bem-estar</li>
+                            <li style="margin-bottom: 12px;">• <strong>Taxa de engajamento:</strong> 1.1% — Abaixo da média (2-3% é bom para food brands). Considerar CTA mais clara ou reels com áudio</li>
+                            <li>• <strong>Próximos passos:</strong> Testar 3 reels com áudio de educação nutricional; aumentar frequência de carrosséis</li>
+                        </ul>
+                    </div>
+                </div>
 
                     <!-- PÚBLICO ALVO -->
                     <div id="lovefood-publico" class="cliente-secao" style="display: none;">
