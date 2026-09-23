@@ -3154,9 +3154,47 @@
                 };
                 req.onsuccess = (e) => {
                     lf_db = e.target.result;
+                    lf_sincronizarComSupabase();
                     resolve();
                 };
             });
+        }
+
+        async function lf_sincronizarComSupabase() {
+            try {
+                // Carrega dados do Supabase
+                const { data, error } = await supabaseClient.from('lovefood_calendar').select('*');
+                if (error) {
+                    console.log('Tabela não existe ainda, será criada ao salvar primeiro item');
+                    return;
+                }
+
+                // Sincroniza com IndexedDB (usa Supabase como source of truth)
+                if (data && data.length > 0) {
+                    const t = lf_db.transaction('conteudos', 'readwrite');
+                    const store = t.objectStore('conteudos');
+
+                    // Limpa dados locais obsoletos
+                    store.clear();
+
+                    // Adiciona dados do Supabase
+                    data.forEach(item => {
+                        store.add({
+                            id: item.id,
+                            titulo: item.titulo,
+                            descricao: item.descricao,
+                            data: item.data,
+                            tipo: item.tipo,
+                            estado: item.estado,
+                            agendado: item.agendado,
+                            design: item.design,
+                            observacoes: item.observacoes
+                        });
+                    });
+                }
+            } catch (err) {
+                console.error('Erro ao sincronizar:', err);
+            }
         }
 
         async function lf_renderizar() {
@@ -3309,7 +3347,7 @@
             };
         }
 
-        function lf_salvar() {
+        async function lf_salvar() {
             const titulo = document.getElementById('lf_titulo').value.trim();
             const data = document.getElementById('lf_data').value;
             const tipo = document.getElementById('lf_tipo').value;
@@ -3333,6 +3371,7 @@
                 observacoes: document.getElementById('lf_observacoes').value
             };
 
+            // Salva em IndexedDB
             const t = lf_db.transaction('conteudos', 'readwrite');
             const store = t.objectStore('conteudos');
 
@@ -3343,14 +3382,25 @@
                 store.add(conteudo);
             }
 
-            t.oncomplete = () => {
+            t.oncomplete = async () => {
+                // Salva também em Supabase
+                try {
+                    if (lf_editandoId) {
+                        await supabaseClient.from('lovefood_calendar').update(conteudo).eq('id', lf_editandoId);
+                    } else {
+                        await supabaseClient.from('lovefood_calendar').insert([conteudo]);
+                    }
+                } catch (err) {
+                    console.error('Erro ao salvar em Supabase:', err);
+                }
+
                 lf_fecharModal();
                 lf_renderizar();
                 alert('✅ Salvo!');
             };
         }
 
-        function lf_deletar() {
+        async function lf_deletar() {
             if (!lf_editandoId || !confirm('Deletar?')) return;
             if (!lf_db) return;
 
@@ -3358,7 +3408,14 @@
             const store = t.objectStore('conteudos');
             store.delete(lf_editandoId);
 
-            t.oncomplete = () => {
+            t.oncomplete = async () => {
+                // Deleta também em Supabase
+                try {
+                    await supabaseClient.from('lovefood_calendar').delete().eq('id', lf_editandoId);
+                } catch (err) {
+                    console.error('Erro ao deletar em Supabase:', err);
+                }
+
                 lf_fecharModal();
                 lf_renderizar();
                 alert('✅ Deletado!');
@@ -3730,6 +3787,31 @@
         // ============ LOVEFOOD VISÃO GERAL ============
         async function lf_carregarVisaoGeral() {
             if (!lf_db) return;
+
+            // Sincroniza com Supabase antes de renderizar
+            try {
+                const { data, error } = await supabaseClient.from('lovefood_calendar').select('*');
+                if (data && data.length > 0) {
+                    const t = lf_db.transaction('conteudos', 'readwrite');
+                    const store = t.objectStore('conteudos');
+                    store.clear();
+                    data.forEach(item => {
+                        store.add({
+                            id: item.id,
+                            titulo: item.titulo,
+                            descricao: item.descricao,
+                            data: item.data,
+                            tipo: item.tipo,
+                            estado: item.estado,
+                            agendado: item.agendado,
+                            design: item.design,
+                            observacoes: item.observacoes
+                        });
+                    });
+                }
+            } catch (err) {
+                console.log('Ainda sem dados no Supabase, usando apenas IndexedDB local');
+            }
 
             const t = lf_db.transaction('conteudos', 'readonly');
             const store = t.objectStore('conteudos');
