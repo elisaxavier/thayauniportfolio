@@ -3887,11 +3887,15 @@
             } else {
                 items.forEach(item => {
                     const data = new Date(item.data).toLocaleDateString('pt-BR');
+                    const isAguardandoAprovacao = item.estado === 'Aguardando aprovação';
                     html += `
-                        <div style="padding: 12px; background: #f8f9fa; border-radius: 4px; margin-bottom: 12px; cursor: pointer; transition: all 0.3s;" onclick="lf_editar(${item.id}); lf_fecharListaFiltrada();" onmouseover="this.style.background='#e8f4f8'" onmouseout="this.style.background='#f8f9fa'">
-                            <div style="font-weight: 600; color: var(--cor-texto); margin-bottom: 4px;">${item.titulo}</div>
-                            <div style="font-size: 13px; color: #666; margin-bottom: 8px;">${item.tipo} · ${data}</div>
-                            <div style="font-size: 12px; color: #999;">${item.estado}${item.agendado === 'Sim' ? ' · Agendado' : ''}</div>
+                        <div style="padding: 12px; background: #f8f9fa; border-radius: 4px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; gap: 12px;">
+                            <div style="flex: 1; cursor: pointer; transition: all 0.3s;" onclick="lf_editar(${item.id}); lf_fecharListaFiltrada();" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                                <div style="font-weight: 600; color: var(--cor-texto); margin-bottom: 4px;">${item.titulo}</div>
+                                <div style="font-size: 13px; color: #666; margin-bottom: 8px;">${item.tipo} · ${data}</div>
+                                <div style="font-size: 12px; color: #999;">${item.estado}${item.agendado === 'Sim' ? ' · Agendado' : ''}</div>
+                            </div>
+                            ${isAguardandoAprovacao ? `<button onclick="lf_aprovarConteudo(${item.id}); lf_fecharListaFiltrada();" style="padding: 6px 12px; background: var(--cor-azul); color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 12px; white-space: nowrap;">✓ Aprovar</button>` : ''}
                         </div>
                     `;
                 });
@@ -3915,6 +3919,27 @@
                 window.lf_modalFiltro.remove();
                 window.lf_modalFiltro = null;
             }
+        }
+
+        function lf_aprovarConteudo(id) {
+            if (!lf_db) return;
+
+            const t = lf_db.transaction('conteudos', 'readwrite');
+            const store = t.objectStore('conteudos');
+            const req = store.get(id);
+
+            req.onsuccess = () => {
+                const conteudo = req.result;
+                if (conteudo) {
+                    conteudo.estado = 'Aprovado';
+                    store.put(conteudo);
+                }
+            };
+
+            t.oncomplete = () => {
+                lf_carregarVisaoGeral();
+                alert('✓ Conteúdo aprovado!');
+            };
         }
 
         // Carregar ao abrir
