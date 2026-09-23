@@ -993,7 +993,23 @@
             <!-- CLIENTES - LoveFood -->
             <div class="abas-container" id="abaLovefood">
 
-                <!-- MENU HORIZONTAL CLEAN -->
+                <!-- MENU PÁGINAS LOVEFOOD -->
+                <div style="display: flex; gap: 40px; border-bottom: 1px solid #e0e0e0; margin-bottom: 40px; flex-wrap: wrap; padding-bottom: 0;">
+                    <button class="btn-dashboard-tab ativo" onclick="abrirLovefoodPagina('dashboard')" style="border: none; background: none; padding: 0; font-size: 14px; font-weight: 500; color: var(--cor-texto); border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.3s; padding-bottom: 12px;">
+                        Dashboard
+                    </button>
+                    <button class="btn-dashboard-tab" onclick="abrirLovefoodPagina('contentgrid')" style="border: none; background: none; padding: 0; font-size: 14px; font-weight: 500; color: var(--cor-texto); border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.3s; padding-bottom: 12px;">
+                        Content Grid
+                    </button>
+                    <button class="btn-dashboard-tab" onclick="abrirLovefoodPagina('calendario')" style="border: none; background: none; padding: 0; font-size: 14px; font-weight: 500; color: var(--cor-texto); border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.3s; padding-bottom: 12px;">
+                        Calendário
+                    </button>
+                </div>
+
+                <!-- DASHBOARD PAGE -->
+                <div id="lovefood-dashboard" class="lovefood-pagina ativo">
+
+                <!-- MENU SEÇÕES DASHBOARD -->
                 <div style="display: flex; gap: 40px; border-bottom: 1px solid #e0e0e0; margin-bottom: 50px; flex-wrap: wrap; padding-bottom: 0;">
                     <button class="btn-dashboard-tab ativo" onclick="abrirClienteSecao('lovefood-overview')" style="border: none; background: none; padding: 0; font-size: 14px; font-weight: 500; color: var(--cor-texto); border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.3s; padding-bottom: 12px;">
                         Overview
@@ -1258,7 +1274,27 @@
                         </div>
                     </div>
                 </div>
+
+                </div> <!-- FIM DASHBOARD PAGE -->
+
+                <!-- CONTENT GRID PAGE -->
+                <div id="lovefood-contentgrid" class="lovefood-pagina" style="display: none;">
+                    <div style="text-align: center; padding: 60px 30px; color: #999;">
+                        <h2 style="font-size: 24px; font-weight: 600; color: var(--cor-texto); margin-bottom: 15px;">Content Grid</h2>
+                        <p>Grade visual de todos os posts do LoveFood</p>
+                        <p style="margin-top: 20px; font-size: 13px;">Em desenvolvimento...</p>
+                    </div>
                 </div>
+
+                <!-- CALENDÁRIO PAGE -->
+                <div id="lovefood-calendario" class="lovefood-pagina" style="display: none;">
+                    <div style="text-align: center; padding: 60px 30px; color: #999;">
+                        <h2 style="font-size: 24px; font-weight: 600; color: var(--cor-texto); margin-bottom: 15px;">Calendário</h2>
+                        <p>Planejamento de conteúdo mensal do LoveFood</p>
+                        <p style="margin-top: 20px; font-size: 13px;">Em desenvolvimento...</p>
+                    </div>
+                </div>
+
             </div>
 
             <!-- CLIENTES - She Travel -->
@@ -3036,6 +3072,19 @@
 
             dropdown.classList.toggle('ativo');
             submenu.classList.toggle('ativo');
+        }
+
+        function abrirLovefoodPagina(pagina) {
+            document.querySelectorAll('.lovefood-pagina').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.btn-dashboard-tab').forEach(el => el.style.borderBottomColor = 'transparent');
+
+            const paginaElement = document.getElementById('lovefood-' + pagina);
+            if (paginaElement) {
+                paginaElement.style.display = 'block';
+            }
+
+            event.target.style.borderBottomColor = 'var(--cor-azul)';
+            event.target.style.color = 'var(--cor-azul)';
         }
 
         function abrirClienteSecao(secao) {
