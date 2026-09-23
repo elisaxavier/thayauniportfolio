@@ -2684,7 +2684,7 @@
         async function inicializarCalendario() {
             renderizarCalendario();
             try {
-                await carregarEventosCalendario();
+                // await carregarEventosCalendario(); // Supabase não configurado
                 await carregarEventosPorDia();
             } catch (err) {
                 console.log('Dados do calendário indisponíveis');
