@@ -995,7 +995,10 @@
 
                 <!-- MENU PÁGINAS LOVEFOOD -->
                 <div style="display: flex; gap: 40px; border-bottom: 1px solid #e0e0e0; margin-bottom: 40px; flex-wrap: wrap; padding-bottom: 0;">
-                    <button class="btn-dashboard-tab ativo" onclick="abrirLovefoodPagina('dashboard')" style="border: none; background: none; padding: 0; font-size: 16px; font-weight: 700; text-transform: uppercase; color: var(--cor-texto); border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.3s; padding-bottom: 12px;">
+                    <button class="btn-dashboard-tab ativo" onclick="abrirLovefoodPagina('visaogeral')" style="border: none; background: none; padding: 0; font-size: 16px; font-weight: 700; text-transform: uppercase; color: var(--cor-texto); border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.3s; padding-bottom: 12px;">
+                        Visão Geral
+                    </button>
+                    <button class="btn-dashboard-tab" onclick="abrirLovefoodPagina('dashboard')" style="border: none; background: none; padding: 0; font-size: 16px; font-weight: 700; text-transform: uppercase; color: var(--cor-texto); border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.3s; padding-bottom: 12px;">
                         Dashboard
                     </button>
                     <button class="btn-dashboard-tab" onclick="abrirLovefoodPagina('contentgrid')" style="border: none; background: none; padding: 0; font-size: 16px; font-weight: 700; text-transform: uppercase; color: var(--cor-texto); border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.3s; padding-bottom: 12px;">
@@ -1006,30 +1009,8 @@
                     </button>
                 </div>
 
-                <!-- DASHBOARD PAGE -->
-                <div id="lovefood-dashboard" class="lovefood-pagina ativo">
-
-                <!-- MENU SEÇÕES DASHBOARD -->
-                <div style="display: flex; gap: 40px; border-bottom: 1px solid #e0e0e0; margin-bottom: 50px; flex-wrap: wrap; padding-bottom: 0;">
-                    <button class="btn-dashboard-tab ativo" onclick="abrirClienteSecao('lovefood-visaogeral')" style="border: none; background: none; padding: 0; font-size: 14px; font-weight: 500; color: var(--cor-texto); border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.3s; padding-bottom: 12px;">
-                        Visão Geral
-                    </button>
-                    <button class="btn-dashboard-tab" onclick="abrirClienteSecao('lovefood-overview')" style="border: none; background: none; padding: 0; font-size: 14px; font-weight: 500; color: var(--cor-texto); border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.3s; padding-bottom: 12px;">
-                        Overview
-                    </button>
-                    <button class="btn-dashboard-tab" onclick="abrirClienteSecao('lovefood-posts')" style="border: none; background: none; padding: 0; font-size: 14px; font-weight: 500; color: var(--cor-texto); border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.3s; padding-bottom: 12px;">
-                        Posts
-                    </button>
-                    <button class="btn-dashboard-tab" onclick="abrirClienteSecao('lovefood-metricas')" style="border: none; background: none; padding: 0; font-size: 14px; font-weight: 500; color: var(--cor-texto); border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.3s; padding-bottom: 12px;">
-                        Métricas
-                    </button>
-                    <button class="btn-dashboard-tab" onclick="abrirClienteSecao('lovefood-publico')" style="border: none; background: none; padding: 0; font-size: 14px; font-weight: 500; color: var(--cor-texto); border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.3s; padding-bottom: 12px;">
-                        Público Alvo
-                    </button>
-                </div>
-
-                <!-- VISÃO GERAL DAS DEMANDAS -->
-                <div id="lovefood-visaogeral" class="cliente-secao ativo">
+                <!-- VISÃO GERAL PAGE -->
+                <div id="lovefood-visaogeral" class="lovefood-pagina ativo">
                     <div style="margin-bottom: 50px;">
                         <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
                             <span style="background: #e8f4f8; color: var(--cor-azul); padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; text-transform: uppercase;">Área do cliente</span>
@@ -1075,8 +1056,27 @@
                     </div>
                 </div>
 
+                <!-- DASHBOARD PAGE -->
+                <div id="lovefood-dashboard" class="lovefood-pagina">
+
+                <!-- MENU SEÇÕES DASHBOARD -->
+                <div style="display: flex; gap: 40px; border-bottom: 1px solid #e0e0e0; margin-bottom: 50px; flex-wrap: wrap; padding-bottom: 0;">
+                    <button class="btn-dashboard-tab ativo" onclick="abrirClienteSecao('lovefood-overview')" style="border: none; background: none; padding: 0; font-size: 14px; font-weight: 500; color: var(--cor-texto); border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.3s; padding-bottom: 12px;">
+                        Overview
+                    </button>
+                    <button class="btn-dashboard-tab" onclick="abrirClienteSecao('lovefood-posts')" style="border: none; background: none; padding: 0; font-size: 14px; font-weight: 500; color: var(--cor-texto); border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.3s; padding-bottom: 12px;">
+                        Posts
+                    </button>
+                    <button class="btn-dashboard-tab" onclick="abrirClienteSecao('lovefood-metricas')" style="border: none; background: none; padding: 0; font-size: 14px; font-weight: 500; color: var(--cor-texto); border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.3s; padding-bottom: 12px;">
+                        Métricas
+                    </button>
+                    <button class="btn-dashboard-tab" onclick="abrirClienteSecao('lovefood-publico')" style="border: none; background: none; padding: 0; font-size: 14px; font-weight: 500; color: var(--cor-texto); border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.3s; padding-bottom: 12px;">
+                        Público Alvo
+                    </button>
+                </div>
+
                 <!-- OVERVIEW -->
-                <div id="lovefood-overview" class="cliente-secao">
+                <div id="lovefood-overview" class="cliente-secao ativo">
                     <div style="margin-bottom: 60px;">
                         <h2 style="font-size: 28px; font-weight: 600; margin-bottom: 30px; color: var(--cor-texto);">Período: Ago 26 - Set 22 (27 dias)</h2>
 
@@ -3456,6 +3456,10 @@
                 lf_inicializar();
             }
 
+            if (pagina === 'visaogeral') {
+                lf_carregarVisaoGeral();
+            }
+
             event.target.style.borderBottomColor = 'var(--cor-azul)';
             event.target.style.color = 'var(--cor-azul)';
         }
@@ -3467,10 +3471,6 @@
             const secaoElement = document.getElementById(secao);
             if (secaoElement) {
                 secaoElement.style.display = 'block';
-            }
-
-            if (secao === 'lovefood-visaogeral') {
-                lf_carregarVisaoGeral();
             }
 
             event.target.style.borderBottomColor = 'var(--cor-azul)';
