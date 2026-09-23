@@ -3505,8 +3505,10 @@
                 lf_carregarContentGrid();
             }
 
-            event.target.style.borderBottomColor = 'var(--cor-azul)';
-            event.target.style.color = 'var(--cor-azul)';
+            if (event && event.target) {
+                event.target.style.borderBottomColor = 'var(--cor-azul)';
+                event.target.style.color = 'var(--cor-azul)';
+            }
         }
 
         function abrirClienteSecao(secao) {
