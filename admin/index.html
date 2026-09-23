@@ -875,6 +875,10 @@
 
             <div class="menu-secao">
                 <div class="menu-secao-titulo">Minha rotina</div>
+                <button class="menu-item" onclick="abrirAba('calendario')">
+                    <div class="menu-item-icon"></div>
+                    Calendário
+                </button>
                 <button class="menu-item" onclick="abrirAba('campanhas')">
                     <div class="menu-item-icon"></div>
                     Campanhas
@@ -1362,6 +1366,35 @@
                         </thead>
                         <tbody id="corpoTabelaCampanhas"></tbody>
                     </table>
+                </div>
+            </div>
+
+            <!-- ABA 4: CALENDÁRIO -->
+            <div class="abas-container" id="abaCalendario">
+                <div style="display: flex; gap: 10px; margin-bottom: 20px; align-items: center;">
+                    <button class="btn btn-pequeno" onclick="mesAnterior()">Anterior</button>
+                    <span id="mesAtual" style="flex: 1; text-align: center; font-weight: 600;"></span>
+                    <button class="btn btn-pequeno" onclick="mesProximo()">Próximo</button>
+                    <button class="btn btn-secundario btn-pequeno" onclick="voltarHoje()">Este mês</button>
+                </div>
+
+                <div id="calendarioGrid" style="width: 100%; display: grid;"></div>
+
+                <div style="margin-top: 40px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                    <div style="padding: 20px; background: var(--cor-branco); border-radius: 12px; border-left: 4px solid var(--cor-cinza);">
+                        <h3 style="font-weight: 700; margin-bottom: 15px; color: var(--cor-cinza);">ONTEM</h3>
+                        <div id="eventosOntem" style="display: flex; flex-direction: column; gap: 8px;"></div>
+                    </div>
+
+                    <div style="padding: 20px; background: var(--cor-branco); border-radius: 12px; border-left: 4px solid var(--cor-azul);">
+                        <h3 style="font-weight: 700; margin-bottom: 15px; color: var(--cor-azul);">HOJE</h3>
+                        <div id="eventosHoje" style="display: flex; flex-direction: column; gap: 8px;"></div>
+                    </div>
+
+                    <div style="padding: 20px; background: var(--cor-branco); border-radius: 12px; border-left: 4px solid var(--cor-sucesso);">
+                        <h3 style="font-weight: 700; margin-bottom: 15px; color: var(--cor-sucesso);">AMANHÃ</h3>
+                        <div id="eventosAmanha" style="display: flex; flex-direction: column; gap: 8px;"></div>
+                    </div>
                 </div>
             </div>
 
@@ -2163,6 +2196,7 @@
             carregarMarcas();
             // carregarClientes(); // Comentado - elemento clientesTabs não existe
             carregarCampanhas();
+            inicializarCalendario();
             inicializarChecklist();
         }
 
@@ -3032,6 +3066,147 @@
             if (aba === 'dashboard') {
                 inicializarDashboard();
             }
+
+            if (aba === 'calendario') {
+                inicializarCalendario();
+            }
+        }
+
+        // ============ CALENDÁRIO ============
+        let dataSelecionada = new Date();
+        let calendarioDB;
+
+        async function inicializarCalendario() {
+            try {
+                await inicializarCalendarioDB();
+                renderizarCalendario();
+                await carregarEventosPorDia();
+            } catch (err) {
+                console.error('Erro ao inicializar calendário:', err);
+            }
+        }
+
+        function inicializarCalendarioDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open('AdminCalendarioDB', 1);
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => {
+                    calendarioDB = request.result;
+                    resolve();
+                };
+                request.onupgradeneeded = (e) => {
+                    const db = e.target.result;
+                    if (!db.objectStoreNames.contains('eventos')) {
+                        db.createObjectStore('eventos', { keyPath: 'id' });
+                    }
+                };
+            });
+        }
+
+        function renderizarCalendario() {
+            const ano = dataSelecionada.getFullYear();
+            const mes = dataSelecionada.getMonth();
+
+            const primeiro = new Date(ano, mes, 1);
+            const ultimo = new Date(ano, mes + 1, 0);
+            const diaInicio = primeiro.getDay();
+            const diasMes = ultimo.getDate();
+
+            document.getElementById('mesAtual').textContent =
+                primeiro.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+
+            let grid = '';
+            const diasSemana = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'];
+
+            diasSemana.forEach(dia => {
+                grid += `<div style="font-weight: 700; text-align: center; padding: 10px; color: var(--cor-cinza);">${dia}</div>`;
+            });
+
+            for (let i = 0; i < diaInicio; i++) {
+                grid += '<div class="dia vazio"></div>';
+            }
+
+            for (let dia = 1; dia <= diasMes; dia++) {
+                grid += `<div class="dia" onclick="selecionarDia(${dia})"><strong>${dia}</strong><div id="eventos-${dia}" class="eventos-mini"></div></div>`;
+            }
+
+            document.getElementById('calendarioGrid').innerHTML = grid;
+            document.getElementById('calendarioGrid').style.gridTemplateColumns = 'repeat(7, 1fr)';
+            document.getElementById('calendarioGrid').style.gap = '18px';
+        }
+
+        function carregarEventosPorDia() {
+            return new Promise((resolve) => {
+                if (!calendarioDB) {
+                    resolve();
+                    return;
+                }
+
+                const transaction = calendarioDB.transaction(['eventos'], 'readonly');
+                const store = transaction.objectStore('eventos');
+                const request = store.getAll();
+
+                request.onsuccess = () => {
+                    const eventos = request.result;
+                    const agora = new Date();
+                    const ontem = new Date(agora);
+                    ontem.setDate(agora.getDate() - 1);
+                    const amanha = new Date(agora);
+                    amanha.setDate(agora.getDate() + 1);
+
+                    const formatarData = (d) => d.toISOString().split('T')[0];
+                    const dataHoje = formatarData(agora);
+                    const dataOntem = formatarData(ontem);
+                    const dataAmanha = formatarData(amanha);
+
+                    const eventosOntem = eventos.filter(e => e.data.split('T')[0] === dataOntem);
+                    const eventosHoje = eventos.filter(e => e.data.split('T')[0] === dataHoje);
+                    const eventosAmanha = eventos.filter(e => e.data.split('T')[0] === dataAmanha);
+
+                    document.getElementById('eventosOntem').innerHTML = eventosOntem.map(e =>
+                        `<div style="padding: 8px; background: var(--cor-fundo); border-radius: 6px; font-size: 12px;">
+                            <strong>${e.titulo}</strong><br>
+                            ${e.tipo}
+                        </div>`
+                    ).join('');
+
+                    document.getElementById('eventosHoje').innerHTML = eventosHoje.map(e =>
+                        `<div style="padding: 8px; background: var(--cor-azul); color: white; border-radius: 6px; font-size: 12px;">
+                            <strong>${e.titulo}</strong><br>
+                            ${e.tipo}
+                        </div>`
+                    ).join('');
+
+                    document.getElementById('eventosAmanha').innerHTML = eventosAmanha.map(e =>
+                        `<div style="padding: 8px; background: var(--cor-sucesso); color: white; border-radius: 6px; font-size: 12px;">
+                            <strong>${e.titulo}</strong><br>
+                            ${e.tipo}
+                        </div>`
+                    ).join('');
+
+                    resolve();
+                };
+            });
+        }
+
+        function mesAnterior() {
+            dataSelecionada.setMonth(dataSelecionada.getMonth() - 1);
+            renderizarCalendario();
+        }
+
+        function mesProximo() {
+            dataSelecionada.setMonth(dataSelecionada.getMonth() + 1);
+            renderizarCalendario();
+        }
+
+        function voltarHoje() {
+            dataSelecionada = new Date();
+            renderizarCalendario();
+        }
+
+        function selecionarDia(dia) {
+            // Placeholder para futura seleção de dia
+            console.log('Dia selecionado:', dia);
         }
 
         function toggleClientesDropdown() {
