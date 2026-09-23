@@ -2181,6 +2181,11 @@
             </div>
 
             <div class="form-grupo">
+                <label>Data *</label>
+                <input type="date" id="lf_data">
+            </div>
+
+            <div class="form-grupo">
                 <label>Descrição</label>
                 <textarea id="lf_descricao" placeholder="Descrição (opcional)" rows="2"></textarea>
             </div>
@@ -3176,6 +3181,7 @@
 
             document.getElementById('lf_titulo').value = '';
             document.getElementById('lf_descricao').value = '';
+            document.getElementById('lf_data').value = `${ano}-${mes}-${diaStr}`;
             document.getElementById('lf_tipo').value = '';
             document.getElementById('lf_estado').value = '';
             document.getElementById('lf_agendado').value = 'Não';
@@ -3183,15 +3189,6 @@
             document.getElementById('lf_observacoes').value = '';
             document.getElementById('lf_btnDeletar').style.display = 'none';
             document.querySelector('#lf_modal .modal-titulo').textContent = 'Novo Conteúdo';
-
-            // Adicionar campo de data ao modal (criar se não existir)
-            if (!document.getElementById('lf_data')) {
-                const formGrupo = document.createElement('div');
-                formGrupo.className = 'form-grupo';
-                formGrupo.innerHTML = '<label>Data *</label><input type="date" id="lf_data">';
-                document.querySelector('#lf_modal .form-grupo').parentNode.insertBefore(formGrupo, document.querySelector('#lf_modal .form-grupo'));
-            }
-            document.getElementById('lf_data').value = `${ano}-${mes}-${diaStr}`;
 
             document.getElementById('lf_modal').classList.add('ativo');
         }
