@@ -784,6 +784,10 @@
                     <div class="menu-item-icon"></div>
                     Marcas
                 </button>
+                <button class="menu-item" onclick="abrirAba('clientes')">
+                    <div class="menu-item-icon"></div>
+                    Clientes
+                </button>
             </div>
 
             <div class="menu-secao">
@@ -902,7 +906,52 @@
                 </div>
             </div>
 
-            <!-- ABA 3: CALENDÁRIO -->
+            <!-- ABA 3: CLIENTES -->
+            <div class="abas-container" id="abaClientes">
+                <div style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
+                    <input type="text" id="buscaClientes" placeholder="Buscar por nome, email, telefone" style="flex: 1; min-width: 200px;">
+                    <button class="btn" onclick="abrirModalCliente()">+ Adicionar Cliente</button>
+                </div>
+
+                <div style="background: var(--cor-branco); border-radius: 12px; box-shadow: var(--sombra); overflow: hidden;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead style="background: var(--cor-fundo);">
+                            <tr>
+                                <th style="padding: 15px; text-align: left; font-weight: 600; border-bottom: 1px solid var(--cor-cinza-claro);">Nome</th>
+                                <th style="padding: 15px; text-align: left; font-weight: 600; border-bottom: 1px solid var(--cor-cinza-claro);">Email</th>
+                                <th style="padding: 15px; text-align: left; font-weight: 600; border-bottom: 1px solid var(--cor-cinza-claro);">Telefone</th>
+                                <th style="padding: 15px; text-align: left; font-weight: 600; border-bottom: 1px solid var(--cor-cinza-claro);">Tipo</th>
+                                <th style="padding: 15px; text-align: left; font-weight: 600; border-bottom: 1px solid var(--cor-cinza-claro);">Status</th>
+                                <th style="padding: 15px; text-align: left; font-weight: 600; border-bottom: 1px solid var(--cor-cinza-claro);">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="corpoTabelaClientes"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- MODAL CLIENTE -->
+            <div id="modalCliente" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+                <div style="background: white; padding: 30px; border-radius: 12px; max-width: 500px; width: 90%;">
+                    <h2 style="margin-bottom: 20px;">Adicionar Cliente</h2>
+                    <input type="text" id="clienteNome" placeholder="Nome da Marca" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid var(--cor-cinza-claro); border-radius: 6px;">
+                    <input type="email" id="clienteEmail" placeholder="Email" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid var(--cor-cinza-claro); border-radius: 6px;">
+                    <input type="tel" id="clienteTelefone" placeholder="Telefone" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid var(--cor-cinza-claro); border-radius: 6px;">
+                    <select id="clienteTipo" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid var(--cor-cinza-claro); border-radius: 6px;">
+                        <option value="">Selecione o tipo</option>
+                        <option value="Brand">Brand</option>
+                        <option value="Agência">Agência</option>
+                        <option value="E-commerce">E-commerce</option>
+                        <option value="Outro">Outro</option>
+                    </select>
+                    <div style="display: flex; gap: 10px; margin-top: 20px;">
+                        <button class="btn" onclick="salvarCliente()" style="flex: 1;">Salvar</button>
+                        <button class="btn btn-secundario" onclick="fecharModalCliente()" style="flex: 1;">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ABA 4: CALENDÁRIO -->
             <div class="abas-container" id="abaCalendario">
                 <div style="display: flex; gap: 10px; margin-bottom: 20px; align-items: center;">
                     <button class="btn btn-pequeno" onclick="mesAnterior()">Anterior</button>
@@ -1777,6 +1826,7 @@
 
             carregarPortfolio();
             carregarMarcas();
+            carregarClientes();
             carregarCampanhas();
             inicializarCalendario();
             inicializarChecklist();
@@ -2090,6 +2140,90 @@
                 `).join('');
             } catch (err) {
                 console.error('Erro ao filtrar marcas:', err);
+            }
+        }
+
+        // ============ CLIENTES ============
+        let clientes = [
+            { id: 1, nome: 'LoveFood', email: 'contact@lovefood.com', telefone: '+55 11 98765-4321', tipo: 'Brand', status: 'Ativo', data_criacao: '2026-09-01' }
+        ];
+
+        function carregarClientes() {
+            const corpo = document.getElementById('corpoTabelaClientes');
+            corpo.innerHTML = clientes.map(c => `
+                <tr style="border-bottom: 1px solid var(--cor-cinza-claro); cursor: pointer;" onclick="editarCliente(${c.id})">
+                    <td style="padding: 15px;">${c.nome}</td>
+                    <td style="padding: 15px;">${c.email}</td>
+                    <td style="padding: 15px;">${c.telefone}</td>
+                    <td style="padding: 15px;">${c.tipo}</td>
+                    <td style="padding: 15px;">
+                        <span style="background: ${c.status === 'Ativo' ? '#27ae60' : '#e74c3c'}; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">
+                            ${c.status}
+                        </span>
+                    </td>
+                    <td style="padding: 15px;">
+                        <button class="btn btn-pequeno" onclick="editarCliente(${c.id}); event.stopPropagation();">Editar</button>
+                        <button class="btn btn-pequeno btn-secundario" onclick="deletarCliente(${c.id}); event.stopPropagation();">Deletar</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function abrirModalCliente() {
+            document.getElementById('modalCliente').style.display = 'flex';
+            document.getElementById('clienteNome').value = '';
+            document.getElementById('clienteEmail').value = '';
+            document.getElementById('clienteTelefone').value = '';
+            document.getElementById('clienteTipo').value = '';
+        }
+
+        function fecharModalCliente() {
+            document.getElementById('modalCliente').style.display = 'none';
+        }
+
+        function salvarCliente() {
+            const nome = document.getElementById('clienteNome').value;
+            const email = document.getElementById('clienteEmail').value;
+            const telefone = document.getElementById('clienteTelefone').value;
+            const tipo = document.getElementById('clienteTipo').value;
+
+            if (!nome || !email || !telefone || !tipo) {
+                alert('Por favor, preencha todos os campos');
+                return;
+            }
+
+            const novoCliente = {
+                id: Math.max(...clientes.map(c => c.id), 0) + 1,
+                nome,
+                email,
+                telefone,
+                tipo,
+                status: 'Ativo',
+                data_criacao: new Date().toISOString().split('T')[0]
+            };
+
+            clientes.push(novoCliente);
+            carregarClientes();
+            fecharModalCliente();
+            alert('Cliente adicionado com sucesso!');
+        }
+
+        function editarCliente(id) {
+            const cliente = clientes.find(c => c.id === id);
+            if (cliente) {
+                document.getElementById('clienteNome').value = cliente.nome;
+                document.getElementById('clienteEmail').value = cliente.email;
+                document.getElementById('clienteTelefone').value = cliente.telefone;
+                document.getElementById('clienteTipo').value = cliente.tipo;
+                document.getElementById('modalCliente').style.display = 'flex';
+            }
+        }
+
+        function deletarCliente(id) {
+            if (confirm('Tem certeza que deseja deletar este cliente?')) {
+                clientes = clientes.filter(c => c.id !== id);
+                carregarClientes();
+                alert('Cliente deletado com sucesso!');
             }
         }
 
@@ -2498,6 +2632,7 @@
             const titulos = {
                 portfolio: 'Portfólio',
                 marcas: 'Marcas',
+                clientes: 'Clientes',
                 calendario: 'Calendário',
                 campanhas: 'Campanhas',
                 dashboard: 'Dashboard DX',
