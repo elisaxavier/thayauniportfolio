@@ -2195,7 +2195,7 @@
             carregarMarcas();
             // carregarClientes();
             carregarCampanhas();
-            // inicializarCalendario();
+            inicializarCalendario();
             inicializarChecklist();
         }
 
@@ -2678,8 +2678,11 @@
 
         async function inicializarCalendario() {
             renderizarCalendario();
-            await carregarEventosCalendario();
-            await carregarEventosPorDia();
+            try {
+                await carregarEventosPorDia();
+            } catch (err) {
+                console.log('Dados do calendário indisponíveis');
+            }
         }
 
         async function carregarEventosPorDia() {
