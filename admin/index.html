@@ -3289,6 +3289,9 @@
         // ============ CHECKLIST ============
         async function inicializarChecklist() {
             try {
+                const el = document.getElementById('conteudoChecklist');
+                if (!el) return;
+
                 const { data: marcados } = await supabaseClient.from('marcados').select('chave');
                 const checklistMarcados = marcados?.map(m => m.chave) || [];
 
@@ -3313,7 +3316,7 @@
                     `;
                     }).join('');
 
-                    document.getElementById('conteudoChecklist').innerHTML = html;
+                    el.innerHTML = html;
                 }
             } catch (err) {
                 console.error('Erro ao carregar checklist:', err);
