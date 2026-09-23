@@ -2196,7 +2196,7 @@
             carregarMarcas();
             // carregarClientes(); // Comentado - elemento clientesTabs não existe
             carregarCampanhas();
-            inicializarCalendario();
+            // inicializarCalendario(); // Comentado - Supabase não configurado
             inicializarChecklist();
         }
 
@@ -3065,10 +3065,6 @@
 
             if (aba === 'dashboard') {
                 inicializarDashboard();
-            }
-
-            if (aba === 'calendario') {
-                inicializarCalendario();
             }
         }
 
