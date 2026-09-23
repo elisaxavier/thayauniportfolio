@@ -3988,174 +3988,146 @@
         }
 
         // ============ LOVEFOOD CONTENT GRID ============
-        let lf_dbImagens;
-        let lf_imagemAtualId = null;
+        let lf_dbGrid;
+        let lf_gridData = null;
+        let lf_quadradoAtual = null;
 
-        function lf_abrirDBImagens() {
+        function lf_abrirDBGrid() {
             return new Promise((resolve) => {
                 const req = indexedDB.open('LFContentGrid', 1);
                 req.onupgradeneeded = (e) => {
                     const db = e.target.result;
-                    if (!db.objectStoreNames.contains('imagens')) {
-                        db.createObjectStore('imagens', { keyPath: 'id', autoIncrement: true });
+                    if (!db.objectStoreNames.contains('grid')) {
+                        db.createObjectStore('grid', { keyPath: 'id', autoIncrement: true });
                     }
                 };
                 req.onsuccess = (e) => {
-                    lf_dbImagens = e.target.result;
+                    lf_dbGrid = e.target.result;
                     resolve();
                 };
             });
         }
 
         async function lf_carregarContentGrid() {
-            await lf_abrirDBImagens();
-            lf_renderizarGrid();
+            await lf_abrirDBGrid();
+            lf_renderizarContentGrid();
         }
 
-        function lf_renderizarGrid() {
-            if (!lf_dbImagens) return;
-
-            const t = lf_dbImagens.transaction('imagens', 'readonly');
-            const store = t.objectStore('imagens');
+        function lf_renderizarContentGrid() {
+            if (!lf_dbGrid) return;
+            const t = lf_dbGrid.transaction('grid', 'readonly');
+            const store = t.objectStore('grid');
             const req = store.getAll();
-
             req.onsuccess = () => {
-                const imagens = req.result;
-                const container = document.getElementById('lf_gridImagens');
-                container.innerHTML = '';
-
-                imagens.forEach(img => {
-                    const div = document.createElement('div');
-                    div.style.cssText = 'position: relative; overflow: hidden; border-radius: 8px; aspect-ratio: 1; cursor: pointer; background: #f0f0f0;';
-                    div.innerHTML = `
-                        <img src="${img.blob}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                        <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0); transition: background 0.3s;" onmouseover="this.style.background='rgba(0,0,0,0.3)'" onmouseout="this.style.background='rgba(0,0,0,0)'"></div>
-                    `;
-                    div.onclick = () => lf_abrirModalImagem(img.id);
-                    container.appendChild(div);
-                });
-            };
-        }
-
-        function lf_adicionarImagens(event) {
-            const files = event.target.files;
-            Array.from(files).forEach(file => {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const blob = e.target.result;
-                    const imagem = {
-                        blob,
-                        legenda: '',
-                        comentarios: [],
-                        data: new Date().toISOString()
-                    };
-
-                    const t = lf_dbImagens.transaction('imagens', 'readwrite');
-                    const store = t.objectStore('imagens');
-                    store.add(imagem);
-
-                    t.oncomplete = () => {
-                        lf_renderizarGrid();
-                    };
-                };
-                reader.readAsDataURL(file);
-            });
-            event.target.value = '';
-        }
-
-        function lf_abrirModalImagem(id) {
-            if (!lf_dbImagens) return;
-
-            lf_imagemAtualId = id;
-            const t = lf_dbImagens.transaction('imagens', 'readonly');
-            const store = t.objectStore('imagens');
-            const req = store.get(id);
-
-            req.onsuccess = () => {
-                const img = req.result;
-                if (img) {
-                    document.getElementById('lf_imagemPreview').src = img.blob;
-                    document.getElementById('lf_imagemLegenda').value = img.legenda || '';
-
-                    const comentariosDiv = document.getElementById('lf_comentariosLista');
-                    comentariosDiv.innerHTML = '';
-                    (img.comentarios || []).forEach(com => {
-                        const p = document.createElement('p');
-                        p.style.cssText = 'margin: 8px 0; padding: 8px; background: #f8f9fa; border-radius: 4px; font-size: 13px; color: #666;';
-                        p.textContent = com;
-                        comentariosDiv.appendChild(p);
-                    });
-
-                    document.getElementById('lf_modalImagem').classList.add('ativo');
+                const data = req.result[0];
+                lf_gridData = data;
+                if (data && data.imagemBlob) {
+                    const img = document.getElementById('lf_imagemGridPreview');
+                    const overlay = document.getElementById('lf_gridOverlay');
+                    img.src = data.imagemBlob;
+                    img.style.display = 'block';
+                    overlay.innerHTML = '';
+                    for (let i = 1; i <= 9; i++) {
+                        const div = document.createElement('div');
+                        div.style.cssText = 'cursor: pointer; background: rgba(0,47,167,0); border: 1px solid transparent; transition: background 0.2s;';
+                        div.onmouseover = () => div.style.background = 'rgba(0,47,167,0.1)';
+                        div.onmouseout = () => div.style.background = 'rgba(0,47,167,0)';
+                        div.onclick = () => lf_abrirQuadrado(i);
+                        overlay.appendChild(div);
+                    }
+                    overlay.style.display = 'grid';
+                    document.getElementById('lf_legendaGrid').value = data.legenda || '';
+                    document.getElementById('lf_btnDeletarGrid').style.display = 'block';
+                } else {
+                    document.getElementById('lf_imagemGridPreview').style.display = 'none';
+                    document.getElementById('lf_gridOverlay').style.display = 'none';
+                    document.getElementById('lf_btnDeletarGrid').style.display = 'none';
                 }
             };
         }
 
-        function lf_fecharModalImagem() {
-            document.getElementById('lf_modalImagem').classList.remove('ativo');
-            lf_imagemAtualId = null;
+        function lf_adicionarImagemGrid(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const data = lf_gridData || { comentarios: {} };
+                data.imagemBlob = e.target.result;
+                data.legenda = '';
+                if (!data.id) data.id = 1;
+                const t = lf_dbGrid.transaction('grid', 'readwrite');
+                const store = t.objectStore('grid');
+                store.put(data);
+                t.oncomplete = () => {
+                    lf_gridData = data;
+                    lf_renderizarContentGrid();
+                    alert('Imagem adicionada!');
+                };
+            };
+            reader.readAsDataURL(file);
+            event.target.value = '';
         }
 
-        function lf_salvarLegenda() {
-            if (!lf_imagemAtualId || !lf_dbImagens) return;
-
-            const legenda = document.getElementById('lf_imagemLegenda').value;
-            const t = lf_dbImagens.transaction('imagens', 'readwrite');
-            const store = t.objectStore('imagens');
-            const req = store.get(lf_imagemAtualId);
-
-            req.onsuccess = () => {
-                const img = req.result;
-                img.legenda = legenda;
-                store.put(img);
-            };
-
-            t.oncomplete = () => {
-                alert('Legenda salva!');
-                lf_renderizarGrid();
-            };
+        function lf_salvarLegendaGrid() {
+            if (!lf_gridData || !lf_dbGrid) return;
+            lf_gridData.legenda = document.getElementById('lf_legendaGrid').value;
+            const t = lf_dbGrid.transaction('grid', 'readwrite');
+            const store = t.objectStore('grid');
+            store.put(lf_gridData);
+            t.oncomplete = () => alert('Legenda salva!');
         }
 
-        function lf_adicionarComentario() {
-            if (!lf_imagemAtualId || !lf_dbImagens) return;
+        function lf_abrirQuadrado(num) {
+            if (!lf_gridData) return;
+            lf_quadradoAtual = num;
+            document.getElementById('lf_numQuadrado').textContent = num;
+            if (!lf_gridData.comentarios) lf_gridData.comentarios = {};
+            const comentarios = lf_gridData.comentarios[num] || [];
+            const lista = document.getElementById('lf_comentariosGridLista');
+            lista.innerHTML = '';
+            comentarios.forEach(com => {
+                const p = document.createElement('p');
+                p.style.cssText = 'margin: 8px 0; padding: 8px; background: white; border-radius: 4px; font-size: 13px; color: #666; border-left: 3px solid var(--cor-azul);';
+                p.textContent = com;
+                lista.appendChild(p);
+            });
+            document.getElementById('lf_comentarioGridNovo').value = '';
+            document.getElementById('lf_modalQuadrado').classList.add('ativo');
+        }
 
-            const comentario = document.getElementById('lf_comentarioNovo').value.trim();
+        function lf_fecharModalQuadrado() {
+            document.getElementById('lf_modalQuadrado').classList.remove('ativo');
+            lf_quadradoAtual = null;
+        }
+
+        function lf_adicionarComentarioGrid() {
+            if (!lf_quadradoAtual || !lf_gridData || !lf_dbGrid) return;
+            const comentario = document.getElementById('lf_comentarioGridNovo').value.trim();
             if (!comentario) return;
-
-            const t = lf_dbImagens.transaction('imagens', 'readwrite');
-            const store = t.objectStore('imagens');
-            const req = store.get(lf_imagemAtualId);
-
-            req.onsuccess = () => {
-                const img = req.result;
-                if (!img.comentarios) img.comentarios = [];
-                img.comentarios.push(comentario);
-                store.put(img);
-            };
-
+            if (!lf_gridData.comentarios) lf_gridData.comentarios = {};
+            if (!lf_gridData.comentarios[lf_quadradoAtual]) lf_gridData.comentarios[lf_quadradoAtual] = [];
+            lf_gridData.comentarios[lf_quadradoAtual].push(comentario);
+            const t = lf_dbGrid.transaction('grid', 'readwrite');
+            const store = t.objectStore('grid');
+            store.put(lf_gridData);
             t.oncomplete = () => {
-                document.getElementById('lf_comentarioNovo').value = '';
-                lf_abrirModalImagem(lf_imagemAtualId);
+                lf_abrirQuadrado(lf_quadradoAtual);
             };
         }
 
-        function lf_deletarImagem() {
-            if (!lf_imagemAtualId || !lf_dbImagens) return;
-
-            if (!confirm('Tem certeza que quer deletar esta imagem?')) return;
-
-            const t = lf_dbImagens.transaction('imagens', 'readwrite');
-            const store = t.objectStore('imagens');
-            store.delete(lf_imagemAtualId);
-
+        function lf_deletarImagemGrid() {
+            if (!confirm('Deletar imagem e todos os comentários?')) return;
+            const t = lf_dbGrid.transaction('grid', 'readwrite');
+            const store = t.objectStore('grid');
+            store.clear();
             t.oncomplete = () => {
-                lf_fecharModalImagem();
-                lf_renderizarGrid();
+                lf_gridData = null;
+                lf_renderizarContentGrid();
                 alert('Imagem deletada!');
             };
         }
 
-        lf_abrirDBImagens();
+        lf_abrirDBGrid();
 
         // Carregar ao abrir
         verificarSessao();
