@@ -1004,6 +1004,9 @@
                     <button class="btn-dashboard-tab" onclick="abrirLovefoodPagina('calendario')" style="border: none; background: none; padding: 0; font-size: 16px; font-weight: 700; text-transform: uppercase; color: var(--cor-texto); border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.3s; padding-bottom: 12px;">
                         Calendário
                     </button>
+                    <button class="btn-dashboard-tab" onclick="abrirLovefoodPagina('documentos')" style="border: none; background: none; padding: 0; font-size: 16px; font-weight: 700; text-transform: uppercase; color: var(--cor-texto); border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.3s; padding-bottom: 12px;">
+                        Documentos
+                    </button>
                 </div>
 
                 <!-- VISÃO GERAL PAGE -->
@@ -1336,6 +1339,49 @@
                         <button class="btn" onclick="lf_novoConteudo()">+ Novo Conteúdo</button>
                     </div>
                     <div id="lf_grid" style="width: 100%; display: grid;"></div>
+                </div>
+
+                <!-- DOCUMENTOS PAGE -->
+                <div id="lovefood-documentos" class="lovefood-pagina" style="display: none;">
+                    <div style="margin-bottom: 50px;">
+                        <h2 style="font-size: 28px; font-weight: 600; color: var(--cor-texto); margin-bottom: 30px;">Documentos</h2>
+
+                        <!-- ADICIONAR DOCUMENTO -->
+                        <div style="background: #f8f9fa; padding: 24px; border-radius: 8px; border: 1px solid #e0e0e0; margin-bottom: 40px;">
+                            <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 16px; color: var(--cor-texto);">Adicionar Documento</h3>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr gap: 12px; margin-bottom: 12px;">
+                                <input type="text" id="lf_docNome" placeholder="Nome do documento (ex: Contrato)" style="padding: 12px; border: 1px solid #e0e0e0; border-radius: 4px; font-family: inherit;">
+                                <input type="url" id="lf_docLink" placeholder="Link do Google Drive ou outro" style="padding: 12px; border: 1px solid #e0e0e0; border-radius: 4px; font-family: inherit;">
+                            </div>
+                            <button class="btn" onclick="lf_adicionarDocumento()" style="width: 100%; background: var(--cor-azul); color: white;">+ Adicionar Documento</button>
+                        </div>
+
+                        <!-- LISTA DE DOCUMENTOS -->
+                        <div id="lf_listaDocumentos" style="display: grid; gap: 12px; margin-bottom: 50px;">
+                        </div>
+                    </div>
+
+                    <!-- CHECKLIST -->
+                    <div>
+                        <h3 style="font-size: 20px; font-weight: 600; color: var(--cor-texto); margin-bottom: 20px;">Checklist de Documentos</h3>
+                        <div style="display: grid; gap: 12px;">
+                            <label style="display: flex; align-items: center; gap: 12px; padding: 16px; background: #f8f9fa; border-radius: 8px; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='#f8f9fa'">
+                                <input type="checkbox" id="lf_check_contrato" onchange="lf_salvarChecklistItem('contrato')" style="width: 20px; height: 20px; cursor: pointer;">
+                                <span style="font-size: 16px; font-weight: 500; color: var(--cor-texto); flex: 1;">Contrato</span>
+                                <span id="lf_check_contrato_status" style="font-size: 12px; color: #999;"></span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 12px; padding: 16px; background: #f8f9fa; border-radius: 8px; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='#f8f9fa'">
+                                <input type="checkbox" id="lf_check_logo" onchange="lf_salvarChecklistItem('logo')" style="width: 20px; height: 20px; cursor: pointer;">
+                                <span style="font-size: 16px; font-weight: 500; color: var(--cor-texto); flex: 1;">Logo</span>
+                                <span id="lf_check_logo_status" style="font-size: 12px; color: #999;"></span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 12px; padding: 16px; background: #f8f9fa; border-radius: 8px; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='#f8f9fa'">
+                                <input type="checkbox" id="lf_check_brandbook" onchange="lf_salvarChecklistItem('brandbook')" style="width: 20px; height: 20px; cursor: pointer;">
+                                <span style="font-size: 16px; font-weight: 500; color: var(--cor-texto); flex: 1;">Brand Book</span>
+                                <span id="lf_check_brandbook_status" style="font-size: 12px; color: #999;"></span>
+                            </label>
+                        </div>
+                    </div>
                 </div>
 
             </div>
@@ -3394,6 +3440,128 @@
         async function lf_inicializar() {
             await lf_abrirDB();
             lf_renderizar();
+            lf_carregarDocumentos();
+            lf_carregarChecklist();
+        }
+
+        // ============ LOVEFOOD DOCUMENTOS ============
+        async function lf_adicionarDocumento() {
+            const nome = document.getElementById('lf_docNome').value.trim();
+            const link = document.getElementById('lf_docLink').value.trim();
+
+            if (!nome || !link) {
+                alert('Preencha nome e link do documento');
+                return;
+            }
+
+            try {
+                const { data, error } = await supabaseClient.from('lovefood_documentos').insert([{
+                    nome,
+                    link
+                }]);
+
+                if (error) throw error;
+
+                document.getElementById('lf_docNome').value = '';
+                document.getElementById('lf_docLink').value = '';
+                lf_carregarDocumentos();
+                alert('✅ Documento adicionado!');
+            } catch (err) {
+                console.error('Erro ao adicionar documento:', err);
+                alert('Erro ao adicionar documento');
+            }
+        }
+
+        async function lf_carregarDocumentos() {
+            try {
+                const { data, error } = await supabaseClient.from('lovefood_documentos').select('*');
+                if (error) {
+                    console.log('Tabela não existe ainda');
+                    return;
+                }
+
+                const container = document.getElementById('lf_listaDocumentos');
+                container.innerHTML = '';
+
+                if (!data || data.length === 0) {
+                    container.innerHTML = '<p style="color: #999; font-size: 14px;">Nenhum documento adicionado ainda.</p>';
+                    return;
+                }
+
+                data.forEach(doc => {
+                    const div = document.createElement('div');
+                    div.style.cssText = 'padding: 16px; background: #f8f9fa; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; border: 1px solid #e0e0e0;';
+                    div.innerHTML = `
+                        <div style="flex: 1;">
+                            <div style="font-weight: 600; color: var(--cor-texto); margin-bottom: 4px;">${doc.nome}</div>
+                            <a href="${doc.link}" target="_blank" style="color: var(--cor-azul); font-size: 13px; text-decoration: none; word-break: break-all;">Abrir Link</a>
+                        </div>
+                        <button onclick="lf_deletarDocumento(${doc.id})" style="background: #e74c3c; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 12px;">Deletar</button>
+                    `;
+                    container.appendChild(div);
+                });
+            } catch (err) {
+                console.error('Erro ao carregar documentos:', err);
+            }
+        }
+
+        async function lf_deletarDocumento(id) {
+            if (!confirm('Deletar este documento?')) return;
+
+            try {
+                await supabaseClient.from('lovefood_documentos').delete().eq('id', id);
+                lf_carregarDocumentos();
+                alert('✅ Documento deletado!');
+            } catch (err) {
+                console.error('Erro ao deletar documento:', err);
+                alert('Erro ao deletar documento');
+            }
+        }
+
+        async function lf_salvarChecklistItem(item) {
+            const checkbox = document.getElementById(`lf_check_${item}`);
+            const isChecked = checkbox.checked;
+
+            try {
+                const { data, error } = await supabaseClient.from('lovefood_checklist').select('*').eq('item', item);
+
+                if (data && data.length > 0) {
+                    // Atualizar
+                    await supabaseClient.from('lovefood_checklist').update({ concluido: isChecked }).eq('item', item);
+                } else {
+                    // Inserir
+                    await supabaseClient.from('lovefood_checklist').insert([{ item, concluido: isChecked }]);
+                }
+
+                lf_carregarChecklist();
+            } catch (err) {
+                console.error('Erro ao salvar checklist:', err);
+            }
+        }
+
+        async function lf_carregarChecklist() {
+            try {
+                const { data, error } = await supabaseClient.from('lovefood_checklist').select('*');
+                if (error) {
+                    console.log('Tabela não existe ainda');
+                    return;
+                }
+
+                const items = ['contrato', 'logo', 'brandbook'];
+                items.forEach(item => {
+                    const checkbox = document.getElementById(`lf_check_${item}`);
+                    const statusEl = document.getElementById(`lf_check_${item}_status`);
+
+                    const checklistItem = data?.find(d => d.item === item);
+                    if (checklistItem) {
+                        checkbox.checked = checklistItem.concluido;
+                        statusEl.textContent = checklistItem.concluido ? '✅ Concluído' : '⏳ Pendente';
+                        statusEl.style.color = checklistItem.concluido ? '#4CAF50' : '#FF9800';
+                    }
+                });
+            } catch (err) {
+                console.error('Erro ao carregar checklist:', err);
+            }
         }
 
         // ============ CHECKLIST ============
