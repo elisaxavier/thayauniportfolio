@@ -1001,9 +1001,6 @@
                     <button class="btn-dashboard-tab" onclick="abrirLovefoodPagina('dashboard')" style="border: none; background: none; padding: 0; font-size: 16px; font-weight: 700; text-transform: uppercase; color: var(--cor-texto); border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.3s; padding-bottom: 12px;">
                         Dashboard
                     </button>
-                    <button class="btn-dashboard-tab" onclick="abrirLovefoodPagina('contentgrid')" style="border: none; background: none; padding: 0; font-size: 16px; font-weight: 700; text-transform: uppercase; color: var(--cor-texto); border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.3s; padding-bottom: 12px;">
-                        Content Grid
-                    </button>
                     <button class="btn-dashboard-tab" onclick="abrirLovefoodPagina('calendario')" style="border: none; background: none; padding: 0; font-size: 16px; font-weight: 700; text-transform: uppercase; color: var(--cor-texto); border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.3s; padding-bottom: 12px;">
                         Calendário
                     </button>
@@ -1326,38 +1323,6 @@
                 </div>
 
                 </div> <!-- FIM DASHBOARD PAGE -->
-
-                <!-- CONTENT GRID PAGE -->
-                <div id="lovefood-contentgrid" class="lovefood-pagina" style="display: none;">
-                    <div style="margin-bottom: 40px;">
-                        <h2 style="font-size: 24px; font-weight: 600; color: var(--cor-texto); margin-bottom: 24px;">CONTENT GRID</h2>
-
-                        <!-- UPLOAD AREA -->
-                        <div style="border: 2px dashed #e0e0e0; border-radius: 8px; padding: 40px; text-align: center; cursor: pointer; transition: all 0.3s; background: #f8f9fa;" id="lf_uploadArea" onclick="document.getElementById('lf_uploadInput').click();" onmouseover="this.style.borderColor='var(--cor-azul)'; this.style.background='#e8f4f8'" onmouseout="this.style.borderColor='#e0e0e0'; this.style.background='#f8f9fa'">
-                            <div style="font-size: 14px; font-weight: 600; color: var(--cor-azul); margin-bottom: 8px;">Clique ou arraste a imagem aqui</div>
-                            <div style="font-size: 12px; color: #999;">PNG, JPG até 5MB (imagem vertical recomendada)</div>
-                            <input type="file" id="lf_uploadInput" accept="image/*" onchange="lf_adicionarImagemGrid(event)" style="display: none;">
-                        </div>
-
-                        <button class="btn" onclick="lf_deletarImagemGrid()" style="margin-top: 16px; background: #e74c3c; display: none;" id="lf_btnDeletarGrid">Deletar Imagem</button>
-                    </div>
-
-                    <!-- IMAGEM COM GRID 3X3 -->
-                    <div style="position: relative; max-width: 400px; margin: 40px auto;">
-                        <img id="lf_imagemGridPreview" src="" style="width: 100%; height: auto; border-radius: 8px; display: none;">
-                        <div id="lf_gridOverlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); gap: 1px; gap: 0; display: none;">
-                        </div>
-                    </div>
-
-                    <!-- LEGENDA -->
-                    <div style="margin-top: 40px; max-width: 400px; margin-left: auto; margin-right: auto;">
-                        <div class="form-grupo">
-                            <label>Legenda (Admin edita)</label>
-                            <textarea id="lf_legendaGrid" placeholder="Adicione uma legenda para a imagem..." rows="3" style="width: 100%; padding: 8px; border: 1px solid #e0e0e0; border-radius: 4px; font-family: inherit;"></textarea>
-                        </div>
-                        <button class="btn" onclick="lf_salvarLegendaGrid()" style="margin-top: 8px;">Salvar Legenda</button>
-                    </div>
-                </div>
 
                 <!-- CALENDÁRIO PAGE -->
                 <div id="lovefood-calendario" class="lovefood-pagina" style="display: none;">
@@ -3558,10 +3523,6 @@
                 lf_carregarVisaoGeral();
             }
 
-            if (pagina === 'contentgrid') {
-                lf_carregarContentGrid();
-            }
-
             if (event && event.target) {
                 event.target.style.borderBottomColor = 'var(--cor-azul)';
                 event.target.style.color = 'var(--cor-azul)';
@@ -4070,176 +4031,6 @@
                 alert('✓ Conteúdo aprovado!');
             };
         }
-
-        // ============ LOVEFOOD CONTENT GRID ============
-        let lf_dbImagens;
-        let lf_imagemAtualId = null;
-
-        function lf_abrirDBImagens() {
-            return new Promise((resolve) => {
-                const req = indexedDB.open('LFContentGrid', 1);
-                req.onupgradeneeded = (e) => {
-                    const db = e.target.result;
-                    if (!db.objectStoreNames.contains('imagens')) {
-                        db.createObjectStore('imagens', { keyPath: 'id', autoIncrement: true });
-                    }
-                };
-                req.onsuccess = (e) => {
-                    lf_dbImagens = e.target.result;
-                    resolve();
-                };
-            });
-        }
-
-        async function lf_carregarContentGrid() {
-            await lf_abrirDBImagens();
-            lf_renderizarGrid();
-        }
-
-        function lf_renderizarGrid() {
-            if (!lf_dbImagens) return;
-
-            const t = lf_dbImagens.transaction('imagens', 'readonly');
-            const store = t.objectStore('imagens');
-            const req = store.getAll();
-
-            req.onsuccess = () => {
-                const imagens = req.result;
-                const container = document.getElementById('lf_gridImagens');
-                container.innerHTML = '';
-
-                imagens.forEach(img => {
-                    const div = document.createElement('div');
-                    div.style.cssText = 'position: relative; overflow: hidden; border-radius: 8px; aspect-ratio: 1; cursor: pointer; background: #f0f0f0;';
-                    div.innerHTML = `
-                        <img src="${img.blob}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                        <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0); transition: background 0.3s;" onmouseover="this.style.background='rgba(0,0,0,0.3)'" onmouseout="this.style.background='rgba(0,0,0,0)'"></div>
-                    `;
-                    div.onclick = () => lf_abrirModalImagem(img.id);
-                    container.appendChild(div);
-                });
-            };
-        }
-
-        function lf_adicionarImagens(event) {
-            const files = event.target.files;
-            Array.from(files).forEach(file => {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const blob = e.target.result;
-                    const imagem = {
-                        blob,
-                        legenda: '',
-                        comentarios: [],
-                        data: new Date().toISOString()
-                    };
-
-                    const t = lf_dbImagens.transaction('imagens', 'readwrite');
-                    const store = t.objectStore('imagens');
-                    store.add(imagem);
-
-                    t.oncomplete = () => {
-                        lf_renderizarGrid();
-                    };
-                };
-                reader.readAsDataURL(file);
-            });
-            event.target.value = '';
-        }
-
-        function lf_abrirModalImagem(id) {
-            if (!lf_dbImagens) return;
-
-            lf_imagemAtualId = id;
-            const t = lf_dbImagens.transaction('imagens', 'readonly');
-            const store = t.objectStore('imagens');
-            const req = store.get(id);
-
-            req.onsuccess = () => {
-                const img = req.result;
-                if (img) {
-                    document.getElementById('lf_imagemPreview').src = img.blob;
-                    document.getElementById('lf_imagemLegenda').value = img.legenda || '';
-
-                    const comentariosDiv = document.getElementById('lf_comentariosLista');
-                    comentariosDiv.innerHTML = '';
-                    (img.comentarios || []).forEach(com => {
-                        const p = document.createElement('p');
-                        p.style.cssText = 'margin: 8px 0; padding: 8px; background: #f8f9fa; border-radius: 4px; font-size: 13px; color: #666;';
-                        p.textContent = com;
-                        comentariosDiv.appendChild(p);
-                    });
-
-                    document.getElementById('lf_modalImagem').classList.add('ativo');
-                }
-            };
-        }
-
-        function lf_fecharModalImagem() {
-            document.getElementById('lf_modalImagem').classList.remove('ativo');
-            lf_imagemAtualId = null;
-        }
-
-        function lf_salvarLegenda() {
-            if (!lf_imagemAtualId || !lf_dbImagens) return;
-
-            const legenda = document.getElementById('lf_imagemLegenda').value;
-            const t = lf_dbImagens.transaction('imagens', 'readwrite');
-            const store = t.objectStore('imagens');
-            const req = store.get(lf_imagemAtualId);
-
-            req.onsuccess = () => {
-                const img = req.result;
-                img.legenda = legenda;
-                store.put(img);
-            };
-
-            t.oncomplete = () => {
-                alert('Legenda salva!');
-                lf_renderizarGrid();
-            };
-        }
-
-        function lf_adicionarComentario() {
-            if (!lf_imagemAtualId || !lf_dbImagens) return;
-
-            const comentario = document.getElementById('lf_comentarioNovo').value.trim();
-            if (!comentario) return;
-
-            const t = lf_dbImagens.transaction('imagens', 'readwrite');
-            const store = t.objectStore('imagens');
-            const req = store.get(lf_imagemAtualId);
-
-            req.onsuccess = () => {
-                const img = req.result;
-                if (!img.comentarios) img.comentarios = [];
-                img.comentarios.push(comentario);
-                store.put(img);
-            };
-
-            t.oncomplete = () => {
-                document.getElementById('lf_comentarioNovo').value = '';
-                lf_abrirModalImagem(lf_imagemAtualId);
-            };
-        }
-
-        function lf_deletarImagem() {
-            if (!lf_imagemAtualId || !lf_dbImagens) return;
-
-            if (!confirm('Tem certeza que quer deletar esta imagem?')) return;
-
-            const t = lf_dbImagens.transaction('imagens', 'readwrite');
-            const store = t.objectStore('imagens');
-            store.delete(lf_imagemAtualId);
-
-            t.oncomplete = () => {
-                lf_fecharModalImagem();
-                lf_renderizarGrid();
-                alert('Imagem deletada!');
-            };
-        }
-
-        lf_abrirDBImagens();
 
         // Carregar ao abrir
         verificarSessao();
