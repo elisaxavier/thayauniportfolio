@@ -1345,36 +1345,18 @@
                 <div id="lovefood-documentos" class="lovefood-pagina" style="display: none;">
                     <h2 style="font-size: 28px; font-weight: 600; color: var(--cor-texto); margin-bottom: 40px;">Documentos</h2>
 
-                    <div style="display: grid; gap: 24px;">
-                        <!-- LOGO -->
-                        <div style="padding: 24px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid var(--cor-azul);">
-                            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-                                <h3 style="font-size: 18px; font-weight: 600; color: var(--cor-texto); flex: 1;">Logo</h3>
-                                <a id="lf_logo_link_btn" href="" target="_blank" style="background: var(--cor-azul); color: white; padding: 8px 16px; border-radius: 4px; text-decoration: none; font-size: 13px; display: none;">Abrir Link</a>
-                            </div>
-                            <input type="url" id="lf_logo_link" placeholder="Cole o link da pasta do Google Drive" style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 4px; font-family: inherit; margin-bottom: 12px;">
-                            <button class="btn" onclick="lf_salvarDocumento('logo')" style="width: 100%; background: var(--cor-azul); color: white;">Salvar Link</button>
+                    <!-- ADICIONAR DOCUMENTO -->
+                    <div style="padding: 24px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e0e0e0; margin-bottom: 40px;">
+                        <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 16px; color: var(--cor-texto);">Adicionar Documento</h3>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                            <input type="text" id="lf_docNome" placeholder="Nome do documento (ex: Logo, Contrato)" style="padding: 12px; border: 1px solid #e0e0e0; border-radius: 4px; font-family: inherit;">
+                            <input type="url" id="lf_docLink" placeholder="Link do Google Drive" style="padding: 12px; border: 1px solid #e0e0e0; border-radius: 4px; font-family: inherit;">
                         </div>
+                        <button class="btn" onclick="lf_adicionarDocumento()" style="width: 100%; background: var(--cor-azul); color: white;">+ Adicionar Documento</button>
+                    </div>
 
-                        <!-- CONTRATO -->
-                        <div style="padding: 24px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid var(--cor-azul);">
-                            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-                                <h3 style="font-size: 18px; font-weight: 600; color: var(--cor-texto); flex: 1;">Contrato</h3>
-                                <a id="lf_contrato_link_btn" href="" target="_blank" style="background: var(--cor-azul); color: white; padding: 8px 16px; border-radius: 4px; text-decoration: none; font-size: 13px; display: none;">Abrir Link</a>
-                            </div>
-                            <input type="url" id="lf_contrato_link" placeholder="Cole o link da pasta do Google Drive" style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 4px; font-family: inherit; margin-bottom: 12px;">
-                            <button class="btn" onclick="lf_salvarDocumento('contrato')" style="width: 100%; background: var(--cor-azul); color: white;">Salvar Link</button>
-                        </div>
-
-                        <!-- BRAND BOOK -->
-                        <div style="padding: 24px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid var(--cor-azul);">
-                            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-                                <h3 style="font-size: 18px; font-weight: 600; color: var(--cor-texto); flex: 1;">Brand Book</h3>
-                                <a id="lf_brandbook_link_btn" href="" target="_blank" style="background: var(--cor-azul); color: white; padding: 8px 16px; border-radius: 4px; text-decoration: none; font-size: 13px; display: none;">Abrir Link</a>
-                            </div>
-                            <input type="url" id="lf_brandbook_link" placeholder="Cole o link da pasta do Google Drive" style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 4px; font-family: inherit; margin-bottom: 12px;">
-                            <button class="btn" onclick="lf_salvarDocumento('brandbook')" style="width: 100%; background: var(--cor-azul); color: white;">Salvar Link</button>
-                        </div>
+                    <!-- LISTA DE DOCUMENTOS -->
+                    <div id="lf_listaDocumentos" style="display: grid; gap: 12px;">
                     </div>
                 </div>
 
@@ -3438,28 +3420,35 @@
         }
 
         // ============ LOVEFOOD DOCUMENTOS ============
-        async function lf_salvarDocumento(tipo) {
-            const link = document.getElementById(`lf_${tipo}_link`).value.trim();
+        async function lf_adicionarDocumento() {
+            const nome = document.getElementById('lf_docNome').value.trim();
+            const link = document.getElementById('lf_docLink').value.trim();
 
-            if (!link) {
-                alert('Cole um link válido');
+            if (!nome || !link) {
+                alert('Preencha nome e link do documento');
                 return;
             }
 
             try {
-                const { data, error } = await supabaseClient.from('lovefood_docs').select('*').eq('tipo', tipo);
-
-                if (data && data.length > 0) {
-                    await supabaseClient.from('lovefood_docs').update({ link }).eq('tipo', tipo);
-                } else {
-                    await supabaseClient.from('lovefood_docs').insert([{ tipo, link }]);
-                }
-
+                await supabaseClient.from('lovefood_docs').insert([{ nome, link }]);
+                document.getElementById('lf_docNome').value = '';
+                document.getElementById('lf_docLink').value = '';
                 lf_carregarDocumentos();
-                alert('✅ Link salvo!');
             } catch (err) {
-                console.error('Erro ao salvar:', err);
-                alert('Erro ao salvar');
+                console.error('Erro ao adicionar:', err);
+                alert('Erro ao adicionar documento');
+            }
+        }
+
+        async function lf_deletarDocumento(id) {
+            if (!confirm('Remover este documento?')) return;
+
+            try {
+                await supabaseClient.from('lovefood_docs').delete().eq('id', id);
+                lf_carregarDocumentos();
+            } catch (err) {
+                console.error('Erro ao deletar:', err);
+                alert('Erro ao deletar documento');
             }
         }
 
@@ -3471,17 +3460,26 @@
                     return;
                 }
 
-                const tipos = ['logo', 'contrato', 'brandbook'];
-                tipos.forEach(tipo => {
-                    const input = document.getElementById(`lf_${tipo}_link`);
-                    const btn = document.getElementById(`lf_${tipo}_link_btn`);
+                const lista = document.getElementById('lf_listaDocumentos');
+                lista.innerHTML = '';
 
-                    const doc = data?.find(d => d.tipo === tipo);
-                    if (doc && doc.link) {
-                        input.value = doc.link;
-                        btn.href = doc.link;
-                        btn.style.display = 'block';
-                    }
+                if (!data || data.length === 0) {
+                    lista.innerHTML = '<p style="color: #999; padding: 20px; text-align: center;">Nenhum documento adicionado</p>';
+                    return;
+                }
+
+                data.forEach(doc => {
+                    const item = document.createElement('div');
+                    item.style.cssText = 'padding: 16px; background: #f8f9fa; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; border-left: 4px solid var(--cor-azul);';
+
+                    item.innerHTML = `
+                        <div>
+                            <h4 style="margin: 0 0 8px 0; color: var(--cor-texto); font-weight: 600;">${doc.nome}</h4>
+                            <a href="${doc.link}" target="_blank" style="color: var(--cor-azul); text-decoration: none; font-size: 13px;">Abrir Link →</a>
+                        </div>
+                        <button onclick="lf_deletarDocumento(${doc.id})" style="background: #ff4757; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 12px;">Deletar</button>
+                    `;
+                    lista.appendChild(item);
                 });
             } catch (err) {
                 console.error('Erro ao carregar documentos:', err);
