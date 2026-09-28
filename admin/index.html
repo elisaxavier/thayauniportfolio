@@ -3932,15 +3932,6 @@
                     }
                 });
 
-                // 3. Aprovados mas não agendados
-                const aprovadosNaoAgendados = conteudos.filter(c => c.estado === 'Aprovado' && c.agendado === 'Não');
-                aprovadosNaoAgendados.forEach(c => {
-                    if (!idsAdicionados.has(c.id)) {
-                        itensAtencao.push({...c, prioridade: 3});
-                        idsAdicionados.add(c.id);
-                    }
-                });
-
                 // Ordenar por prioridade e limite a 5
                 itensAtencao.sort((a, b) => a.prioridade - b.prioridade);
                 const itemsExibicao = itensAtencao.slice(0, 5);
@@ -3956,16 +3947,10 @@
                         const dataStr = dataCont.toLocaleDateString('pt-BR');
                         const isAtrasado = new Date(item.data) < hoje && item.agendado === 'Não';
 
-                        let statusBg = '#FFD9B3';
+                        let statusBg = '#FFCCCC';
                         let statusColor = '#333';
                         if (isAtrasado) {
                             statusBg = '#FFB3BA';
-                            statusColor = '#333';
-                        } else if (item.estado === 'Aguardando aprovação') {
-                            statusBg = '#FFCCCC';
-                            statusColor = '#333';
-                        } else if (item.estado === 'Aprovado') {
-                            statusBg = '#D4F1D4';
                             statusColor = '#333';
                         }
 
