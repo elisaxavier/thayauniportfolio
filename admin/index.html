@@ -2252,7 +2252,6 @@
                 <label>Estado *</label>
                 <select id="lf_estado">
                     <option value="">Selecionar...</option>
-                    <option value="Em andamento">Em andamento</option>
                     <option value="Aguardando aprovação">Aguardando aprovação</option>
                     <option value="Aprovado">Aprovado</option>
                 </select>
@@ -3208,7 +3207,7 @@
                         const el = document.getElementById(`lf_conteudos_${dia}`);
                         if (el) {
                             const cores = { 'Reels': '#FFB3BA', 'Carrossel': '#FFFFBA', 'Post': '#BAE1BA', 'Newsletter': '#BAC7FF' };
-                            const coresEstado = { 'Em andamento': '#FFD9B3', 'Aguardando aprovação': '#FFCCCC', 'Aprovado': '#D4F1D4' };
+                            const coresEstado = { 'Aguardando aprovação': '#FFCCCC', 'Aprovado': '#D4F1D4' };
 
                             let html = `<div style="font-weight: bold; font-size: 13px; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; color: #333;" onclick="lf_editar(${c.id}); event.stopPropagation();">${c.titulo}</div>`;
 
